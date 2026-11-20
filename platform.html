@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ATELIER SaaS Engine v4: Multi-Niche Service Workshop Micro-SaaS Engine, Live Split-Screen Sandbox & 30-Second Self-Serve Store Builder." />
+  <title>ATELIER // SAAS ENGINE v4 · Interactive Sandbox & Store Builder</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="service-config.js"></script>
+  <style>
+    :root {
+      --op-canvas: #08090C;
+      --op-surface: #12141A;
+      --op-elevated: #1A1D26;
+      --op-border: #232734;
+      --op-border-strong: #32384A;
+      --brand: #D9381E;
+      --brand-hover: #B82B14;
+      --brand-rgb: 217, 56, 30;
+      --font-sans: 'Onest', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Sora', 'Onest', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    ::selection {
+      background-color: var(--brand);
+      color: #FFFFFF;
+    }
+
+    body {
+      background-color: #F2F4F7 !important;
+      color: #111216 !important;
+      font-family: var(--font-sans);
+      caret-color: var(--brand);
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .plat-header {
+      background-color: rgba(255, 255, 255, 0.96) !important;
+      border-bottom: 2px solid #111216 !important;
+      color: #111216 !important;
+      backdrop-filter: blur(10px);
+    }
+
+    .plat-no-hover-shift:hover {
+      transform: none !important;
+      box-shadow: 5px 5px 0px #111216 !important;
+    }
+
+    .plat-form-divide > * + * {
+      border-top: 1.5px solid rgba(17, 18, 22, 0.14);
+    }
+
+    .plat-nav-track {
+      background-color: #E7EBF2;
+      border: 1.5px solid #111216;
+    }
+
+    .plat-nav-active {
+      background-color: #111216;
+      color: #FFFFFF !important;
+    }
+
+    .plat-nav-link {
+      color: #111216;
+    }
+    .plat-nav-link:hover {
+      background-color: #FFFFFF;
+      color: #111216;
+    }
+
+    .plat-pill-muted {
+      background-color: #E7EBF2;
+      border: 1.5px solid #111216;
+      color: #111216;
+    }
+    .plat-pill-muted:hover {
+      background-color: #FFE45E;
+      color: #111216;
+    }
+
+    .plat-live-status {
+      color: #065F46;
+      font-weight: 700;
+    }
+
+    .plat-niche-track {
+      background-color: #E7EBF2;
+      border: 1.5px solid #111216;
+    }
+
+    .niche-pill.is-active {
+      background-color: #111216 !important;
+      color: #FFFFFF !important;
+      font-weight: 700;
+    }
+
+    .niche-pill.is-inactive {
+      background-color: transparent !important;
+      color: #111216 !important;
+      font-weight: 600;
+    }
+    .niche-pill.is-inactive:hover {
+      background-color: #FFFFFF !important;
+      color: #111216 !important;
+    }
+
+    .plat-select {
+      background-color: #FFFFFF;
+      border: 2px solid #111216;
+      color: #111216;
+      font-weight: 700;
+      height: 44px;
+      line-height: 40px;
+      padding: 0 14px;
+    }
+    .plat-select:focus {
+      outline: none;
+      box-shadow: 3px 3px 0px #111216;
+    }
+
+    .plat-select-sm {
+      height: 36px;
+      line-height: 32px;
+      padding: 0 12px;
+    }
+
+    .plat-order-badge {
+      background-color: #FFE45E !important;
+      color: #111216 !important;
+      border: 1.5px solid #111216 !important;
+      font-weight: 700;
+    }
+
+    .plat-dock-divider {
+      border-top: 1.5px solid rgba(17, 18, 22, 0.16);
+    }
+
+    .plat-dock-btn {
+      background-color: #FFFFFF;
+      border: 2px solid #111216;
+      color: #111216;
+      font-weight: 700;
+      box-shadow: 2px 2px 0px #111216;
+    }
+    .plat-dock-btn:hover {
+      background-color: #E7EBF2;
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px #111216;
+    }
+
+    .plat-card-line-y {
+      border-top: 1.5px solid rgba(17, 18, 22, 0.14);
+      border-bottom: 1.5px solid rgba(17, 18, 22, 0.14);
+    }
+
+    .plat-card-line-top {
+      border-top: 1.5px solid rgba(17, 18, 22, 0.14);
+    }
+
+    .plat-btn-dark {
+      background-color: #111216;
+      color: #FFFFFF !important;
+      border: 2px solid #111216;
+      font-weight: 700;
+      box-shadow: 3px 3px 0px rgba(17, 18, 22, 0.25);
+    }
+    .plat-btn-dark:hover {
+      background-color: #27272A;
+      transform: translate(-1px, -1px);
+    }
+
+    .plat-btn-light {
+      background-color: #FFFFFF;
+      color: #111216 !important;
+      border: 2px solid #111216;
+      font-weight: 700;
+      box-shadow: 3px 3px 0px #111216;
+    }
+    .plat-btn-light:hover {
+      background-color: #FFE45E;
+      transform: translate(-1px, -1px);
+    }
+
+    .plat-badge-mint {
+      background-color: #D9E2C4;
+      color: #111216;
+      border: 1.5px solid #111216;
+    }
+
+    .plat-badge-white {
+      background-color: #FFFFFF;
+      color: #111216;
+      border: 1.5px solid #111216;
+    }
+
+    .plat-modal-shell {
+      border: 2px solid #111216 !important;
+      box-shadow: 10px 10px 0px #111216;
+    }
+
+    .plat-modal-topbar {
+      background-color: #FFFFFF !important;
+      color: #111216 !important;
+      border-bottom: 2px solid #111216 !important;
+    }
+
+    .plat-mode-track {
+      background-color: #E7EBF2;
+      border: 1.5px solid #111216;
+    }
+
+    .plat-mode-btn.is-active {
+      background-color: #111216 !important;
+      color: #FFFFFF !important;
+      font-weight: 700;
+    }
+
+    .plat-mode-btn.is-inactive {
+      background-color: transparent !important;
+      color: #111216 !important;
+      font-weight: 600;
+    }
+    .plat-mode-btn.is-inactive:hover {
+      background-color: #FFFFFF !important;
+    }
+
+    .plat-close-x {
+      background-color: #D9381E !important;
+      color: #FFFFFF !important;
+      border: 2px solid #111216 !important;
+      box-shadow: 2px 2px 0px #111216;
+    }
+    .plat-close-x:hover {
+      background-color: #B91C1C !important;
+    }
+
+    .plat-builder-section {
+      background-color: #F2F4F7;
+      border-top: 2px solid #111216;
+    }
+
+    .plat-input {
+      background-color: #E7EBF2;
+      border: 1.5px solid #111216;
+      color: #111216;
+      font-weight: 600;
+    }
+    .plat-input::placeholder {
+      color: #6B6961;
+    }
+    .plat-input:focus {
+      background-color: #FFFFFF;
+      outline: none;
+      box-shadow: 3px 3px 0px #111216;
+    }
+
+    .niche-radio-card {
+      background-color: #F8FAFC;
+      border: 2px solid #111216;
+      color: #111216;
+    }
+    .niche-radio-card:hover {
+      background-color: #FFFFFF;
+    }
+    .niche-radio-card.is-selected,
+    .niche-radio-card.is-selected:hover {
+      background-color: #FFE45E !important;
+      border-color: #111216 !important;
+      color: #111216 !important;
+      box-shadow: 3px 3px 0px #111216;
+    }
+
+    .template-radio-card {
+      background-color: #F8FAFC;
+      border: 2px solid #111216;
+      color: #111216;
+    }
+    .template-radio-card:hover {
+      background-color: #FFFFFF;
+    }
+    .template-radio-card.is-selected,
+    .template-radio-card.is-selected:hover {
+      background-color: #FFE45E !important;
+      border-color: #111216 !important;
+      color: #111216 !important;
+      box-shadow: 3px 3px 0px #111216;
+    }
+
+    .plat-blueprint-obsidian {
+      background-color: #141824 !important;
+      color: #FFFFFF !important;
+      border: 2px solid #111216 !important;
+      box-shadow: 5px 5px 0px #111216 !important;
+      border-radius: 22px;
+    }
+
+    .plat-v4-badge {
+      background-color: #111216;
+      color: #FFE45E;
+      border: 1.5px solid #111216;
+    }
+
+    .plat-esc-badge {
+      display: inline-flex;
+      width: fit-content;
+      align-self: flex-start;
+    }
+    @media (min-width: 640px) {
+      .plat-esc-badge {
+        align-self: auto;
+      }
+    }
+
+    .plat-builder-head {
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid #111216;
+    }
+
+    .plat-prefix-badge {
+      background-color: #090B10;
+      border: 1px solid #2E3446;
+      color: #FFE45E;
+    }
+
+    .plat-toast-dot {
+      background-color: #FFE45E;
+    }
+
+    .plat-footer {
+      background-color: #111216 !important;
+      color: #E2E8F0 !important;
+      border-top: 2px solid #111216 !important;
+    }
+
+    .font-display {
+      font-family: var(--font-display);
+      letter-spacing: -0.03em;
+    }
+
+    .font-mono-code {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    a {
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 1023px) {
+      .axtriq-split-bg {
+        background: #0F1117;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #E7EBF2;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94A3B8;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #43423D;
+    }
+
+    /* ===================================================================== */
+    /* TEMPLATE 02: SWISS EDITORIAL GRID (swiss_minimal)                     */
+    /* ===================================================================== */
+    html[data-ui-template="swiss_minimal"] body {
+      background-color: #F8FAFC !important;
+      color: #0F172A !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-header {
+      background-color: rgba(255, 255, 255, 0.96) !important;
+      border-bottom: 1px solid #CBD5E1 !important;
+    }
+    html[data-ui-template="swiss_minimal"] .tactile-card,
+    html[data-ui-template="swiss_minimal"] .plat-modal-shell {
+      background-color: #FFFFFF !important;
+      border: 1px solid #CBD5E1 !important;
+      border-radius: 8px !important;
+      box-shadow: 0 4px 16px -6px rgba(15, 23, 42, 0.08) !important;
+    }
+    html[data-ui-template="swiss_minimal"] .tactile-card:hover:not(.plat-no-hover-shift) {
+      border-color: #0F172A !important;
+      transform: none !important;
+      box-shadow: 0 10px 24px -10px rgba(15, 23, 42, 0.14) !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-no-hover-shift:hover {
+      box-shadow: 0 4px 16px -6px rgba(15, 23, 42, 0.08) !important;
+    }
+    html[data-ui-template="swiss_minimal"] .sage-surface {
+      background-color: #F1F5F9 !important;
+      border: 1px solid #CBD5E1 !important;
+      border-radius: 8px !important;
+      box-shadow: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] .bento-yellow-card {
+      background-color: #FFFBEB !important;
+      border: 1px solid #FCD34D !important;
+      border-radius: 8px !important;
+      box-shadow: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-nav-track,
+    html[data-ui-template="swiss_minimal"] .plat-niche-track,
+    html[data-ui-template="swiss_minimal"] .plat-mode-track {
+      background-color: #F1F5F9 !important;
+      border: 1px solid #CBD5E1 !important;
+      border-radius: 8px !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-nav-active,
+    html[data-ui-template="swiss_minimal"] .niche-pill.is-active,
+    html[data-ui-template="swiss_minimal"] .plat-mode-btn.is-active {
+      background-color: #0F172A !important;
+      color: #FFFFFF !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-v4-badge {
+      background-color: #0F172A !important;
+      color: #FFFFFF !important;
+      border: 1px solid #0F172A !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-pill-muted,
+    html[data-ui-template="swiss_minimal"] .plat-dock-btn,
+    html[data-ui-template="swiss_minimal"] .plat-btn-light,
+    html[data-ui-template="swiss_minimal"] .plat-select,
+    html[data-ui-template="swiss_minimal"] .plat-input {
+      background-color: #FFFFFF !important;
+      border: 1px solid #CBD5E1 !important;
+      color: #0F172A !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-btn-dark {
+      background-color: #0F172A !important;
+      border: 1px solid #0F172A !important;
+      color: #FFFFFF !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] .tactile-btn-yellow {
+      background-color: var(--brand) !important;
+      color: #FFFFFF !important;
+      border: 1px solid var(--brand) !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] .tactile-btn-yellow:hover {
+      background-color: #0F172A !important;
+      border-color: #0F172A !important;
+      color: #FFFFFF !important;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-order-badge,
+    html[data-ui-template="swiss_minimal"] .plat-badge-mint,
+    html[data-ui-template="swiss_minimal"] .plat-badge-white {
+      background-color: #F1F5F9 !important;
+      border: 1px solid #CBD5E1 !important;
+      color: #0F172A !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="swiss_minimal"] .niche-radio-card,
+    html[data-ui-template="swiss_minimal"] .template-radio-card {
+      background-color: #F8FAFC !important;
+      border: 1px solid #CBD5E1 !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] .niche-radio-card.is-selected,
+    html[data-ui-template="swiss_minimal"] .template-radio-card.is-selected {
+      background-color: #EEF2FF !important;
+      border: 1.5px solid #0F172A !important;
+      box-shadow: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-builder-section {
+      background-color: #F8FAFC !important;
+      border-top: 1px solid #CBD5E1 !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-builder-head,
+    html[data-ui-template="swiss_minimal"] .plat-modal-topbar {
+      border-color: #CBD5E1 !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-form-divide > * + *,
+    html[data-ui-template="swiss_minimal"] .plat-dock-divider {
+      border-color: #E2E8F0 !important;
+    }
+    html[data-ui-template="swiss_minimal"] .plat-blueprint-obsidian {
+      border: 1px solid #334155 !important;
+      box-shadow: none !important;
+      border-radius: 8px !important;
+    }
+
+    /* ===================================================================== */
+    /* TEMPLATE 03: WARM ATELIER LOOKBOOK (atelier_magazine)                 */
+    /* ===================================================================== */
+    html[data-ui-template="atelier_magazine"] body {
+      --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+      background-color: #EFECE6 !important;
+      color: #261C16 !important;
+      font-family: var(--font-sans);
+    }
+    html[data-ui-template="atelier_magazine"] h1,
+    html[data-ui-template="atelier_magazine"] h2,
+    html[data-ui-template="atelier_magazine"] h3,
+    html[data-ui-template="atelier_magazine"] .font-display,
+    html[data-ui-template="atelier_magazine"] .type-hero,
+    html[data-ui-template="atelier_magazine"] .type-display {
+      font-family: var(--font-display) !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-header,
+    html[data-ui-template="atelier_magazine"] .plat-modal-topbar {
+      background-color: #FAF7F0 !important;
+      border-bottom: 1.5px solid #3E2F26 !important;
+      color: #261C16 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .tactile-card {
+      background-color: #FAF7F0 !important;
+      border: 1.5px solid #3E2F26 !important;
+      border-radius: 8px !important;
+      box-shadow: 4px 4px 0 #3E2F26 !important;
+      color: #261C16 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-no-hover-shift:hover {
+      transform: none !important;
+      box-shadow: 4px 4px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-modal-shell {
+      background-color: #FAF7F0 !important;
+      border: 1.5px solid #3E2F26 !important;
+      border-radius: 10px !important;
+      box-shadow: 6px 6px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] #sandboxStage .sage-surface {
+      background-color: #E6E2D3 !important;
+      border: 1.5px solid #3E2F26 !important;
+      border-radius: 8px !important;
+      box-shadow: 4px 4px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] #sandboxStage .bento-yellow-card {
+      background-color: #EFE7DA !important;
+      border: 1.5px solid #3E2F26 !important;
+      border-radius: 8px !important;
+      box-shadow: 4px 4px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] h1 span.text-\[\#FF5E00\] {
+      color: #9A5B13 !important;
+    }
+    html[data-ui-template="atelier_magazine"] #sandboxSection .text-\[\#43423D\],
+    html[data-ui-template="atelier_magazine"] #sandboxStage .text-\[\#43423D\],
+    html[data-ui-template="atelier_magazine"] #storeBuilderForm .text-\[\#43423D\],
+    html[data-ui-template="atelier_magazine"] .plat-builder-head .text-\[\#43423D\],
+    html[data-ui-template="atelier_magazine"] .plat-header .text-\[\#43423D\] {
+      color: #5C493E !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-nav-track,
+    html[data-ui-template="atelier_magazine"] .plat-niche-track,
+    html[data-ui-template="atelier_magazine"] .plat-mode-track {
+      background-color: #E6E2D3 !important;
+      border: 1.5px solid #3E2F26 !important;
+      border-radius: 8px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-nav-active,
+    html[data-ui-template="atelier_magazine"] .niche-pill.is-active,
+    html[data-ui-template="atelier_magazine"] .plat-mode-btn.is-active {
+      background-color: #231B16 !important;
+      color: #FAF7F0 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-v4-badge {
+      background-color: #9A5B13 !important;
+      color: #FAF7F0 !important;
+      border: 1.5px solid #3E2F26 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-order-badge,
+    html[data-ui-template="atelier_magazine"] .plat-badge-mint,
+    html[data-ui-template="atelier_magazine"] .plat-badge-white {
+      background-color: #E6E2D3 !important;
+      color: #261C16 !important;
+      border: 1.5px solid #3E2F26 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-pill-muted,
+    html[data-ui-template="atelier_magazine"] .plat-dock-btn,
+    html[data-ui-template="atelier_magazine"] .plat-btn-light {
+      background-color: #FAF7F0 !important;
+      border: 1.5px solid #3E2F26 !important;
+      color: #261C16 !important;
+      border-radius: 6px !important;
+      box-shadow: 2px 2px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-pill-muted:hover,
+    html[data-ui-template="atelier_magazine"] .plat-dock-btn:hover,
+    html[data-ui-template="atelier_magazine"] .plat-btn-light:hover {
+      background-color: #E6E2D3 !important;
+      color: #261C16 !important;
+      transform: none !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-btn-dark {
+      background-color: #231B16 !important;
+      border: 1.5px solid #3E2F26 !important;
+      color: #FAF7F0 !important;
+      border-radius: 6px !important;
+      box-shadow: 3px 3px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-btn-dark:hover {
+      background-color: #9A5B13 !important;
+      color: #FAF7F0 !important;
+      transform: none !important;
+    }
+    html[data-ui-template="atelier_magazine"] .tactile-btn-yellow {
+      background-color: #9A5B13 !important;
+      border: 1.5px solid #3E2F26 !important;
+      color: #FAF7F0 !important;
+      border-radius: 6px !important;
+      box-shadow: 3px 3px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .tactile-btn-yellow:hover {
+      background-color: #231B16 !important;
+      color: #FAF7F0 !important;
+      transform: none !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-select,
+    html[data-ui-template="atelier_magazine"] .plat-input {
+      background-color: #F2ECE1 !important;
+      border: 1.5px solid #3E2F26 !important;
+      color: #261C16 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-select:focus,
+    html[data-ui-template="atelier_magazine"] .plat-input:focus {
+      border-color: #9A5B13 !important;
+      box-shadow: 2px 2px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .niche-radio-card,
+    html[data-ui-template="atelier_magazine"] .template-radio-card {
+      background-color: #FAF7F0 !important;
+      border: 1.5px solid #3E2F26 !important;
+      color: #261C16 !important;
+      border-radius: 8px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .niche-radio-card.is-selected,
+    html[data-ui-template="atelier_magazine"] .niche-radio-card.is-selected:hover,
+    html[data-ui-template="atelier_magazine"] .template-radio-card.is-selected,
+    html[data-ui-template="atelier_magazine"] .template-radio-card.is-selected:hover {
+      background-color: #E6E2D3 !important;
+      border: 1.5px solid #3E2F26 !important;
+      box-shadow: 3px 3px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-builder-section {
+      background-color: #EFECE6 !important;
+      border-top: 1.5px solid #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-builder-head {
+      border-bottom: 1.5px solid #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-form-divide > * + *,
+    html[data-ui-template="atelier_magazine"] .plat-dock-divider {
+      border-color: #D8CEBE !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-blueprint-obsidian {
+      background-color: #231B16 !important;
+      border: 1.5px solid #3E2F26 !important;
+      box-shadow: 4px 4px 0 #3E2F26 !important;
+      border-radius: 8px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-footer {
+      background-color: #231B16 !important;
+      border-top: 1.5px solid #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] #platformToast {
+      background-color: #231B16 !important;
+      border: 1.5px solid #3E2F26 !important;
+      color: #FAF7F0 !important;
+      box-shadow: 3px 3px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .plat-toast-dot {
+      background-color: #E8B878 !important;
+    }
+    html[data-ui-template="atelier_magazine"] #sandboxStage .bg-\[\#E7EBF2\],
+    html[data-ui-template="atelier_magazine"] #sandboxStage .bg-white {
+      background-color: #F2ECE1 !important;
+      border-color: #3E2F26 !important;
+      color: #261C16 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] #sandboxStage a.plat-badge-white:hover {
+      background-color: #231B16 !important;
+      color: #FAF7F0 !important;
+    }
+    html[data-ui-template="atelier_magazine"] #storeBuilderForm input[type="radio"] {
+      accent-color: #9A5B13 !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#F2F4F7] text-[#111216]">
+
+  <!-- DAYLIGHT ARCHITECTURAL TOP RAIL -->
+  <header class="plat-header sticky top-0 z-40">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <a href="#top" class="flex items-center gap-3 min-w-0 shrink">
+        <div class="plat-v4-badge w-9 h-9 rounded-[10px] font-display font-extrabold text-xs flex items-center justify-center shrink-0">
+          V4
+        </div>
+        <div class="min-w-0 flex items-center gap-2.5">
+          <span class="font-display font-extrabold text-sm tracking-tight text-[#111216] truncate">ATELIER</span>
+          <span class="hidden sm:inline font-mono-code text-xs font-bold text-[#43423D]">ENGINE v4</span>
+          <span class="plat-live-status hidden md:inline-flex items-center gap-1.5 text-xs shrink-0">
+            <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+            <span>Live Sync</span>
+          </span>
+        </div>
+      </a>
+
+      <nav aria-label="Navigasi Platform" class="plat-nav-track hidden lg:flex items-center gap-1 p-1 rounded-full">
+        <a href="#sandboxStage" class="plat-nav-active h-9 px-4 rounded-full text-xs font-bold inline-flex items-center">Split Sandbox</a>
+        <a href="#builderSection" class="plat-nav-link h-9 px-4 rounded-full text-xs font-bold inline-flex items-center transition-colors">Store Builder</a>
+        <a id="headerLinkAnalytics" href="analytics.html?mitra=kultur-kicks" target="_blank" rel="noopener" class="plat-nav-link h-9 px-4 rounded-full text-xs font-bold inline-flex items-center transition-colors">Omzet</a>
+        <a id="headerLinkNota" href="nota.html?mitra=kultur-kicks&thermal=1" target="_blank" rel="noopener" class="plat-nav-link h-9 px-4 rounded-full text-xs font-bold inline-flex items-center transition-colors">Struk 58mm</a>
+      </nav>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <a id="headerLinkPublic" href="index.html?mitra=kultur-kicks" target="_blank" rel="noopener" class="plat-pill-muted hidden md:inline-flex h-10 px-3.5 rounded-full bg-[#E7EBF2] text-xs font-bold text-[#111216] items-center gap-1.5 transition-colors">
+          <span>Pelanggan</span>
+          <svg aria-hidden="true" class="w-3.5 h-3.5 text-[#111216]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+        </a>
+        <a id="headerLinkAdmin" href="admin.html?mitra=kultur-kicks&demo=1" target="_blank" rel="noopener" class="plat-pill-muted hidden xl:inline-flex h-10 px-3.5 rounded-full bg-[#E7EBF2] text-xs font-bold text-[#111216] items-center gap-1.5 transition-colors">
+          <span>Kasir</span>
+          <svg aria-hidden="true" class="w-3.5 h-3.5 text-[#111216]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+        </a>
+        <a href="#builderSection" class="tactile-btn-yellow h-11 sm:h-10 px-4 rounded-full text-xs inline-flex items-center gap-1.5">
+          <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+          <span>Buat Toko</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top" class="flex-1">
+    <!-- COMPACT SANDBOX HERO + UNIFIED CONTROL DOCK -->
+    <section id="sandboxSection" class="pt-6 pb-8 sm:pt-9 sm:pb-10">
+      <div class="max-w-[1440px] mx-auto px-4 sm:px-6 space-y-5">
+
+        <!-- Concise Editorial Hero Statement -->
+        <div class="space-y-2.5 max-w-[70ch]">
+          <h1 class="type-hero text-[#111216] [text-wrap:balance]">
+            Satu Mesin Bengkel. Pelanggan &amp; Kasir Terhubung Real-Time<span class="text-[#FF5E00]">.</span>
+          </h1>
+          <p class="text-sm sm:text-base font-medium text-[#43423D] leading-relaxed">
+            Geser status pengerjaan di kasir, lihat resi langsung berubah di layar pelanggan tanpa refresh.
+          </p>
+        </div>
+
+        <!-- Unified Two-Row Control Dock (Daylight Tactile Contrast) -->
+        <div class="tactile-card plat-no-hover-shift p-4 sm:p-5 space-y-3.5">
+          <!-- Row 1: 4 Niche Buttons + Store Selector Dropdown -->
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div class="plat-niche-track grid grid-cols-2 sm:inline-flex items-center gap-1 p-1 rounded-[14px] shrink-0">
+              <button
+                type="button"
+                data-niche-slug="kultur-kicks"
+                onclick="switchSandboxMitra('kultur-kicks')"
+                class="niche-pill is-active h-11 sm:h-10 px-3.5 rounded-[10px] text-xs font-bold transition-colors cursor-pointer inline-flex items-center justify-center gap-1.5"
+              >
+                <svg aria-hidden="true" class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 17h16v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2Z"/><path d="M5 17 7 9l4 2 4-4 4 4v6"/></svg>
+                <span>Sneakers</span>
+              </button>
+              <button
+                type="button"
+                data-niche-slug="lume-laundry"
+                onclick="switchSandboxMitra('lume-laundry')"
+                class="niche-pill is-inactive h-11 sm:h-10 px-3.5 rounded-[10px] text-xs font-semibold transition-colors cursor-pointer inline-flex items-center justify-center gap-1.5"
+              >
+                <svg aria-hidden="true" class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="18" height="20" x="3" y="2" rx="2"/><circle cx="12" cy="13" r="5"/><path d="M12 18a5 5 0 0 0 0-10"/></svg>
+                <span>Laundry</span>
+              </button>
+              <button
+                type="button"
+                data-niche-slug="apex-motoworks"
+                onclick="switchSandboxMitra('apex-motoworks')"
+                class="niche-pill is-inactive h-11 sm:h-10 px-3.5 rounded-[10px] text-xs font-semibold transition-colors cursor-pointer inline-flex items-center justify-center gap-1.5"
+              >
+                <svg aria-hidden="true" class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5V14l-3-3 4-3 2 3h2"/></svg>
+                <span>Motor</span>
+              </button>
+              <button
+                type="button"
+                data-niche-slug="monarch-barber"
+                onclick="switchSandboxMitra('monarch-barber')"
+                class="niche-pill is-inactive h-11 sm:h-10 px-3.5 rounded-[10px] text-xs font-semibold transition-colors cursor-pointer inline-flex items-center justify-center gap-1.5"
+              >
+                <svg aria-hidden="true" class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>
+                <span>Barber</span>
+              </button>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2.5 w-full lg:w-auto min-w-0">
+              <div class="w-full sm:flex-1 lg:w-[248px] xl:w-[280px] min-w-0">
+                <label for="sandboxAllStoresSelect" class="sr-only">Pilih Semua Mitra</label>
+                <select
+                  id="sandboxAllStoresSelect"
+                  onchange="switchSandboxMitra(this.value)"
+                  class="plat-select w-full h-11 px-3.5 rounded-[12px] text-xs font-mono-code cursor-pointer"
+                ></select>
+              </div>
+              <div class="w-full sm:w-[220px] shrink-0">
+                <label for="sandboxTemplateSelect" class="sr-only">Pilih Template Storefront</label>
+                <select
+                  id="sandboxTemplateSelect"
+                  onchange="switchSandboxTemplate(this.value)"
+                  class="plat-select w-full h-11 px-3.5 rounded-[12px] text-xs font-semibold cursor-pointer"
+                >
+                  <option value="tactile_bento">01 · Tactile Bento</option>
+                  <option value="swiss_minimal">02 · Swiss Editorial</option>
+                  <option value="atelier_magazine">03 · Atelier Lookbook</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Active Store Telemetry + Action Controls -->
+          <div class="plat-dock-divider pt-3 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-3 min-w-0">
+              <div class="min-w-0">
+                <div class="text-[11px] font-mono-code font-bold text-[#43423D] uppercase">Mitra Aktif</div>
+                <div id="sandboxActiveStoreLabel" class="font-display text-sm font-extrabold text-[#111216] truncate max-w-[280px] sm:max-w-[360px]">KULTUR KICKS LAB (Margonda, Depok)</div>
+              </div>
+              <span id="sandboxActiveOrderBadge" class="plat-order-badge font-mono-code text-xs px-3 py-1.5 rounded-full shrink-0">KLK-2601 · Tahap 3/5</span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onclick="simulateAdvanceFirstOrderStage()"
+                class="tactile-btn-yellow h-10 px-4 text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                <span>Geser Tahap (+1)</span>
+              </button>
+              <button
+                type="button"
+                onclick="simulateCreateSampleOrder()"
+                class="plat-dock-btn h-10 px-3.5 rounded-full text-xs inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <svg aria-hidden="true" class="w-3.5 h-3.5 text-[#111216]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+                <span>Nota Baru</span>
+              </button>
+              <button
+                type="button"
+                onclick="openSandboxPopup('kanban')"
+                id="sandboxKanbanBtn"
+                class="plat-dock-btn h-10 px-3.5 rounded-full text-xs inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <svg aria-hidden="true" class="w-3.5 h-3.5 text-[#111216]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="6" height="14" x="3" y="5" rx="1"/><rect width="6" height="10" x="9" y="5" rx="1"/><rect width="6" height="16" x="15" y="5" rx="1"/></svg>
+                <span id="sandboxKanbanBtnLabel">Buka Kanban</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3 INTERACTIVE SANDBOX LAUNCHPAD CARDS -->
+    <section id="sandboxStage" class="pb-10">
+      <div class="max-w-[1440px] mx-auto px-4 sm:px-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
+          <div class="flex items-center gap-2.5 text-xs text-[#43423D] font-medium">
+            <span class="font-display font-extrabold text-[#111216] uppercase tracking-wider">Launchpad Simulasi Pop-Up</span>
+            <span class="hidden sm:inline text-[#111216] font-bold">/</span>
+            <span class="hidden sm:inline">Pilih tampilan untuk dibuka di layar pop-up penuh tanpa memadatkan halaman</span>
+          </div>
+          <span class="plat-badge-mint plat-esc-badge font-mono-code text-[11px] font-bold px-2.5 py-1 rounded-full">Esc untuk tutup pop-up</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
+          <!-- Card 1: Layar Pelanggan (.tactile-card white) -->
+          <div class="tactile-card p-5 sm:p-6 flex flex-col justify-between gap-5">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <div class="inline-flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#059669] shrink-0"></span>
+                  <span class="font-mono-code text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#E7EBF2] text-[#111216] border-[1.5px] border-[#111216]">BAY 01 · LIGHT UI</span>
+                </div>
+                <a id="openPublicNewTab" href="index.html?mitra=kultur-kicks" target="_blank" rel="noopener" class="plat-pill-muted h-8 px-3 rounded-full text-[11px] font-bold inline-flex items-center gap-1 transition-colors shrink-0">
+                  <span>Tab Baru</span>
+                  <svg aria-hidden="true" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                </a>
+              </div>
+              <div>
+                <h2 class="font-display font-extrabold text-xl text-[#111216]">Layar Pelanggan</h2>
+                <p class="mt-1 text-xs font-medium text-[#43423D] leading-relaxed">Etalase paket layanan, kalkulator harga, form booking WhatsApp, dan pelacakan status 5 tahap real-time.</p>
+              </div>
+              <div id="publicUrlBadge" class="font-mono-code text-[11px] font-bold text-[#111216] bg-[#E7EBF2] border-[1.5px] border-[#111216] rounded-[10px] px-3 py-1.5 truncate">
+                index.html?mitra=kultur-kicks
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <button
+                type="button"
+                onclick="openSandboxPopup('public')"
+                class="plat-btn-dark h-11 px-3 rounded-[12px] text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <span>Buka Pop-Up Desktop</span>
+              </button>
+              <button
+                type="button"
+                onclick="openSandboxPopup('mobile-public')"
+                class="plat-btn-light h-11 px-3 rounded-[12px] text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <span>Buka Pop-Up HP</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 2: Panel Kasir & Kanban (.sage-surface) -->
+          <div class="sage-surface p-5 sm:p-6 flex flex-col justify-between gap-5">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <div class="inline-flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#FF5E00] shrink-0"></span>
+                  <span class="plat-badge-white font-mono-code text-[11px] font-bold px-2.5 py-1 rounded-full">BAY 02 · OPS ENGINE</span>
+                </div>
+                <a id="openAdminNewTab" href="admin.html?mitra=kultur-kicks&demo=1" target="_blank" rel="noopener" class="plat-badge-white h-8 px-3 rounded-full text-[11px] font-bold inline-flex items-center gap-1 transition-colors shrink-0 hover:bg-[#111216] hover:text-white">
+                  <span>Tab Baru</span>
+                  <svg aria-hidden="true" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                </a>
+              </div>
+              <div>
+                <h2 class="font-display font-extrabold text-xl text-[#111216]">Panel Kasir &amp; Kanban</h2>
+                <p class="mt-1 text-xs font-medium text-[#111216] leading-relaxed">Workbench admin untuk buat nota, geser status pengerjaan 1-5, catatan teknisi, hingga cetak struk 58mm.</p>
+              </div>
+              <div id="adminUrlBadge" class="font-mono-code text-[11px] font-bold text-[#111216] bg-white border-[1.5px] border-[#111216] rounded-[10px] px-3 py-1.5 truncate">
+                admin.html?mitra=kultur-kicks&amp;demo=1
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <button
+                type="button"
+                onclick="openSandboxPopup('admin')"
+                class="plat-btn-dark h-11 px-3 rounded-[12px] text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <span>Buka Pop-Up Kasir</span>
+              </button>
+              <button
+                type="button"
+                onclick="openSandboxPopup('kanban')"
+                class="plat-btn-light h-11 px-3 rounded-[12px] text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <span>Buka Pop-Up Kanban</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 3: Live Split 1:1 (.bento-yellow-card) -->
+          <div class="bento-yellow-card p-5 sm:p-6 flex flex-col justify-between gap-5">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <div class="inline-flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#111216] shrink-0"></span>
+                  <span class="plat-badge-white font-mono-code text-[11px] font-bold px-2.5 py-1 rounded-full">SYNC · 1:1 STAGE</span>
+                </div>
+                <span class="font-mono-code text-[11px] text-[#111216] font-extrabold">ATELIER SYNC</span>
+              </div>
+              <div>
+                <h2 class="font-display font-extrabold text-xl text-[#111216]">Live Split 1:1</h2>
+                <p class="mt-1 text-xs font-medium text-[#111216] leading-relaxed">Buka layar pelanggan (terang) &amp; panel kasir (gelap) berdampingan 1:1 untuk demo sinkronisasi real-time ke calon mitra.</p>
+              </div>
+              <div class="rounded-[10px] bg-white border-[1.5px] border-[#111216] px-3 py-1.5 flex items-center justify-between text-[11px]">
+                <span class="font-bold text-[#43423D]">Simulasi Interaktif</span>
+                <span class="font-mono-code font-extrabold text-[#111216]">Dua Bay Paralel</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onclick="openSandboxPopup('dual')"
+              class="plat-btn-dark w-full h-11 px-4 rounded-[12px] text-xs inline-flex items-center justify-center gap-2 cursor-pointer transition-colors"
+            >
+              <span>Buka Pop-Up Split 1:1</span>
+              <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="12" x2="12" y1="3" y2="21"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLOATING POP-UP SANDBOX PREVIEW MODAL -->
+    <div
+      id="sandboxPreviewModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalActiveStoreName"
+      onclick="if (event.target === this) closeSandboxPopup();"
+      class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-5"
+    >
+      <div class="plat-modal-shell w-full max-w-[1440px] bg-white rounded-[24px] overflow-hidden flex flex-col max-h-[94vh]">
+        <!-- Pop-Up Modal Top Control Bar -->
+        <div class="plat-modal-topbar px-4 py-3 flex flex-wrap items-center justify-between gap-3 shrink-0">
+          <div class="flex flex-wrap items-center gap-2.5 min-w-0">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#10B981] shrink-0"></span>
+            <span id="modalActiveStoreName" class="font-display font-extrabold text-sm text-[#111216] truncate">KULTUR KICKS LAB (Margonda, Depok)</span>
+            <span id="modalOrderBadge" class="plat-order-badge font-mono-code text-xs px-3 py-1 rounded-full shrink-0">KLK-2601 · Tahap 3/5</span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onclick="simulateAdvanceFirstOrderStage()"
+              class="tactile-btn-yellow h-9 px-3.5 text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              <span>Geser Tahap (+1)</span>
+            </button>
+            <button
+              type="button"
+              onclick="simulateCreateSampleOrder()"
+              class="plat-dock-btn h-9 px-3 rounded-full text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <span>+ Nota Baru</span>
+            </button>
+            <label for="modalTemplateSelect" class="sr-only">Ganti Template UI Storefront</label>
+            <select
+              id="modalTemplateSelect"
+              onchange="switchSandboxTemplate(this.value)"
+              aria-label="Ganti Template UI Storefront"
+              class="plat-select plat-select-sm rounded-full text-xs cursor-pointer max-w-full"
+            >
+              <option value="tactile_bento">01 · Tactile Bento</option>
+              <option value="swiss_minimal">02 · Swiss Editorial</option>
+              <option value="atelier_magazine">03 · Atelier Lookbook</option>
+            </select>
+
+            <!-- View Mode Switcher -->
+            <div role="group" aria-label="Mode Tampilan Preview Pop-Up" class="plat-mode-track inline-flex flex-wrap items-center gap-1 p-1 rounded-full">
+              <button type="button" id="layoutBtn-dual" onclick="setDesktopBayLayout('dual')" class="plat-mode-btn is-active h-8 px-3 rounded-full text-xs cursor-pointer transition-colors">Split 1:1</button>
+              <button type="button" id="layoutBtn-mobile" onclick="setDesktopBayLayout('mobile')" class="plat-mode-btn is-inactive h-8 px-3 rounded-full text-xs cursor-pointer transition-colors">Mode HP (390px)</button>
+              <button type="button" id="layoutBtn-public" onclick="setDesktopBayLayout('public')" class="plat-mode-btn is-inactive h-8 px-3 rounded-full text-xs cursor-pointer transition-colors">Fokus Pelanggan</button>
+              <button type="button" id="layoutBtn-admin" onclick="setDesktopBayLayout('admin')" class="plat-mode-btn is-inactive h-8 px-3 rounded-full text-xs cursor-pointer transition-colors">Fokus Kasir</button>
+            </div>
+
+            <!-- Red Close X Button -->
+            <button
+              type="button"
+              id="closeSandboxModalBtn"
+              onclick="closeSandboxPopup()"
+              aria-label="Tutup Pop-Up Preview"
+              title="Tutup (Esc)"
+              class="plat-close-x w-10 h-10 rounded-full font-extrabold flex items-center justify-center cursor-pointer shrink-0 transition-colors"
+            >
+              <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Modal Viewports Stage -->
+        <div class="flex-1 overflow-y-auto bg-[#08090C]">
+          <div id="sandboxBaysGrid" class="sandbox-split-active grid grid-cols-1 md:grid-cols-2">
+            <!-- LEFT HALF: TRUE DAYLIGHT CANVAS -->
+            <figure id="viewportCard-public" class="axtriq-day-stage p-3 sm:p-5 flex flex-col gap-2.5 min-w-0">
+              <figcaption class="flex items-center justify-between gap-2 text-[#111216]">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#059669] shrink-0"></span>
+                  <span class="font-mono-code text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-white text-[#111216] border border-[#D6D3CB] shrink-0">BAY 01 · LIGHT UI</span>
+                  <span class="text-xs font-bold text-[#111216] truncate">Web Pelanggan</span>
+                </div>
+              </figcaption>
+              <div id="framePublicWrap" class="w-full h-[78vh]">
+                <iframe
+                  id="framePublic"
+                  title="Layar Web Pelanggan"
+                  src="index.html?mitra=kultur-kicks&embed=1"
+                  class="w-full h-full rounded-[18px] border border-[#D4D7CD] bg-[#F2F4F7] shadow-lg block"
+                ></iframe>
+              </div>
+            </figure>
+
+            <!-- RIGHT HALF: TRUE OBSIDIAN NIGHT CANVAS -->
+            <figure id="viewportCard-admin" class="hidden md:flex axtriq-night-stage p-3 sm:p-5 flex-col gap-2.5 min-w-0 md:border-l md:border-[#1E222D]">
+              <figcaption class="flex items-center justify-between gap-2 text-[#F8FAFC]">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[var(--brand)] shrink-0"></span>
+                  <span class="font-mono-code text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#14171F] text-white border border-[#232734] shrink-0">BAY 02 · DARK OPS</span>
+                  <span class="text-xs font-bold text-[#E2E8F0] truncate">Panel Kasir &amp; Kanban</span>
+                </div>
+              </figcaption>
+              <div id="frameAdminWrap" class="w-full h-[78vh]">
+                <iframe
+                  id="frameAdmin"
+                  title="Panel Operasional Kasir"
+                  src="admin.html?mitra=kultur-kicks&demo=1&embed=1"
+                  class="w-full h-full rounded-[18px] border border-[#232734] bg-[#08090C] shadow-2xl block"
+                ></iframe>
+              </div>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORE BUILDER + LIVE BLUEPRINT PREVIEW -->
+    <section id="builderSection" class="plat-builder-section py-12 sm:py-16">
+      <div class="max-w-[1320px] mx-auto px-4 sm:px-6 space-y-8">
+        <div class="plat-builder-head">
+          <div class="max-w-[60ch]">
+            <h2 class="type-display text-[#111216] [text-wrap:balance]">
+              Bangun Web Pelanggan &amp; Kasir Usaha Anda Seketika
+            </h2>
+            <p class="text-sm font-medium text-[#43423D] mt-2 leading-relaxed">
+              Pilih identitas studio, alur kerja 5 tahap, dan warna brand. Paket awal serta sample antrean dibuat otomatis siap pakai.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+
+          <!-- Left 7 Cols: Interactive Daylight Builder Form -->
+          <form id="storeBuilderForm" onsubmit="event.preventDefault(); handleGenerateCustomStore();" class="lg:col-span-7 tactile-card plat-no-hover-shift plat-form-divide overflow-hidden min-w-0">
+
+            <!-- Identity & Branch -->
+            <div class="p-5 sm:p-7 space-y-4">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-display text-base font-extrabold text-[#111216]">Identitas Studio &amp; Cabang</span>
+                <span id="builderSlugPreview" class="font-mono-code text-xs font-bold text-[#43423D] truncate max-w-[200px]">?mitra=garasi-detailing-depok</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="min-w-0">
+                  <label for="builderStoreName" class="block text-xs font-bold text-[#111216] mb-1.5">Nama Bisnis / Studio</label>
+                  <input
+                    id="builderStoreName"
+                    type="text"
+                    required
+                    placeholder="cth: Garasi Detailing Depok"
+                    oninput="updateBuilderPreview()"
+                    class="plat-input w-full min-w-0 h-11 px-4 rounded-[12px] text-sm"
+                  />
+                </div>
+                <div class="min-w-0">
+                  <label for="builderStoreBranch" class="block text-xs font-bold text-[#111216] mb-1.5">Kota / Cabang</label>
+                  <input
+                    id="builderStoreBranch"
+                    type="text"
+                    required
+                    placeholder="cth: Margonda, Depok"
+                    value="Margonda, Depok"
+                    oninput="updateBuilderPreview()"
+                    class="plat-input w-full min-w-0 h-11 px-4 rounded-[12px] text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Operational Niche Selection -->
+            <div class="p-5 sm:p-7 space-y-4">
+              <div>
+                <span class="font-display text-base font-extrabold text-[#111216]">Pilih Bidang Jasa &amp; Alur SOP</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label data-niche-card="sneakers_care" class="niche-radio-card is-selected flex items-start gap-3 p-4 rounded-[14px] cursor-pointer transition-colors">
+                  <input type="radio" name="builderNiche" value="sneakers_care" checked onchange="updateBuilderPreview()" class="mt-0.5 accent-[#111216] shrink-0" />
+                  <div class="min-w-0">
+                    <div class="text-xs font-extrabold text-[#111216]">Cuci Sepatu &amp; Tas</div>
+                    <p class="text-xs font-medium text-[#43423D] mt-1">Deep Clean, Unyellowing UV, Repaint</p>
+                  </div>
+                </label>
+                <label data-niche-card="laundry_care" class="niche-radio-card flex items-start gap-3 p-4 rounded-[14px] cursor-pointer transition-colors">
+                  <input type="radio" name="builderNiche" value="laundry_care" onchange="updateBuilderPreview()" class="mt-0.5 accent-[#111216] shrink-0" />
+                  <div class="min-w-0">
+                    <div class="text-xs font-extrabold text-[#111216]">Laundry, Karpet &amp; Sofa</div>
+                    <p class="text-xs font-medium text-[#43423D] mt-1">Kiloan, Setrika Uap, Home Service</p>
+                  </div>
+                </label>
+                <label data-niche-card="moto_detailing" class="niche-radio-card flex items-start gap-3 p-4 rounded-[14px] cursor-pointer transition-colors">
+                  <input type="radio" name="builderNiche" value="moto_detailing" onchange="updateBuilderPreview()" class="mt-0.5 accent-[#111216] shrink-0" />
+                  <div class="min-w-0">
+                    <div class="text-xs font-extrabold text-[#111216]">Motodetailing &amp; Coating</div>
+                    <p class="text-xs font-medium text-[#43423D] mt-1">Bongkar Bodi, Poles, Nano Ceramic 9H</p>
+                  </div>
+                </label>
+                <label data-niche-card="barber_studio" class="niche-radio-card flex items-start gap-3 p-4 rounded-[14px] cursor-pointer transition-colors">
+                  <input type="radio" name="builderNiche" value="barber_studio" onchange="updateBuilderPreview()" class="mt-0.5 accent-[#111216] shrink-0" />
+                  <div class="min-w-0">
+                    <div class="text-xs font-extrabold text-[#111216]">Barbershop &amp; Grooming</div>
+                    <p class="text-xs font-medium text-[#43423D] mt-1">Reservasi Kursi Capster &amp; Haircut</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Storefront UI Template Selection -->
+            <div class="p-5 sm:p-7 space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="font-display text-base font-extrabold text-[#111216]">Pilih Template Tampilan Storefront</span>
+                <span class="font-mono-code text-[11px] font-bold text-[#43423D]">Fleksibel Semua Niche</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <label data-template-card="tactile_bento" class="template-radio-card is-selected flex flex-col gap-1.5 p-4 rounded-[14px] cursor-pointer transition-colors">
+                  <div class="flex items-center gap-2">
+                    <input type="radio" name="builderUiTemplate" value="tactile_bento" checked onchange="updateBuilderPreview()" class="accent-[#111216] shrink-0" />
+                    <span class="text-xs font-extrabold text-[#111216] leading-snug">01 · Tactile Bento</span>
+                  </div>
+                  <p class="text-xs font-medium text-[#43423D] leading-relaxed">Layout asimetris 7:5, navbar kapsul, katalog 2 kolom horizontal &amp; hard-shadow 3D.</p>
+                </label>
+                <label data-template-card="swiss_minimal" class="template-radio-card flex flex-col gap-1.5 p-4 rounded-[14px] cursor-pointer transition-colors">
+                  <div class="flex items-center gap-2">
+                    <input type="radio" name="builderUiTemplate" value="swiss_minimal" onchange="updateBuilderPreview()" class="accent-[#111216] shrink-0" />
+                    <span class="text-xs font-extrabold text-[#111216] leading-snug">02 · Swiss Editorial</span>
+                  </div>
+                  <p class="text-xs font-medium text-[#43423D] leading-relaxed">Hero terpusat, tracker bar horizontal terang, katalog 3 kolom di atas &amp; SOP 5-tahap mendatar.</p>
+                </label>
+                <label data-template-card="atelier_magazine" class="template-radio-card flex flex-col gap-1.5 p-4 rounded-[14px] cursor-pointer transition-colors">
+                  <div class="flex items-center gap-2">
+                    <input type="radio" name="builderUiTemplate" value="atelier_magazine" onchange="updateBuilderPreview()" class="accent-[#111216] shrink-0" />
+                    <span class="text-xs font-extrabold text-[#111216] leading-snug">03 · Atelier Lookbook</span>
+                  </div>
+                  <p class="text-xs font-medium text-[#43423D] leading-relaxed">Kertas krem klasik, tipografi serif editorial, kartu galeri berbingkai &amp; voucher reservasi.</p>
+                </label>
+              </div>
+            </div>
+
+            <!-- Brand Accent & Contact -->
+            <div class="p-5 sm:p-7 space-y-5">
+              <div>
+                <span class="font-display text-base font-extrabold text-[#111216]">Warna Aksen Brand &amp; Kontak Kasir</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="min-w-0">
+                  <label class="block text-xs font-bold text-[#111216] mb-2">Warna Brand Utama</label>
+                  <div class="flex flex-wrap items-center gap-2.5">
+                    <button type="button" onclick="selectBuilderColor('#D9381E', 'crimson')" data-color="#D9381E" style="outline: 2px solid #111216; outline-offset: 2px;" aria-label="Pilih warna Vermilion #D9381E" class="color-swatch w-9 h-9 rounded-full bg-[#D9381E] border border-[#111216] cursor-pointer" title="Vermilion #D9381E"></button>
+                    <button type="button" onclick="selectBuilderColor('#047857', 'emerald')" data-color="#047857" style="outline: none;" aria-label="Pilih warna Lab Teal #047857" class="color-swatch w-9 h-9 rounded-full bg-[#047857] border border-[#111216] cursor-pointer" title="Lab Teal #047857"></button>
+                    <button type="button" onclick="selectBuilderColor('#2563EB', 'cobalt')" data-color="#2563EB" style="outline: none;" aria-label="Pilih warna Cobalt #2563EB" class="color-swatch w-9 h-9 rounded-full bg-[#2563EB] border border-[#111216] cursor-pointer" title="Cobalt #2563EB"></button>
+                    <button type="button" onclick="selectBuilderColor('#D97706', 'amber')" data-color="#D97706" style="outline: none;" aria-label="Pilih warna Signal Amber #D97706" class="color-swatch w-9 h-9 rounded-full bg-[#D97706] border border-[#111216] cursor-pointer" title="Signal Amber #D97706"></button>
+                    <button type="button" onclick="selectBuilderColor('#3F3F46', 'volt')" data-color="#3F3F46" style="outline: none;" aria-label="Pilih warna Carbon Steel #3F3F46" class="color-swatch w-9 h-9 rounded-full bg-[#3F3F46] border border-[#111216] cursor-pointer" title="Carbon Steel #3F3F46"></button>
+                    <label for="builderCustomColorPicker" class="sr-only">Pilih Warna Kustom</label>
+                    <input
+                      id="builderCustomColorPicker"
+                      type="color"
+                      value="#D9381E"
+                      oninput="selectBuilderColor(this.value, 'crimson')"
+                      class="w-9 h-9 rounded-full cursor-pointer bg-transparent border border-[#111216] p-0 overflow-hidden"
+                    />
+                    <span id="builderColorHexLabel" class="font-mono-code text-xs font-bold text-[#111216]">#D9381E</span>
+                  </div>
+                </div>
+
+                <div class="min-w-0">
+                  <label for="builderWhatsapp" class="block text-xs font-bold text-[#111216] mb-1.5">Nomor WhatsApp Kasir</label>
+                  <input
+                    id="builderWhatsapp"
+                    type="tel"
+                    required
+                    value="6281299887766"
+                    placeholder="cth: 6281299887766"
+                    class="plat-input w-full min-w-0 h-11 px-4 rounded-[12px] font-mono-code text-sm"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                class="tactile-btn-yellow w-full h-12 text-sm inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
+              >
+                <span>Generate &amp; Launch Store</span>
+                <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+            </div>
+          </form>
+
+          <!-- Right 5 Cols: OBSIDIAN LIVE STORE BLUEPRINT PREVIEW -->
+          <div class="lg:col-span-5 space-y-4 min-w-0">
+
+            <div class="plat-blueprint-obsidian p-5 sm:p-6 space-y-5">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                  <span class="font-display text-sm font-bold text-white">Live Store Blueprint Preview</span>
+                </div>
+                <span id="previewPrefixBadge" class="plat-prefix-badge font-mono-code text-xs font-bold px-3 py-1 rounded-full">GAR-2601</span>
+              </div>
+
+              <!-- Store Header Card Preview -->
+              <div class="border-y border-[#2E3446] py-4 space-y-4">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div id="previewMonogramBox" style="background-color: #D9381E;" class="w-11 h-11 rounded-[12px] font-display font-extrabold text-xs text-white flex items-center justify-center shrink-0">GAR</div>
+                    <div class="min-w-0">
+                      <div id="previewStoreName" class="font-display font-bold text-base text-white truncate">GARASI DETAILING DEPOK</div>
+                      <div id="previewBranchLabel" class="text-xs text-[#94A3B8] truncate">Margonda, Depok</div>
+                    </div>
+                  </div>
+                  <span id="previewCtaSample" style="background-color: #D9381E;" class="px-3.5 py-2 rounded-full text-xs font-bold text-white shrink-0">Booking</span>
+                </div>
+
+                <!-- 5 SOP Stage Pills -->
+                <div id="previewStepsRow" class="grid grid-cols-5 gap-1.5 pt-1 font-mono-code text-[10px] text-center">
+                  <span class="py-1.5 rounded-full bg-[#090B10] border border-[#2E3446] text-white font-bold">DROP</span>
+                  <span class="py-1.5 rounded-full bg-[#0B0D13] text-[#94A3B8]">WASH</span>
+                  <span class="py-1.5 rounded-full bg-[#0B0D13] text-[#94A3B8]">TREAT</span>
+                  <span class="py-1.5 rounded-full bg-[#0B0D13] text-[#94A3B8]">QC</span>
+                  <span class="py-1.5 rounded-full bg-[#0B0D13] text-[#94A3B8]">READY</span>
+                </div>
+              </div>
+
+              <!-- Auto-Generated Services With Prices Preview -->
+              <div class="space-y-3">
+                <div class="flex items-center justify-between gap-3 text-xs">
+                  <span id="previewNicheLabel" class="font-semibold text-white">Sneakers &amp; Apparel Care (5 Tahap)</span>
+                  <span id="previewServicesSummary" class="font-mono-code text-[11px] text-[#94A3B8]">3 Paket Otomatis</span>
+                </div>
+                <div class="flex items-center justify-between gap-3 text-xs px-3.5 py-2 rounded-[10px] bg-[#090B10] border border-[#2E3446]">
+                  <span class="text-[#94A3B8]">Template UI</span>
+                  <span id="previewTemplateLabel" class="font-mono-code font-bold text-[#FACC15] truncate">01 · Tactile Bento (Default)</span>
+                </div>
+                <div id="previewServicesList" class="space-y-2"></div>
+              </div>
+            </div>
+
+              <!-- Generated Launch Result Section (Unlocks on Submit) -->
+              <div id="builderSuccessBox" class="hidden rounded-[22px] p-5 sm:p-6 bg-[#08291D] border-2 border-[#111216] space-y-3.5" style="box-shadow: 5px 5px 0px #111216;">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="inline-flex items-center gap-2 text-xs font-bold text-[#6EE7B7]">
+                    <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                    <span>Toko Berhasil Diterbitkan</span>
+                  </span>
+                  <span id="launchedSlugBadge" class="font-mono-code text-xs font-bold text-white"></span>
+                </div>
+                <p class="text-xs text-[#D1FAE5] leading-relaxed">
+                  Data tersimpan di <code class="font-mono-code text-white">ServiceStore</code>. Buka di Sandbox atas atau di tab baru:
+                </p>
+                <div class="space-y-2.5">
+                  <button
+                    type="button"
+                    id="btnLoadInSandbox"
+                    class="tactile-btn-yellow w-full h-11 px-4 text-xs inline-flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                  >
+                    <svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg>
+                    <span>Muat di Live Sandbox Atas</span>
+                  </button>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <a
+                      id="btnOpenNewPublic"
+                      href="index.html"
+                      target="_blank"
+                      rel="noopener"
+                      class="h-10 px-3 rounded-full bg-[#061D15] hover:bg-[#0D2E22] text-white font-semibold text-xs inline-flex items-center justify-center gap-1.5"
+                    >
+                      <span>Web Pelanggan</span>
+                      <svg aria-hidden="true" class="w-3.5 h-3.5 text-[#6EE7B7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                    </a>
+                    <a
+                      id="btnOpenNewAdmin"
+                      href="admin.html?demo=1"
+                      target="_blank"
+                      rel="noopener"
+                      class="h-10 px-3 rounded-full bg-[#061D15] hover:bg-[#0D2E22] text-white font-semibold text-xs inline-flex items-center justify-center gap-1.5"
+                    >
+                      <span>Panel Kasir</span>
+                      <svg aria-hidden="true" class="w-3.5 h-3.5 text-[#6EE7B7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="plat-footer py-6 text-xs">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div>
+        <span class="font-display font-bold text-white">ATELIER ENGINE v4</span>
+        <span class="text-[#CBD5E1]"> · Multi-Niche Service Workshop Micro-SaaS Architecture</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-5">
+        <a href="index.html" class="text-[#CBD5E1] hover:text-white transition-colors">Public Tracker</a>
+        <a href="admin.html?demo=1" class="text-[#CBD5E1] hover:text-white transition-colors">Cashier Workbench</a>
+        <a href="nota.html?thermal=1" class="text-[#CBD5E1] hover:text-white transition-colors">Thermal 58mm</a>
+        <a href="analytics.html" class="text-[#CBD5E1] hover:text-white transition-colors">Analytics</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="platformToast" role="status" aria-live="polite" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2.5 px-4 py-2.5 rounded-full bg-[#111216] border-2 border-[#111216] text-xs font-bold text-white" style="box-shadow: 4px 4px 0px rgba(17,18,22,0.2);">
+    <span class="plat-toast-dot w-2 h-2 rounded-full"></span>
+    <span id="platformToastText">Sinkronisasi berhasil</span>
+  </div>
+
+  <script>
+    let sandboxSlug = "kultur-kicks";
+    let sandboxKanbanActive = false;
+    let selectedBuilderColor = "#D9381E";
+    let selectedBuilderPreset = "crimson";
+
+    function escapeHtml(val) {
+      const shared = window.ServiceStore && window.ServiceStore.escapeHtml;
+      if (typeof shared === "function" && shared !== escapeHtml) {
+        return shared(val);
+      }
+      return String(val == null ? "" : val)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function sanitizeUrl(rawUrl, fallbackUrl) {
+      const shared = window.ServiceStore && window.ServiceStore.sanitizeUrl;
+      if (typeof shared === "function" && shared !== sanitizeUrl) {
+        return shared(rawUrl, fallbackUrl);
+      }
+      const fb = typeof fallbackUrl === "string" ? fallbackUrl : "";
+      if (typeof rawUrl !== "string") return fb;
+      const trimmed = rawUrl.trim();
+      if (!trimmed || /[\u0000-\u001F\u007F]/.test(trimmed)) return fb;
+      if (/^data:/i.test(trimmed)) {
+        return /^data:image\/(png|jpeg|jpg|webp|gif|avif)(?:;[a-z0-9=._+-]+)*(?:;base64)?,[a-z0-9+/=]+$/i.test(trimmed) ? trimmed : fb;
+      }
+      if (/^(https?|blob):/i.test(trimmed)) return trimmed;
+      if (/^(?:\/\/|\/\\|\\\/|\\)/.test(trimmed) || trimmed.split(/[/?#]/)[0].includes(":")) return fb;
+      return /^(?:\/(?!\/)|\.\/|\.\.\/|\?|#|[a-zA-Z0-9_-])/.test(trimmed) ? trimmed : fb;
+    }
+
+    const BUILDER_NICHE_TEMPLATES = {
+      sneakers_care: {
+        serviceMode: "pickup_delivery",
+        heroHeadline1: "Restorasi Presisi untuk",
+        heroHeadline2: "Koleksi Sepatu & Tas.",
+        pickupPolicy: "Gratis jemput-antar kurir area sekitar studio (min. 2 pasang).",
+        services: [
+          { id: "srv-1", name: "Fast Clean Express 24 Jam", category: "Daily Wash", price: 45000, promoPrice: null, isPromo: false, duration: "24 Jam", badge: "Kilat 24 Jam", available: true, desc: "Cuci cepat bagian luar upper dan midsole untuk pemakaian harian." },
+          { id: "srv-2", name: "Deep Clean All Material", category: "Signature Treatment", price: 75000, promoPrice: 65000, isPromo: true, duration: "2–3 Hari", badge: "Terlaris", available: true, desc: "Pembersihan menyeluruh luar-dalam aman untuk Suede, Nubuck, Mesh, dan Leather." },
+          { id: "srv-3", name: "Unyellowing Midsole + Deep Clean", category: "Restoration", price: 120000, promoPrice: null, isPromo: false, duration: "3–4 Hari", badge: "UV Chamber", available: true, desc: "Angkat oksidasi kuning pada midsole karet kembali putih bersih + cuci total." }
+        ],
+        sampleItems: [
+          { customerName: "Raka Pratama", phone: "081288990011", itemName: "Salomon XT-6 White Lunar", serviceName: "Deep Clean All Material", price: 65000, stepIndex: 2, deliveryType: "Jemput & Antar Kurir", etaDate: "Besok · 17:00 WIB", techNote: "Pembersihan upper & midsole dengan cairan pH-netral." },
+          { customerName: "Nadia Vega", phone: "085711223344", itemName: "New Balance 550 White Grey", serviceName: "Unyellowing Midsole + Deep Clean", price: 120000, stepIndex: 4, deliveryType: "Antar Sendiri ke Workshop", etaDate: "Hari Ini · 19:00 WIB", techNote: "Oksidasi midsole hilang. Sedang sterilisasi ozon & QC akhir." }
+        ]
+      },
+      laundry_care: {
+        serviceMode: "pickup_delivery",
+        heroHeadline1: "Higienis 1 Mesin 1 Pelanggan",
+        heroHeadline2: "untuk Pakaian, Karpet & Sofa.",
+        pickupPolicy: "Gratis jemput-antar kurir & kunjungan Home Service cuci sofa.",
+        services: [
+          { id: "srv-1", name: "Cuci Komplit + Setrika Uap (5 Kg)", category: "Laundry Harian", price: 45000, promoPrice: 40000, isPromo: true, duration: "24 Jam", badge: "1 Mesin 1 Nota", available: true, desc: "Cuci bersih 1 mesin 1 pelanggan, kering higienis & setrika uap boiler." },
+          { id: "srv-2", name: "Deep Wash Karpet Permadani", category: "Carpet Care", price: 95000, promoPrice: null, isPromo: false, duration: "2–3 Hari", badge: "Rotary Polisher", available: true, desc: "Pencucian karpet dengan sikat mesin putar & bilas bertekanan tinggi." },
+          { id: "srv-3", name: "Hydro-Vacuum Cuci Sofa (3 Dudukan)", category: "Home Service", price: 195000, promoPrice: null, isPromo: false, duration: "3 Jam (Panggilan)", badge: "Panggil ke Rumah", available: true, desc: "Sedot tungau, debu, dan noda membandel langsung di rumah Anda." }
+        ],
+        sampleItems: [
+          { customerName: "Ibu Ratna Sari", phone: "081211223344", itemName: "Pakaian Harian 7 Kg + Bed Cover", serviceName: "Cuci Komplit + Setrika Uap (5 Kg)", price: 85000, stepIndex: 3, deliveryType: "Jemput Kurir / Home Service Sofa", etaDate: "Sore Ini · 17:30 WIB", techNote: "Proses pengeringan higienis di mesin tumbler dryer suhu terkontrol." },
+          { customerName: "Hendra Kusuma", phone: "081355667788", itemName: "Karpet Ruang Tamu 2x3m", serviceName: "Deep Wash Karpet Permadani", price: 95000, stepIndex: 2, deliveryType: "Antar Sendiri ke Outlet", etaDate: "Besok · 16:00 WIB", techNote: "Sedang pencucian ekstraksi dengan mesin rotary carpet polisher." }
+        ]
+      },
+      moto_detailing: {
+        serviceMode: "studio_slot",
+        heroHeadline1: "Koreksi Cat & Proteksi",
+        heroHeadline2: "Nano Ceramic Kelas Kontes.",
+        pickupPolicy: "Reservasi slot bay tanpa antre untuk matic, vespa, hingga moge 250cc+.",
+        services: [
+          { id: "srv-1", name: "Signature Detailing Wash", category: "Detailing Wash", price: 115000, promoPrice: null, isPromo: false, duration: "2–3 Jam", badge: "Cuci Detail", available: true, desc: "Cuci detail sela mesin, luruhkan aspal velg, dan proteksi wax kilap." },
+          { id: "srv-2", name: "Full Body Dismantle Detailing", category: "Deep Detailing", price: 325000, promoPrice: 285000, isPromo: true, duration: "1 Hari", badge: "Bongkar Bodi", available: true, desc: "Bongkar seluruh bodi halus, degreasing rangka dalam, CVT, dan poles 1-step." },
+          { id: "srv-3", name: "2-Stage Polish + Nano Ceramic 9H", category: "Nano Ceramic", price: 650000, promoPrice: null, isPromo: false, duration: "1–2 Hari", badge: "Garansi 1 Thn", available: true, desc: "Koreksi baret halus 90%, bongkar bodi total, dan aplikasi Ceramic 9H." }
+        ],
+        sampleItems: [
+          { customerName: "Kevin Sanjaya", phone: "081233445566", itemName: "Yamaha XMAX 250 Matte Black", serviceName: "2-Stage Polish + Nano Ceramic 9H", price: 650000, stepIndex: 3, deliveryType: "Slot Pagi (09.00 - 12.00 WIB)", etaDate: "Besok · 16:00 WIB", techNote: "Proses paint correction 2-tahap selesai. Persiapan aplikasi Ceramic 9H." },
+          { customerName: "Bima Sakti", phone: "081877665544", itemName: "Vespa Sprint 150 I-Get Grey", serviceName: "Full Body Dismantle Detailing", price: 285000, stepIndex: 2, deliveryType: "Slot Siang/Sore (13.00 - 16.00 WIB)", etaDate: "Hari Ini · 19:00 WIB", techNote: "Bodi dilepas. Sedang degreasing blok mesin dan velg." }
+        ]
+      },
+      barber_studio: {
+        serviceMode: "studio_slot",
+        heroHeadline1: "Potongan Presisi & Grooming",
+        heroHeadline2: "Tanpa Antre di Kursi Studio.",
+        pickupPolicy: "Datang 10 menit sebelum jadwal booking untuk langsung naik kursi capster.",
+        services: [
+          { id: "srv-1", name: "Gentlemen Signature Cut & Wash", category: "Haircut & Styling", price: 65000, promoPrice: null, isPromo: false, duration: "45 Menit", badge: "All-In Grooming", available: true, desc: "Potong rambut presisi, keramas hair tonic, hot towel, pijat bahu & pomade." },
+          { id: "srv-2", name: "Executive Cut + Beard Sculpting", category: "Complete Package", price: 95000, promoPrice: 85000, isPromo: true, duration: "60 Menit", badge: "Terlaris", available: true, desc: "Paket Gentlemen Cut lengkap ditambah cukur rapi kumis/janggut handuk hangat." },
+          { id: "srv-3", name: "Korean Down Perm + Two Block Cut", category: "Chemical & Texture", price: 185000, promoPrice: null, isPromo: false, duration: "90 Menit", badge: "Korean Style", available: true, desc: "Rapikan rambut samping yang mengembang + potongan Two Block." }
+        ],
+        sampleItems: [
+          { customerName: "Bagas Kara", phone: "081244556688", itemName: "Taper Fade + Beard Trim (Capster: Rian)", serviceName: "Executive Cut + Beard Sculpting", price: 85000, stepIndex: 2, deliveryType: "Sesi Malam (17.00 - 21.00)", etaDate: "Hari Ini · 19:00 WIB", techNote: "Pelanggan sudah check-in di kursi #2. Konsultasi potongan dengan Capster Rian." },
+          { customerName: "Dion Wiyoko", phone: "081388776655", itemName: "Comma Hair Classic (Capster: Edo)", serviceName: "Gentlemen Signature Cut & Wash", price: 65000, stepIndex: 4, deliveryType: "Sesi Siang / Sore (10.00 - 17.00)", etaDate: "Hari Ini · 16:00 WIB", techNote: "Proses keramas menyegarkan & kompres handuk hangat (hot towel)." }
+        ]
+      }
+    };
+
+    function showPlatformToast(msg) {
+      const el = document.getElementById("platformToast");
+      document.getElementById("platformToastText").textContent = msg;
+      el.classList.remove("hidden");
+      el.classList.add("flex");
+      clearTimeout(window.__platToastTimer);
+      window.__platToastTimer = setTimeout(() => {
+        el.classList.add("hidden");
+        el.classList.remove("flex");
+      }, 2500);
+    }
+
+    function slugifyStoreName(raw) {
+      return String(raw || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "studio-baru";
+    }
+
+    function populateAllStoresDropdown() {
+      const sel = document.getElementById("sandboxAllStoresSelect");
+      const all = window.ServiceStore.getAllTenants();
+      sel.innerHTML = all.map(t => `<option value="${escapeHtml(t.slug)}" ${t.slug === sandboxSlug ? "selected" : ""}>${escapeHtml(t.name)} (${escapeHtml(t.branch)})</option>`).join("");
+    }
+
+    let desktopBayLayout = "dual";
+
+    function updateSandboxTelemetry() {
+      const tenant = window.ServiceStore.getTenant(sandboxSlug);
+      if (!tenant) return;
+      const activeTpl = window.resolveValidUiTemplate
+        ? window.resolveValidUiTemplate(tenant.uiTemplate)
+        : "tactile_bento";
+      if (typeof window.applyWorkshopTemplate === "function") {
+        window.applyWorkshopTemplate(activeTpl);
+      }
+      window.applyWorkshopTheme(tenant.themePreset, tenant.brandColor, activeTpl);
+      const storeLabel = document.getElementById("sandboxActiveStoreLabel");
+      if (storeLabel) storeLabel.textContent = `${tenant.name} (${tenant.branch})`;
+      const modalStoreEl = document.getElementById("modalActiveStoreName");
+      if (modalStoreEl) modalStoreEl.textContent = `${tenant.name} (${tenant.branch})`;
+      const firstOrd = (tenant.orders && tenant.orders[0]) || null;
+      const badgeEl = document.getElementById("sandboxActiveOrderBadge");
+      const modalBadgeEl = document.getElementById("modalOrderBadge");
+      const dotsEl = document.getElementById("sandboxTelemetryDots");
+      if (firstOrd) {
+        const st = Math.min(Math.max(Number(firstOrd.stepIndex) || 1, 1), 5);
+        const badgeText = `${firstOrd.orderId} · Tahap ${st}/5`;
+        if (badgeEl) badgeEl.textContent = badgeText;
+        if (modalBadgeEl) modalBadgeEl.textContent = badgeText;
+        if (dotsEl) {
+          const barHeights = ["h-4", "h-6", "h-8", "h-10", "h-12"];
+          dotsEl.innerHTML = [1, 2, 3, 4, 5].map((i, idx) =>
+            `<span class="flex-1 ${barHeights[idx]} rounded-full transition-colors ${i <= st ? (st === 5 ? "bg-[#10B981]" : "bg-[var(--brand)]") : "bg-[#1E222D]"}"></span>`
+          ).join("");
+        }
+      } else {
+        if (badgeEl) badgeEl.textContent = "Belum ada nota";
+        if (modalBadgeEl) modalBadgeEl.textContent = "Belum ada nota";
+        if (dotsEl) {
+          const barHeights = ["h-4", "h-6", "h-8", "h-10", "h-12"];
+          dotsEl.innerHTML = barHeights.map(h => `<span class="flex-1 ${h} rounded-full bg-[#1E222D]"></span>`).join("");
+        }
+      }
+
+      const pubUrl = sanitizeUrl(`index.html?mitra=${encodeURIComponent(sandboxSlug)}`, "index.html");
+      const admUrl = sanitizeUrl(`admin.html?mitra=${encodeURIComponent(sandboxSlug)}&demo=1${sandboxKanbanActive ? "&view=kanban" : ""}`, "admin.html");
+      const notaUrl = sanitizeUrl(`nota.html?mitra=${encodeURIComponent(sandboxSlug)}&thermal=1`, "nota.html");
+      const anaUrl = sanitizeUrl(`analytics.html?mitra=${encodeURIComponent(sandboxSlug)}`, "analytics.html");
+
+      const pubBadge = document.getElementById("publicUrlBadge");
+      const admBadge = document.getElementById("adminUrlBadge");
+      const openPubBtn = document.getElementById("openPublicNewTab");
+      const openAdmBtn = document.getElementById("openAdminNewTab");
+      if (pubBadge) pubBadge.textContent = pubUrl;
+      if (admBadge) admBadge.textContent = admUrl;
+      if (openPubBtn) openPubBtn.href = pubUrl;
+      if (openAdmBtn) openAdmBtn.href = admUrl;
+      const hPub = document.getElementById("headerLinkPublic");
+      const hAdm = document.getElementById("headerLinkAdmin");
+      const hNota = document.getElementById("headerLinkNota");
+      const hAna = document.getElementById("headerLinkAnalytics");
+      if (hPub) hPub.href = pubUrl;
+      if (hAdm) hAdm.href = admUrl;
+      if (hNota) hNota.href = notaUrl;
+      if (hAna) hAna.href = anaUrl;
+
+      document.querySelectorAll(".niche-pill").forEach(btn => {
+        const isMatch = btn.getAttribute("data-niche-slug") === sandboxSlug;
+        btn.className = isMatch
+          ? "niche-pill is-active h-11 sm:h-10 px-3.5 rounded-[10px] text-xs font-bold transition-colors cursor-pointer inline-flex items-center justify-center gap-1.5"
+          : "niche-pill is-inactive h-11 sm:h-10 px-3.5 rounded-[10px] text-xs font-semibold transition-colors cursor-pointer inline-flex items-center justify-center gap-1.5";
+      });
+
+      const sTplEl = document.getElementById("sandboxTemplateSelect");
+      const mTplEl = document.getElementById("modalTemplateSelect");
+      if (sTplEl) sTplEl.value = activeTpl;
+      if (mTplEl) mTplEl.value = activeTpl;
+    }
+
+    function notifySandboxIframes() {
+      const fPub = document.getElementById("framePublic");
+      const fAdm = document.getElementById("frameAdmin");
+      const msg = { type: "ATELIER_STORE_SYNC", key: "atelier_service_engine_v4_tenants" };
+      const targetOrigin = window.location && window.location.origin && window.location.origin !== "null"
+        ? window.location.origin
+        : "*";
+      try {
+        if (fPub && fPub.contentWindow) fPub.contentWindow.postMessage(msg, targetOrigin);
+      } catch (e) {}
+      try {
+        if (fAdm && fAdm.contentWindow) fAdm.contentWindow.postMessage(msg, targetOrigin);
+      } catch (e) {}
+      updateSandboxTelemetry();
+    }
+
+    function switchSandboxMitra(slug) {
+      if (!slug) return;
+      sandboxSlug = slug;
+      localStorage.setItem("active_mitra_slug", sandboxSlug);
+      populateAllStoresDropdown();
+      updateSandboxTelemetry();
+
+      const pubUrl = sanitizeUrl(`index.html?mitra=${encodeURIComponent(sandboxSlug)}&embed=1`, "index.html");
+      const admUrl = sanitizeUrl(`admin.html?mitra=${encodeURIComponent(sandboxSlug)}&demo=1&embed=1${sandboxKanbanActive ? "&view=kanban" : ""}`, "admin.html");
+      document.getElementById("framePublic").src = pubUrl;
+      document.getElementById("frameAdmin").src = admUrl;
+      showPlatformToast(`Mitra aktif: ${sandboxSlug}`);
+    }
+
+    function switchSandboxTemplate(templateKey) {
+      if (!sandboxSlug || !window.ServiceStore) return;
+      const validKey = window.resolveValidUiTemplate
+        ? window.resolveValidUiTemplate(templateKey)
+        : (window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[templateKey]
+            ? templateKey
+            : "tactile_bento");
+      if (typeof window.applyWorkshopTemplate === "function") {
+        window.applyWorkshopTemplate(validKey);
+      }
+      window.ServiceStore.saveTenantProfile(sandboxSlug, { uiTemplate: validKey });
+      notifySandboxIframes();
+      const tplMeta = window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[validKey];
+      showPlatformToast(`Template diubah: ${(tplMeta && tplMeta.name) || validKey}`);
+    }
+
+    function simulateAdvanceFirstOrderStage() {
+      const tenant = window.ServiceStore.getTenant(sandboxSlug);
+      if (!tenant || !tenant.orders || tenant.orders.length === 0) {
+        simulateCreateSampleOrder();
+        return;
+      }
+      const firstOrd = tenant.orders[0];
+      const currentStage = Number(firstOrd.stepIndex) || 1;
+      const nextStage = currentStage >= 5 ? 1 : currentStage + 1;
+      const nicheDef = window.NICHE_DEFINITIONS[tenant.niche] || window.NICHE_DEFINITIONS.sneakers_care;
+      const stepMeta = nicheDef.steps[nextStage - 1] || nicheDef.steps[0];
+
+      window.ServiceStore.updateOrderStage(sandboxSlug, firstOrd.orderId, nextStage, stepMeta.defaultNote);
+      notifySandboxIframes();
+      showPlatformToast(`Nota ${firstOrd.orderId} digeser ke Tahap ${nextStage}/5 (${stepMeta.label})`);
+    }
+
+    function simulateCreateSampleOrder() {
+      const tenant = window.ServiceStore.getTenant(sandboxSlug);
+      if (!tenant) return;
+      const nicheDef = window.NICHE_DEFINITIONS[tenant.niche] || window.NICHE_DEFINITIONS.sneakers_care;
+      const prefix = tenant.name.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase() || "ORD";
+      const existingOrders = Array.isArray(tenant.orders) ? tenant.orders : [];
+      const maxNum = existingOrders.reduce((max, o) => {
+        const m = String(o.orderId || "").match(/(\d+)$/);
+        return m ? Math.max(max, parseInt(m[1], 10)) : max;
+      }, 2600);
+      const nextNum = maxNum + 1;
+      const newOrderId = `${prefix}-${nextNum}`;
+      const sampleNames = ["Aditya Pratama", "Bunga Citra", "Iqbaal Ramadhan", "Maudy Ayunda", "Reza Rahadian"];
+      const pickedCustomer = sampleNames[nextNum % sampleNames.length];
+      const firstSrv = (tenant.services && tenant.services[0]) || { name: "Signature Treatment", price: 75000, duration: "24 Jam" };
+
+      const payload = {
+        orderId: newOrderId,
+        customerName: pickedCustomer,
+        phone: "08129900" + String(nextNum),
+        itemName: nicheDef.itemPlaceholder.split("/")[0].trim(),
+        serviceName: firstSrv.name,
+        price: firstSrv.promoPrice || firstSrv.price || 75000,
+        stepIndex: 1,
+        deliveryType: tenant.serviceMode === "studio_slot" ? "Reservasi Slot Studio" : "Jemput & Antar Kurir",
+        etaDate: firstSrv.duration || "Besok · 17:00 WIB",
+        techNote: nicheDef.steps[0].defaultNote
+      };
+
+      window.ServiceStore.addOrder(sandboxSlug, payload);
+      notifySandboxIframes();
+      showPlatformToast(`Nota baru ${newOrderId} (${pickedCustomer}) ditambahkan & disinkronkan`);
+    }
+
+    function applyAdminFrameView(mode) {
+      const wantKanban = mode === "kanban";
+      sandboxKanbanActive = wantKanban;
+      const lbl = document.getElementById("sandboxKanbanBtnLabel");
+      if (lbl) {
+        lbl.textContent = sandboxKanbanActive ? "Mode Tabel" : "Buka Kanban";
+      }
+      const fAdm = document.getElementById("frameAdmin");
+      if (!fAdm) return;
+      try {
+        if (fAdm.contentWindow && typeof fAdm.contentWindow.setOrdersViewMode === "function") {
+          fAdm.contentWindow.setOrdersViewMode(sandboxKanbanActive ? "kanban" : "table");
+          const targetEl = fAdm.contentWindow.document.getElementById(
+            sandboxKanbanActive ? "ordersKanbanView" : "tabPanel-orders"
+          );
+          if (targetEl && wantKanban) {
+            targetEl.scrollIntoView({ block: "start", behavior: "auto" });
+          } else if (fAdm.contentWindow.scrollTo) {
+            fAdm.contentWindow.scrollTo(0, 0);
+          }
+          return;
+        }
+      } catch (e) {}
+      const targetSrc = sanitizeUrl(`admin.html?mitra=${encodeURIComponent(sandboxSlug)}&demo=1&embed=1${sandboxKanbanActive ? "&view=kanban" : ""}`, "admin.html");
+      if (!fAdm.getAttribute("src") || !fAdm.src.endsWith(targetSrc)) {
+        fAdm.src = targetSrc;
+      }
+    }
+
+    function toggleSandboxKanbanView() {
+      openSandboxPopup(sandboxKanbanActive ? "admin" : "kanban");
+    }
+
+    function openSandboxPopup(preset) {
+      const modal = document.getElementById("sandboxPreviewModal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        document.body.style.overflow = "hidden";
+      }
+      const p = preset || "dual";
+      if (p === "kanban") {
+        applyAdminFrameView("kanban");
+        setDesktopBayLayout("admin");
+      } else if (p === "admin") {
+        applyAdminFrameView("table");
+        setDesktopBayLayout("admin");
+      } else if (p === "mobile" || p === "mobile-public") {
+        setDesktopBayLayout("mobile");
+      } else if (p === "public") {
+        setDesktopBayLayout("public");
+      } else {
+        setDesktopBayLayout("dual");
+      }
+      updateSandboxTelemetry();
+      requestAnimationFrame(() => notifySandboxIframes());
+    }
+
+    function closeSandboxPopup() {
+      const modal = document.getElementById("sandboxPreviewModal");
+      if (!modal) return;
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      document.body.style.overflow = "";
+    }
+
+    function setDesktopBayLayout(mode) {
+      desktopBayLayout = mode;
+      const grid = document.getElementById("sandboxBaysGrid");
+      const cardPub = document.getElementById("viewportCard-public");
+      const cardAdm = document.getElementById("viewportCard-admin");
+      const wrapPub = document.getElementById("framePublicWrap");
+      const wrapAdm = document.getElementById("frameAdminWrap");
+      if (!grid || !cardPub || !cardAdm || !wrapPub || !wrapAdm) return;
+
+      ["dual", "mobile", "public", "admin"].forEach(k => {
+        const b = document.getElementById(`layoutBtn-${k}`);
+        if (b) {
+          b.className = k === mode
+            ? "plat-mode-btn is-active h-8 px-3 rounded-full text-xs cursor-pointer transition-colors"
+            : "plat-mode-btn is-inactive h-8 px-3 rounded-full text-xs cursor-pointer transition-colors";
+        }
+      });
+
+      wrapPub.removeAttribute("style");
+      wrapAdm.removeAttribute("style");
+
+      if (mode === "mobile") {
+        grid.className = "grid grid-cols-1 py-4";
+        cardPub.className = "axtriq-day-stage p-4 sm:p-6 flex flex-col items-center gap-3 min-w-0";
+        cardAdm.className = "hidden";
+        wrapPub.className = "overflow-hidden";
+        wrapPub.setAttribute("style", "width: 390px; max-width: 100%; height: 76vh; border-radius: 30px; border: 6px solid #333B52; margin: 0 auto;");
+        wrapAdm.className = "w-full";
+      } else if (mode === "public") {
+        grid.className = "grid grid-cols-1";
+        cardPub.className = "axtriq-day-stage p-3 sm:p-5 flex flex-col gap-2.5 min-w-0";
+        cardAdm.className = "hidden";
+        wrapPub.className = "w-full max-w-[1280px] mx-auto h-[78vh]";
+        wrapAdm.className = "w-full";
+      } else if (mode === "admin") {
+        grid.className = "grid grid-cols-1";
+        cardPub.className = "hidden";
+        cardAdm.className = "axtriq-night-stage p-3 sm:p-5 flex flex-col gap-2.5 min-w-0";
+        wrapPub.className = "w-full";
+        wrapAdm.className = "w-full max-w-[1360px] mx-auto h-[78vh]";
+      } else {
+        grid.className = "sandbox-split-active grid grid-cols-1 md:grid-cols-2";
+        cardPub.className = "axtriq-day-stage p-3 sm:p-5 flex flex-col gap-2.5 min-w-0";
+        cardAdm.className = "flex axtriq-night-stage p-3 sm:p-5 flex-col gap-2.5 min-w-0 md:border-l md:border-[#1E222D]";
+        wrapPub.className = "w-full h-[78vh]";
+        wrapAdm.className = "w-full h-[78vh]";
+      }
+    }
+
+    function setMobileSandboxViewport(target) {
+      openSandboxPopup(target === "admin" ? "admin" : "mobile-public");
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeSandboxPopup();
+      }
+    });
+
+    function selectBuilderColor(hexColor, presetKey) {
+      selectedBuilderColor = hexColor;
+      selectedBuilderPreset = presetKey || "crimson";
+      document.getElementById("builderCustomColorPicker").value = hexColor;
+      document.getElementById("builderColorHexLabel").textContent = hexColor.toUpperCase();
+      const monoBox = document.getElementById("previewMonogramBox");
+      const ctaSample = document.getElementById("previewCtaSample");
+      const kromaTile = document.getElementById("kromaBrandTile");
+      const kromaHex = document.getElementById("kromaBrandHex");
+      if (monoBox) monoBox.style.backgroundColor = hexColor;
+      if (ctaSample) ctaSample.style.backgroundColor = hexColor;
+      if (kromaTile) kromaTile.style.backgroundColor = hexColor;
+      if (kromaHex) kromaHex.textContent = hexColor.toUpperCase();
+      document.querySelectorAll(".color-swatch").forEach(btn => {
+        const match = btn.getAttribute("data-color").toLowerCase() === hexColor.toLowerCase();
+        btn.style.outline = match ? "2px solid #111216" : "none";
+        btn.style.outlineOffset = match ? "2px" : "0px";
+      });
+    }
+
+    function updateBuilderPreview() {
+      const rawName = document.getElementById("builderStoreName").value.trim() || "Garasi Detailing Depok";
+      const rawBranch = document.getElementById("builderStoreBranch").value.trim() || "Margonda, Depok";
+      const slug = slugifyStoreName(rawName);
+      const prefix = rawName.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase() || "STD";
+      const nicheEl = document.querySelector('input[name="builderNiche"]:checked');
+      const nicheKey = nicheEl ? nicheEl.value : "sneakers_care";
+      const nicheDef = window.NICHE_DEFINITIONS[nicheKey] || window.NICHE_DEFINITIONS.sneakers_care;
+      const tpl = BUILDER_NICHE_TEMPLATES[nicheKey] || BUILDER_NICHE_TEMPLATES.sneakers_care;
+
+      document.getElementById("builderSlugPreview").textContent = `?mitra=${slug}`;
+      document.getElementById("previewPrefixBadge").textContent = `${prefix}-2601`;
+      document.getElementById("previewMonogramBox").textContent = prefix;
+      document.getElementById("previewStoreName").textContent = rawName.toUpperCase();
+      document.getElementById("previewBranchLabel").textContent = rawBranch;
+      document.getElementById("previewNicheLabel").textContent = `${nicheDef.label} (5 Tahap)`;
+      document.getElementById("previewServicesSummary").textContent = `${tpl.services.length} Paket Siap Pakai`;
+
+      const servicesListEl = document.getElementById("previewServicesList");
+      if (servicesListEl && Array.isArray(tpl.services)) {
+        servicesListEl.innerHTML = tpl.services.slice(0, 3).map(s => {
+          const finalPrice = s.isPromo && s.promoPrice ? s.promoPrice : s.price;
+          return `
+            <div class="flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-[12px] bg-[#090B10] border border-[#2E3446]">
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white truncate">${escapeHtml(s.name)}</div>
+                <div class="text-[11px] text-[#94A3B8] truncate">${escapeHtml(s.duration)} · ${escapeHtml(s.category)}</div>
+              </div>
+              <span class="font-mono-code text-xs font-bold text-[#FACC15] shrink-0">${escapeHtml(window.formatRupiah(finalPrice))}</span>
+            </div>
+          `;
+        }).join("");
+      }
+
+      const stepsRow = document.getElementById("previewStepsRow");
+      if (stepsRow && nicheDef.steps) {
+        stepsRow.innerHTML = nicheDef.steps.map((s, idx) =>
+          `<span class="py-1.5 rounded-full truncate px-1 ${idx === 0 ? "bg-[#090B10] border border-[#2E3446] text-white font-bold" : "bg-[#0B0D13] text-[#94A3B8]"}">${escapeHtml(s.code)}</span>`
+        ).join("");
+      }
+
+      document.querySelectorAll(".niche-radio-card").forEach(card => {
+        const active = card.getAttribute("data-niche-card") === nicheKey;
+        card.className = active
+          ? "niche-radio-card is-selected flex items-start gap-3 p-4 rounded-[14px] cursor-pointer transition-colors"
+          : "niche-radio-card flex items-start gap-3 p-4 rounded-[14px] cursor-pointer transition-colors";
+        card.style.boxShadow = "";
+      });
+
+      const uiTplEl = document.querySelector('input[name="builderUiTemplate"]:checked');
+      const uiTplKey = window.resolveValidUiTemplate
+        ? window.resolveValidUiTemplate(uiTplEl && uiTplEl.value)
+        : ((uiTplEl && uiTplEl.value) || "tactile_bento");
+      const uiTplMeta =
+        (window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[uiTplKey]) || null;
+      const previewTplLabel = document.getElementById("previewTemplateLabel");
+      if (previewTplLabel) {
+        previewTplLabel.textContent = (uiTplMeta && uiTplMeta.name) || uiTplKey;
+      }
+      document.querySelectorAll(".template-radio-card").forEach(card => {
+        const active = card.getAttribute("data-template-card") === uiTplKey;
+        card.classList.toggle("is-selected", active);
+        card.style.boxShadow = "";
+      });
+    }
+
+    function handleGenerateCustomStore() {
+      const rawName = document.getElementById("builderStoreName").value.trim();
+      const rawBranch = document.getElementById("builderStoreBranch").value.trim() || "Cabang Utama";
+      const rawWa = document.getElementById("builderWhatsapp").value.trim().replace(/[^0-9]/g, "").replace(/^0/, "62") || "6281299887766";
+      if (!rawName) {
+        document.getElementById("builderStoreName").focus();
+        return;
+      }
+
+      const slug = slugifyStoreName(rawName);
+      const prefix = rawName.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase() || "STD";
+      const nicheEl = document.querySelector('input[name="builderNiche"]:checked');
+      const nicheKey = nicheEl ? nicheEl.value : "sneakers_care";
+      const uiTplEl = document.querySelector('input[name="builderUiTemplate"]:checked');
+      const uiTplKey = window.resolveValidUiTemplate
+        ? window.resolveValidUiTemplate(uiTplEl && uiTplEl.value)
+        : ((uiTplEl && uiTplEl.value) || "tactile_bento");
+      const tpl = BUILDER_NICHE_TEMPLATES[nicheKey] || BUILDER_NICHE_TEMPLATES.sneakers_care;
+
+      const newTenant = {
+        slug: slug,
+        name: rawName.toUpperCase(),
+        branch: rawBranch,
+        niche: nicheKey,
+        serviceMode: tpl.serviceMode,
+        themePreset: selectedBuilderPreset,
+        brandColor: selectedBuilderColor,
+        uiTemplate: uiTplKey,
+        whatsapp: rawWa,
+        instagram: "@" + slug.replace(/-/g, "."),
+        address: `Studio ${rawName.toUpperCase()}, ${rawBranch}`,
+        hours: "Setiap Hari · 09.00 – 21.00 WIB",
+        heroHeadline1: tpl.heroHeadline1,
+        heroHeadline2: tpl.heroHeadline2,
+        heroDesc: `Layanan resmi ${rawName.toUpperCase()} di ${rawBranch}. Lacak tahapan pengerjaan atau jadwal reservasi Anda secara real-time langsung dari HP.`,
+        pickupPolicy: tpl.pickupPolicy,
+        ratingScore: "5.0",
+        services: JSON.parse(JSON.stringify(tpl.services)),
+        orders: tpl.sampleItems.map((item, idx) => ({
+          id: "ord-" + Date.now() + "-" + idx,
+          orderId: `${prefix}-260${idx + 1}`,
+          ...item,
+          createdAt: new Date().toISOString()
+        }))
+      };
+
+      window.ServiceStore.saveTenant(slug, newTenant);
+      populateAllStoresDropdown();
+
+      const successBox = document.getElementById("builderSuccessBox");
+      successBox.classList.remove("hidden");
+      document.getElementById("launchedSlugBadge").textContent = `?mitra=${slug}`;
+      document.getElementById("btnOpenNewPublic").href = sanitizeUrl(`index.html?mitra=${encodeURIComponent(slug)}`, "index.html");
+      document.getElementById("btnOpenNewAdmin").href = sanitizeUrl(`admin.html?mitra=${encodeURIComponent(slug)}&demo=1`, "admin.html");
+      document.getElementById("btnLoadInSandbox").onclick = function () {
+        switchSandboxMitra(slug);
+        document.getElementById("sandboxSection").scrollIntoView({ behavior: "smooth" });
+      };
+
+      showPlatformToast(`Toko "${newTenant.name}" berhasil diterbitkan`);
+    }
+
+    window.addEventListener("message", (e) => {
+      if (window.isSameOriginMessage && !window.isSameOriginMessage(e)) return;
+      if (e.data && e.data.type === "ATELIER_STORE_SYNC") {
+        notifySandboxIframes();
+      }
+    });
+
+    window.addEventListener("storage", (e) => {
+      if (!e.key || e.key === "atelier_service_engine_v4_tenants") {
+        populateAllStoresDropdown();
+        updateSandboxTelemetry();
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      populateAllStoresDropdown();
+      updateSandboxTelemetry();
+      updateBuilderPreview();
+    });
+  </script>
+</body>
+</html>

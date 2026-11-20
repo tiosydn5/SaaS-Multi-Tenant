@@ -1,0 +1,2385 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Platform reservasi layanan, katalog harga transparan, dan nota digital terpadu untuk bisnis jasa lokal." />
+  <title id="pageTitle">Studio Care & Live Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="service-config.js"></script>
+  <style id="ws-instant-cloak">
+    html.ws-cloak body { opacity: 0 !important; pointer-events: none !important; }
+    body { transition: opacity 0.15s ease-out; }
+  </style>
+  <script>
+    (function () {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const urlTpl = params.get("template");
+        const slug = window.getActiveMitraSlug ? window.getActiveMitraSlug() : "kultur-kicks";
+        const t = window.ServiceStore && window.ServiceStore.getTenant ? window.ServiceStore.getTenant(slug) : null;
+        const validUrlTpl = urlTpl && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[urlTpl] ? urlTpl : null;
+        const activeTpl = window.resolveValidUiTemplate
+          ? window.resolveValidUiTemplate(validUrlTpl || (t && t.uiTemplate))
+          : (validUrlTpl || "tactile_bento");
+        if (window.applyWorkshopTheme && t) {
+          window.applyWorkshopTheme(t.themePreset, t.brandColor, activeTpl);
+        } else if (window.applyWorkshopTemplate) {
+          window.applyWorkshopTemplate(activeTpl);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    :root {
+      --bg-canvas: #F2F4F7;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #E1DDD3;
+      --bg-sage: #DFE4D0;
+      --bg-obsidian: #111216;
+      --ink-primary: #111216;
+      --ink-secondary: #43423D;
+      --ink-muted: #6B6961;
+      --border-hairline: #D4D0C5;
+      --border-strong: #18181B;
+      --brand: #D9381E;
+      --brand-hover: #B82B14;
+      --brand-light: #FF6B52;
+      --brand-fg: #FFFFFF;
+      --font-sans: 'Onest', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Sora', 'Onest', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    ::selection {
+      background-color: var(--brand);
+      color: var(--brand-fg);
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      caret-color: var(--brand);
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    .font-display {
+      font-family: var(--font-display);
+      letter-spacing: -0.03em;
+    }
+
+    .font-mono-code {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    a {
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-canvas);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #B8B4A8;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8E8A7F;
+    }
+
+    details > summary {
+      list-style: none;
+    }
+    details > summary::-webkit-details-marker {
+      display: none;
+    }
+  </style>
+</head>
+<body class="ws-public-page min-h-screen flex flex-col bg-[#F2F4F7] text-[#111216] font-sans">
+
+  <!-- TOP DEMO & TENANT BAR (Hidden by default for public customers; shown only in ?mode=demo or Super Admin session) -->
+  <div id="topDemoBar" class="hidden bg-[#111216] text-[#F8FAFC] border-b border-[#232734]">
+    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div class="flex flex-wrap items-center gap-2.5 min-w-0 max-w-full">
+        <span class="w-2 h-2 rounded-full bg-[var(--brand)] shrink-0"></span>
+        <span class="text-[#94A3B8]">Simulasi Mitra:</span>
+        <label for="demoTenantSelector" class="sr-only">Pilih Mitra Studio</label>
+        <select id="demoTenantSelector" onchange="switchTenantDemo(this.value)" class="max-w-full bg-[#1A1D26] text-[#F8FAFC] border-0 rounded-full px-3 py-1 text-xs font-medium focus:outline-none cursor-pointer">
+        </select>
+        <label for="demoTemplateSelector" class="sr-only">Pilih Template Tampilan</label>
+        <select id="demoTemplateSelector" onchange="switchPublicUiTemplate(this.value)" class="bg-[#1A1D26] text-[#F8FAFC] border border-[#2E3446] rounded-full px-3 py-1 text-xs font-medium focus:outline-none cursor-pointer">
+          <option value="tactile_bento">01 · Tactile Bento</option>
+          <option value="swiss_minimal">02 · Swiss Editorial</option>
+          <option value="atelier_magazine">03 · Warm Atelier Lookbook</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="platform.html" class="inline-flex items-center gap-1.5 text-white hover:text-[#CBD5E1] font-semibold transition-colors">
+          <svg class="w-3.5 h-3.5 text-[var(--brand)] shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+          <span>Sandbox & Buat Toko</span>
+        </a>
+        <span class="text-[#32384A]">|</span>
+        <a id="topAdminLink" href="admin.html" class="inline-flex items-center gap-1.5 text-[#F8FAFC] hover:text-white font-semibold transition-colors">
+          <span>Panel Kasir</span>
+          <svg class="w-3.5 h-3.5" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <button type="button" onclick="togglePublicDemoBar(false)" class="text-[#94A3B8] hover:text-white cursor-pointer" title="Sembunyikan bar demo">
+          Tutup Demo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING EDITORIAL CAPSULE HEADER (Ref 4) -->
+  <header class="sticky top-0 z-40 pt-3 px-4 sm:px-6 pointer-events-none">
+    <div class="pointer-events-auto max-w-[1200px] mx-auto px-3 sm:px-4 h-14 rounded-full bg-white/95 backdrop-blur-md border-[1.5px] border-[#18181B] flex items-center justify-between gap-2 sm:gap-4">
+      <a href="#top" aria-label="Beranda Studio" class="flex items-center gap-2.5 group focus:outline-none min-w-0">
+        <span id="navLogoBox" class="w-9 h-9 rounded-full bg-[#111216] text-white font-display font-bold text-xs flex items-center justify-center tracking-tight shrink-0 overflow-hidden">KLK</span>
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <span id="navBrandName" class="font-display font-bold text-xs sm:text-sm tracking-tight text-[#111216] leading-tight truncate">KULTUR KICKS LAB</span>
+            <span id="navNicheBadge" class="hidden sm:inline-block text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#DFE4D0] text-[#111216]">Sneaker Lab</span>
+          </div>
+          <p id="navBranchText" class="text-xs text-[#5C5A54] leading-tight truncate">Margonda, Depok</p>
+        </div>
+      </a>
+
+      <nav aria-label="Navigasi Utama" class="hidden lg:flex items-center gap-1 bg-[#E7EBF2] p-1 rounded-full text-xs font-semibold text-[#43423D]">
+        <a href="#trackerSection" class="h-8 px-3.5 rounded-full bg-white text-[#111216] font-bold inline-flex items-center whitespace-nowrap transition-colors">Cek Resi</a>
+        <a href="#sopSection" class="h-8 px-3.5 rounded-full hover:text-[#111216] inline-flex items-center whitespace-nowrap transition-colors">Standar Pengerjaan</a>
+        <a href="#catalogSection" class="h-8 px-3.5 rounded-full hover:text-[#111216] inline-flex items-center whitespace-nowrap transition-colors">Daftar Paket</a>
+        <a href="#bookingSection" class="h-8 px-3.5 rounded-full hover:text-[#111216] inline-flex items-center whitespace-nowrap transition-colors">Booking</a>
+        <a href="#faqSection" class="h-8 px-3.5 rounded-full hover:text-[#111216] inline-flex items-center whitespace-nowrap transition-colors">FAQ</a>
+      </nav>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <a href="#bookingSection" class="inline-flex items-center gap-2 px-4 h-9 rounded-full bg-[var(--brand)] hover:bg-[var(--brand-hover)] text-white text-xs font-bold whitespace-nowrap transition-colors">
+          <span>Booking</span>
+        </a>
+        <button
+          type="button"
+          onclick="toggleMobileNav()"
+          aria-label="Buka Menu Navigasi"
+          class="lg:hidden w-10 h-10 rounded-full bg-[#111216] text-white inline-flex items-center justify-center shrink-0 cursor-pointer"
+        >
+          <svg class="w-4 h-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- COMPACT 2x2 GRID MOBILE DRAWER -->
+    <div id="mobileNavDrawer" class="pointer-events-auto hidden lg:hidden max-w-[1200px] mx-auto mt-2 rounded-[20px] border-[1.5px] border-[#18181B] bg-white p-3 space-y-2.5">
+      <div class="grid grid-cols-2 gap-2 text-xs font-bold text-[#111216]">
+        <a href="#trackerSection" onclick="toggleMobileNav(false)" class="p-3 min-h-[44px] rounded-[12px] bg-[#E7EBF2] flex items-center justify-between">
+          <span>Cek Resi</span>
+          <svg class="w-3.5 h-3.5 text-[#5C5A54]" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </a>
+        <a href="#sopSection" onclick="toggleMobileNav(false)" class="p-3 min-h-[44px] rounded-[12px] bg-[#E7EBF2] flex items-center justify-between">
+          <span>Standar Pengerjaan</span>
+          <svg class="w-3.5 h-3.5 text-[#5C5A54]" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </a>
+        <a href="#catalogSection" onclick="toggleMobileNav(false)" class="p-3 min-h-[44px] rounded-[12px] bg-[#E7EBF2] flex items-center justify-between">
+          <span>Daftar Paket</span>
+          <svg class="w-3.5 h-3.5 text-[#5C5A54]" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg>
+        </a>
+        <a href="#faqSection" onclick="toggleMobileNav(false)" class="p-3 min-h-[44px] rounded-[12px] bg-[#E7EBF2] flex items-center justify-between">
+          <span>FAQ & Lokasi</span>
+          <svg class="w-3.5 h-3.5 text-[#5C5A54]" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        </a>
+      </div>
+      <a href="#bookingSection" onclick="toggleMobileNav(false)" class="w-full h-11 rounded-full bg-[#111216] text-white text-xs font-bold flex items-center justify-center gap-1.5">
+        <span>Kalkulator & Booking WA</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="top" class="flex-1">
+    <!-- FIRST VIEWPORT: EDITORIAL HERO + LIVE OBSIDIAN TRACKER -->
+    <section id="trackerSection" class="pt-6 pb-10 sm:py-12 border-b border-[#D4D0C5]">
+      <div id="heroSectionContainer" class="max-w-[1200px] mx-auto px-4 sm:px-6 flex flex-col">
+        <div id="heroMainGrid" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 lg:items-stretch">
+          
+          <!-- Left 7 Columns: Editorial Display Headline + Wide Hero Banner + Search Dock -->
+          <div id="heroPrimaryCol" class="lg:col-span-7 flex flex-col justify-start gap-5 min-w-0">
+            <div id="heroHeadlineBlock">
+              <h1 style="min-height: 2.08em;" class="type-hero text-[#111216] [text-wrap:balance]">
+                <span id="heroHeadline1">Restorasi Presisi untuk</span>
+                <span id="heroHeadline2" class="block text-[#111216] mt-1">Koleksi Sepatu Harian.</span>
+              </h1>
+
+              <p id="heroDescText" style="min-height: 3.1em;" class="mt-4 text-sm sm:text-base text-[#43423D] leading-[1.6] max-w-[54ch]">
+                Studio perawatan sepatu berstandar laboratorium. Lacak tahapan pengerjaan barang Anda secara langsung tanpa perlu menunggu balasan admin.
+              </p>
+            </div>
+
+            <!-- Proportional Wide Hero Visual Showcase -->
+            <figure id="dynamicHeroImgWrap" style="width: 100%; border: 2px solid #111216; box-shadow: 5px 5px 0px #111216; border-radius: 22px; overflow: hidden; position: relative;" class="bg-[#18181C] h-[200px] sm:h-[215px]">
+              <img
+                id="heroBannerImg"
+                width="640"
+                height="215"
+                alt="Banner Studio Layanan"
+                decoding="async"
+                fetchpriority="high"
+                src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=1000&q=80"
+                onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 640 270%22%3E%3Cdefs%3E%3ClinearGradient id=%22bg%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%25%22 stop-color=%22%23181920%22/%3E%3Cstop offset=%22100%25%22 stop-color=%22%23272A35%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22640%22 height=%22270%22 fill=%22url(%23bg)%22/%3E%3Cpath d=%22M0 200 L640 112 M140 0 L64 270 M460 0 L520 270%22 stroke=%22%23383C4A%22 stroke-width=%221.5%22/%3E%3Ccircle cx=%22510%22 cy=%22125%22 r=%2264%22 fill=%22none%22 stroke=%22%23D9381E%22 stroke-width=%223%22 stroke-opacity=%220.65%22/%3E%3Ccircle cx=%22510%22 cy=%22125%22 r=%2216%22 fill=%22%23D9381E%22/%3E%3C/svg%3E';"
+                class="w-full h-full object-cover object-center block"
+              />
+              <figcaption class="pointer-events-none absolute bottom-3 left-3 right-3 px-3.5 py-2 rounded-full bg-[#111216]/90 flex items-center justify-between gap-2">
+                <span class="inline-flex items-center gap-2 min-w-0">
+                  <span class="w-2 h-2 rounded-full bg-[#10B981] shrink-0"></span>
+                  <span id="heroImgOverlayTitle" class="text-xs font-semibold text-white truncate">Meja Teknisi Aktif</span>
+                </span>
+                <span id="heroImgOverlayMeta" class="font-mono-code text-[11px] text-[#E2E8F0] shrink-0">Update 5 Tahap</span>
+              </figcaption>
+            </figure>
+
+            <!-- Ref 5 Chunky Search Input Dock inside 3D Offset Blue Plate -->
+            <div id="heroSearchDock" class="tactile-plate-blue">
+              <div class="bg-white rounded-[18px] border-2 border-[#111216] p-4 sm:p-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                  <label for="resiSearchInput" class="text-sm font-display font-bold text-[#111216]">
+                    Cek Status Nota atau Nomor WhatsApp
+                  </label>
+                  <span class="text-xs font-medium text-[#6B6961]">Update langsung dari meja teknisi</span>
+                </div>
+
+                <form onsubmit="event.preventDefault(); handleTrackOrder();" class="rounded-[18px] sm:rounded-full bg-[#E7EBF2] border-2 border-[#111216] p-1.5 flex flex-col sm:flex-row gap-2">
+                  <input
+                    id="resiSearchInput"
+                    type="text"
+                    placeholder="Ketik Kode Nota (KLK-2601) atau No. WA Anda"
+                    autocomplete="off"
+                    class="w-full sm:flex-1 shrink-0 h-11 px-4 rounded-full bg-white sm:bg-transparent border-0 text-[#111216] font-mono-code font-semibold text-sm placeholder:font-sans placeholder:font-normal placeholder:text-[#6B6961] focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    class="tactile-btn-yellow h-11 px-6 text-sm inline-flex items-center justify-center gap-2 transition-all shrink-0 cursor-pointer"
+                  >
+                    <svg class="w-4 h-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <span>Lacak Status</span>
+                  </button>
+                </form>
+
+                <div class="mt-3.5 pt-3 border-t border-[#E6E2D8] flex flex-wrap items-center gap-2">
+                  <span class="text-xs font-medium text-[#6B6961]">Contoh nota aktif:</span>
+                  <div id="sampleResiChips" style="min-height: 32px;" class="flex flex-wrap gap-1.5 min-h-[32px]">
+                    <button type="button" onclick="selectSampleResi('KLK-2601')" class="h-8 px-3 rounded-full font-mono-code text-xs font-semibold bg-[var(--brand)] text-white">KLK-2601</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right 5 Columns: OBSIDIAN LIVE TRACKER PANEL -->
+          <div id="heroTrackerCol" class="lg:col-span-5">
+            <div style="box-shadow: 5px 5px 0px #111216;" class="bg-[#111216] text-[#F8FAFC] border-2 border-[#111216] rounded-[24px] overflow-hidden h-full flex flex-col">
+              <div class="px-6 py-4 border-b border-[#232734] flex items-center justify-between gap-2">
+                <span class="font-display text-xs font-bold text-white">Detail Status Pengerjaan</span>
+                <span class="inline-flex items-center gap-1.5 text-xs text-[#94A3B8]">
+                  <span class="w-2 h-2 rounded-full bg-[var(--brand)]"></span>
+                  <span>Live Tracker</span>
+                </span>
+              </div>
+
+              <div id="trackerResultMount" class="p-5 sm:p-6 flex-1 flex flex-col justify-between">
+                <div class="flex-1 flex flex-col justify-between gap-4 h-full">
+                  <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-[#232734]">
+                    <div>
+                      <div id="staticTrackOrderId" class="font-display font-extrabold text-2xl text-white tracking-tight whitespace-nowrap">KLK-2601</div>
+                      <div id="staticTrackCustomer" class="text-xs text-[#94A3B8] mt-0.5">Raka Pratama · Jemput &amp; Antar Kurir</div>
+                    </div>
+                    <span id="staticTrackStageBadge" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#1A1D26] text-white">
+                      Tahap 3/5 · Detailing / UV
+                    </span>
+                  </div>
+                  <div class="pb-4 border-b border-[#232734] space-y-3">
+                    <div>
+                      <div class="text-xs text-[#94A3B8]">Unit &amp; Paket Layanan</div>
+                      <div id="staticTrackItem" class="text-sm font-bold text-white mt-0.5 leading-snug">Salomon XT-6 White Lunar Rock</div>
+                      <div id="staticTrackService" class="text-xs text-[#CBD5E1] mt-0.5 leading-snug">Deep Clean All Material</div>
+                    </div>
+                    <div class="pt-3 border-t border-[#232734] flex flex-wrap items-center justify-between gap-2 text-xs">
+                      <div>
+                        <span class="text-[#94A3B8]">Estimasi: </span>
+                        <span id="staticTrackEta" class="font-mono-code font-semibold text-white">Sore Ini, 19.00</span>
+                      </div>
+                      <div>
+                        <span class="text-[#94A3B8]">Biaya: </span>
+                        <span id="staticTrackPrice" class="font-mono-code font-bold text-white">Rp 160.000</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex items-center justify-between text-xs mb-2">
+                      <span class="text-[#94A3B8]">Progres Pengerjaan (1–5)</span>
+                      <span class="font-mono-code text-xs text-[#CBD5E1]">60%</span>
+                    </div>
+                    <ol class="grid grid-cols-5 border-y border-[#232734] overflow-hidden divide-x divide-[#232734]">
+                      <li class="flex flex-col items-center justify-center py-2.5 px-1 text-[#CBD5E1] text-center min-w-0"><span class="font-mono-code text-xs">1</span><span class="text-xs mt-0.5 leading-tight tracking-tight">INSP</span></li>
+                      <li class="flex flex-col items-center justify-center py-2.5 px-1 text-[#CBD5E1] text-center min-w-0"><span class="font-mono-code text-xs">2</span><span class="text-xs mt-0.5 leading-tight tracking-tight">WASH</span></li>
+                      <li class="flex flex-col items-center justify-center py-2.5 px-1 bg-[var(--brand)] text-white font-bold text-center min-w-0"><span class="font-mono-code text-xs">3</span><span class="text-xs mt-0.5 leading-tight tracking-tight">REST</span></li>
+                      <li class="flex flex-col items-center justify-center py-2.5 px-1 text-[#94A3B8] text-center min-w-0"><span class="font-mono-code text-xs">4</span><span class="text-xs mt-0.5 leading-tight tracking-tight">QC</span></li>
+                      <li class="flex flex-col items-center justify-center py-2.5 px-1 text-[#94A3B8] text-center min-w-0"><span class="font-mono-code text-xs">5</span><span class="text-xs mt-0.5 leading-tight tracking-tight">DONE</span></li>
+                    </ol>
+                  </div>
+                  <div class="p-3.5 rounded-[14px] bg-[#181C26] border border-[#262C3A]">
+                    <div class="text-xs font-semibold text-[#94A3B8] mb-1">Catatan Teknisi</div>
+                    <p id="staticTrackNote" class="text-xs sm:text-sm text-[#F8FAFC] leading-relaxed">
+                      "Sedang proses detailing noda midsole dan penyinaran UV."
+                    </p>
+                  </div>
+                  <div class="pt-3.5 border-t border-[#232734] flex items-center justify-between gap-2 text-[11px] text-[#94A3B8]">
+                    <span class="inline-flex items-center gap-1.5">
+                      <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                      <span>E-Nota &amp; QR Terverifikasi</span>
+                    </span>
+                    <span class="font-mono-code text-[#CBD5E1]">Buka Setiap Hari</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Ref 4 Mixed-Polarity Editorial Bento Stats Strip (4 Equal Cards) -->
+        <div id="heroStatsStrip" class="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Slot 1: Rating Studio (Tactile White + Dark Charcoal) -->
+          <div class="tactile-card p-4 xl:p-5 flex flex-col justify-between gap-3">
+            <div class="flex flex-wrap items-center justify-between gap-1.5">
+              <span class="bento-pill-outline">RATING</span>
+              <span class="text-[11px] font-mono-code font-bold text-[#475569]">VERIFIED</span>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-[#374151]">Kepuasan Pelanggan</div>
+              <div class="mt-1 flex items-baseline gap-1">
+                <span id="statRatingScore" class="font-display font-extrabold text-2xl sm:text-3xl text-[#111216] tabular-nums">4.9</span>
+                <span class="text-xs font-bold text-[#475569]">/ 5.0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slot 2: Antrean Aktif (Bento Yellow) -->
+          <div class="bento-yellow-card p-4 xl:p-5 flex flex-col justify-between gap-3">
+            <div class="flex items-center justify-between gap-1.5">
+              <span class="bento-pill-outline">QUEUE LOAD</span>
+              <span class="bento-arrow-circle">↗</span>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-[#111216]">Antrean Aktif</div>
+              <div class="mt-1 flex items-end justify-between gap-2">
+                <div class="flex items-baseline gap-1.5">
+                  <span id="statActiveCount" class="font-display font-extrabold text-2xl sm:text-3xl text-[#111216] tabular-nums">3</span>
+                  <span class="text-xs font-extrabold text-[#111216]">Unit</span>
+                </div>
+                <span class="font-mono-code text-xs font-bold text-[#111216]">LIVE</span>
+              </div>
+              <div class="mt-2.5 w-full h-2 rounded-full bg-[#111216]/20 overflow-hidden">
+                <div class="w-[60%] h-full rounded-full bg-[#111216]"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slot 3: Serah Terima (Sage Surface) -->
+          <div class="sage-surface p-4 xl:p-5 flex flex-col justify-between gap-3">
+            <div class="flex items-center justify-between gap-1.5">
+              <span class="bento-pill-outline">LOGISTIK</span>
+              <span class="bento-arrow-circle">↗</span>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-[#374151]">Serah Terima</div>
+              <div id="statDeliveryMode" class="mt-1 text-base sm:text-lg font-display font-extrabold text-[#111216] leading-snug">Jemput &amp; Antar</div>
+            </div>
+          </div>
+
+          <!-- Slot 4: Jam Buka (Bento Lavender) -->
+          <div class="bento-lavender-card p-4 xl:p-5 flex flex-col justify-between gap-3">
+            <div class="flex items-center justify-between gap-1.5">
+              <span class="bento-pill-outline">HOURS</span>
+              <span class="bento-arrow-circle">↗</span>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-[#374151]">Jam Buka</div>
+              <div id="statHoursShort" class="mt-1 text-base sm:text-lg font-display font-extrabold text-[#111216] leading-snug">10.00 - 21.00 WIB</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      (function () {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const urlTemplate = params.get("template");
+          const slug = window.getActiveMitraSlug ? window.getActiveMitraSlug() : "kultur-kicks";
+          const t = window.ServiceStore && window.ServiceStore.getTenant ? window.ServiceStore.getTenant(slug) : null;
+          const validUrlTemplate =
+            urlTemplate && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[urlTemplate]
+              ? urlTemplate
+              : null;
+          const activeTemplate = window.resolveValidUiTemplate
+            ? window.resolveValidUiTemplate(validUrlTemplate || (t && t.uiTemplate))
+            : (validUrlTemplate || "tactile_bento");
+          if (window.applyWorkshopTheme && t) {
+            window.applyWorkshopTheme(t.themePreset, t.brandColor, activeTemplate);
+          } else if (window.applyWorkshopTemplate) {
+            window.applyWorkshopTemplate(activeTemplate);
+          }
+          if (!slug || slug === "kultur-kicks") return;
+          if (!t) return;
+          const nicheDef = (window.NICHE_DEFINITIONS && window.NICHE_DEFINITIONS[t.niche]) || (window.NICHE_DEFINITIONS && window.NICHE_DEFINITIONS.sneakers_care) || {};
+          const initials = (t.name || "STD").replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase() || "STD";
+          document.title = t.branch ? `${t.name} · ${t.branch}` : t.name;
+          const logoEl = document.getElementById("navLogoBox");
+          if (logoEl) logoEl.textContent = initials;
+          const brandEl = document.getElementById("navBrandName");
+          if (brandEl) brandEl.textContent = t.name;
+          const badgeEl = document.getElementById("navNicheBadge");
+          if (badgeEl && nicheDef.shortLabel) badgeEl.textContent = nicheDef.shortLabel;
+          const branchEl = document.getElementById("navBranchText");
+          if (branchEl) branchEl.textContent = t.branch || "Studio Partner";
+          const h1El = document.getElementById("heroHeadline1");
+          if (h1El && t.heroHeadline1) h1El.textContent = t.heroHeadline1;
+          const h2El = document.getElementById("heroHeadline2");
+          if (h2El && t.heroHeadline2) h2El.textContent = t.heroHeadline2;
+          const descEl = document.getElementById("heroDescText");
+          if (descEl && t.heroDesc) descEl.textContent = t.heroDesc;
+          const locEl = document.getElementById("heroBadgeLocation");
+          if (locEl) locEl.textContent = `${nicheDef.label || "Studio"} · ${t.branch || "Studio Partner"}`;
+          const safeSampleOrders = Array.isArray(t.orders)
+            ? t.orders.filter(o => o && String(o.id || "").startsWith("ord-"))
+            : [];
+          const firstOrd = safeSampleOrders[0] || {
+            orderId: `${initials}-2601`,
+            customerName: "Pelanggan Studio",
+            deliveryType: "Studio",
+            itemName: "Memuat Data Unit...",
+            serviceName: "Sinkronisasi Layanan Studio",
+            etaDate: "Live",
+            price: 0,
+            techNote: "Menghubungkan ke meja operasional studio..."
+          };
+          const searchInp = document.getElementById("resiSearchInput");
+          if (searchInp) searchInp.placeholder = `Ketik Kode Nota (${firstOrd.orderId}) atau No. WA Anda`;
+          const chipsEl = document.getElementById("sampleResiChips");
+          if (chipsEl) {
+            const escFn = window.escapeHtml || (v => String(v == null ? "" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"));
+            const safeChipId = escFn(firstOrd.orderId);
+            chipsEl.innerHTML = `<button type="button" data-resi="${safeChipId}" onclick="selectSampleResi(this.getAttribute('data-resi'))" class="px-2.5 py-1 rounded-full font-mono-code text-xs font-semibold bg-[var(--brand)] text-white">${safeChipId}</button>`;
+          }
+          const stOrdId = document.getElementById("staticTrackOrderId");
+          if (stOrdId) stOrdId.textContent = firstOrd.orderId;
+          const stCust = document.getElementById("staticTrackCustomer");
+          if (stCust) stCust.textContent = `${firstOrd.customerName} · ${firstOrd.deliveryType}`;
+          const stItem = document.getElementById("staticTrackItem");
+          if (stItem) stItem.textContent = firstOrd.itemName;
+          const stSrv = document.getElementById("staticTrackService");
+          if (stSrv) stSrv.textContent = firstOrd.serviceName;
+          const stEta = document.getElementById("staticTrackEta");
+          if (stEta) stEta.textContent = firstOrd.etaDate;
+          const stPrice = document.getElementById("staticTrackPrice");
+          if (stPrice && window.formatRupiah) stPrice.textContent = window.formatRupiah(firstOrd.price);
+          const stNote = document.getElementById("staticTrackNote");
+          if (stNote) stNote.textContent = `"${firstOrd.publicNote || firstOrd.techNote}"`;
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- SECTION 2: STANDAR PENGERJAAN & PERAWATAN MATERIAL (Ref 4 Mixed Light + Sage Bento) -->
+    <section id="sopSection" class="py-12 sm:py-16 border-b border-[#D4D0C5]">
+      <div class="max-w-[1200px] mx-auto px-4 sm:px-6">
+        <div class="pb-6 border-b border-[#D4D0C5]">
+          <h2 class="type-display text-[#111216]">
+            Alur Pengerjaan &amp; Spesifikasi Perawatan Bahan
+          </h2>
+          <p class="mt-2 text-sm sm:text-base text-[#43423D] max-w-[60ch]">
+            Setiap unit melewati tahapan terukur menggunakan cairan dan alat yang disesuaikan dengan karakteristik material.
+          </p>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div id="sopStepsCard" class="lg:col-span-7 bg-white rounded-[22px] border-[1.5px] border-[#18181B] overflow-hidden shadow-sm">
+            <div class="px-5 py-3.5 border-b border-[#D4D0C5] flex items-center justify-between text-xs font-bold text-[#111216]">
+              <span id="sopHeaderTitle">Tahapan Standar Operasional</span>
+              <span id="sopHeaderHint" class="text-[#52525B] font-medium">Klik baris untuk rincian</span>
+            </div>
+            <div id="sopStepsMount" style="min-height: 360px;" class="divide-y divide-[#E6E2D8] min-h-[360px]"></div>
+          </div>
+
+          <div id="sopAnatomyCard" class="lg:col-span-5 sage-surface rounded-[22px] border-[1.5px] border-[#18181B] overflow-hidden shadow-sm">
+            <div class="px-5 py-3.5 border-b border-[#B4C09B] flex items-center justify-between text-xs font-bold text-[#111216]">
+              <span id="anatomyHeaderTitle">Penanganan Komponen &amp; Alat</span>
+              <span id="anatomyUnitTag" class="text-[#374151] font-medium">Spesifikasi Teknis</span>
+            </div>
+            <div id="anatomyZonesMount" style="min-height: 360px;" class="divide-y divide-[#BAC5A0] min-h-[360px]"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SERVICE CATALOG WITH REF 5 PURE OPAQUE TACTILE CARDS (ZERO CYAN WASH) -->
+    <section id="catalogSection" class="py-12 sm:py-16 border-b border-[#D4D0C5]">
+      <div class="max-w-[1200px] mx-auto px-4 sm:px-6">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-6 border-b border-[#D4D0C5]">
+          <div class="max-w-[44ch]">
+            <h2 class="type-display text-[#111216]">
+              Daftar Paket Layanan
+            </h2>
+            <p class="mt-2 text-sm sm:text-base text-[#43423D]">
+              Pilih paket perawatan sesuai kebutuhan barang Anda untuk langsung menghitung estimasi biaya.
+            </p>
+          </div>
+          <div id="serviceCategoryPills" style="min-height: 36px;" class="flex flex-wrap lg:justify-end gap-1.5"></div>
+        </div>
+
+        <div id="serviceCatalogMount" style="min-height: 460px;" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Populated by renderServiceCatalog() -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: INTERACTIVE BOOKING & CHECKOUT TICKET (Ref 5 Tactile + Obsidian Ticket) -->
+    <section id="bookingSection" class="py-12 sm:py-16 border-b border-[#D4D0C5]">
+      <div class="max-w-[1200px] mx-auto px-4 sm:px-6">
+        <div class="max-w-[60ch] mb-8">
+          <h2 class="type-display text-[#111216]">
+            Kalkulator Estimasi &amp; Form Booking
+          </h2>
+          <p class="mt-2 text-sm sm:text-base text-[#43423D]">
+            Isi rincian barang di bawah ini. Saat dikirim, sistem otomatis menerbitkan Nomor Nota Tahap 1 dan meneruskan pesanan ke WhatsApp admin.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Left 7 Cols: Booking Form -->
+          <form id="bookingForm" onsubmit="event.preventDefault(); submitBookingToWhatsApp();" class="lg:col-span-7 bg-white rounded-[24px] border-[1.5px] border-[#18181B] p-5 sm:p-7 space-y-5 shadow-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="bookCustomerName" class="block text-xs font-bold text-[#111216] mb-1.5">Nama Pelanggan</label>
+                <input
+                  id="bookCustomerName"
+                  type="text"
+                  required
+                  placeholder="cth: Raka Pratama"
+                  oninput="recalculateBooking()"
+                  class="w-full h-11 px-4 rounded-[12px] bg-[#E7EBF2] border-0 text-sm text-[#111216] placeholder:text-[#6B6961] focus:bg-[#E7E3D9] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label for="bookCustomerPhone" class="block text-xs font-bold text-[#111216] mb-1.5">Nomor WhatsApp</label>
+                <input
+                  id="bookCustomerPhone"
+                  type="tel"
+                  required
+                  placeholder="cth: 081288990011"
+                  oninput="recalculateBooking()"
+                  class="w-full h-11 px-4 rounded-[12px] bg-[#E7EBF2] border-0 text-sm font-mono-code text-[#111216] placeholder:text-[#6B6961] focus:bg-[#E7E3D9] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="sm:col-span-2">
+                <label for="bookItemName" class="block text-xs font-bold text-[#111216] mb-1.5">Tipe Barang &amp; Warna</label>
+                <input
+                  id="bookItemName"
+                  type="text"
+                  required
+                  placeholder="Salomon XT-6 White / Jordan 1 Low"
+                  oninput="recalculateBooking()"
+                  class="w-full h-11 px-4 rounded-[12px] bg-[#E7EBF2] border-0 text-sm text-[#111216] placeholder:text-[#6B6961] focus:bg-[#E7E3D9] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label for="bookQtyInput" class="block text-xs font-bold text-[#111216] mb-1.5">Jumlah (<span id="unitLabelSpan">Pasang</span>)</label>
+                <!-- Ref 5 QTY Stepper Capsule -->
+                <div class="flex items-center justify-between gap-1 h-11 p-1 rounded-full bg-[#E7EBF2] border-[1.5px] border-[#18181B]">
+                  <span class="font-mono-code text-[10px] font-extrabold text-[#111216] pl-2.5 pr-1 shrink-0">QTY</span>
+                  <button type="button" onclick="adjustBookingQty(-1)" aria-label="Kurangi jumlah" class="w-8 h-8 rounded-full bg-[#111216] hover:bg-[var(--brand)] text-white flex items-center justify-center font-bold transition-colors cursor-pointer shrink-0">-</button>
+                  <input
+                    id="bookQtyInput"
+                    type="number"
+                    min="1"
+                    max="20"
+                    value="1"
+                    oninput="recalculateBooking()"
+                    class="flex-1 min-w-0 h-full text-center bg-transparent border-0 font-mono-code font-bold text-sm text-[#111216] focus:outline-none"
+                  />
+                  <button type="button" onclick="adjustBookingQty(1)" aria-label="Tambah jumlah" class="w-8 h-8 rounded-full bg-[#111216] hover:bg-[var(--brand)] text-white flex items-center justify-center font-bold transition-colors cursor-pointer shrink-0">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label for="bookServiceSelect" class="block text-xs font-bold text-[#111216] mb-1.5">Paket Layanan Utama</label>
+              <select
+                id="bookServiceSelect"
+                onchange="recalculateBooking()"
+                class="w-full h-11 px-4 rounded-[12px] bg-[#E7EBF2] border-0 text-sm font-semibold text-[#111216] focus:bg-[#E7E3D9] focus:outline-none cursor-pointer"
+              ></select>
+            </div>
+
+            <div>
+              <div class="text-xs font-bold text-[#111216] mb-2">Layanan Tambahan (Opsional)</div>
+              <div id="bookAddonsMount" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            </div>
+
+            <div>
+              <div class="text-xs font-bold text-[#111216] mb-2">Metode Serah Terima</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="flex items-start gap-3 p-3.5 rounded-[14px] bg-white border-[1.5px] border-[#111216] cursor-pointer hover:bg-[#F7F5F0] transition-colors">
+                  <input type="radio" name="deliveryMode" value="Drop-Off Studio" checked onchange="recalculateBooking()" class="mt-0.5 accent-[#111216]" />
+                  <div>
+                    <div class="text-sm font-bold text-[#111216]">Antar ke Studio</div>
+                    <div class="text-xs text-[#43423D] mt-0.5">Serah terima langsung di lokasi</div>
+                  </div>
+                </label>
+                <label class="flex items-start gap-3 p-3.5 rounded-[14px] bg-white border-[1.5px] border-[#111216] cursor-pointer hover:bg-[#F7F5F0] transition-colors">
+                  <input type="radio" name="deliveryMode" value="Pick-Up Kurir" onchange="recalculateBooking()" class="mt-0.5 accent-[#111216]" />
+                  <div>
+                    <div class="text-sm font-bold text-[#111216]">Jemput & Antar Kurir</div>
+                    <div id="pickupPolicyHint" class="text-xs text-[#43423D] mt-0.5">Dijemput kurir ke alamat Anda</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label for="bookNotesInput" class="block text-xs font-bold text-[#111216] mb-1.5">Catatan Kondisi / Alamat Jemput</label>
+              <textarea
+                id="bookNotesInput"
+                rows="2"
+                placeholder="Contoh: Ada noda di bagian depan / Jemput sore di Jl. Margonda..."
+                oninput="recalculateBooking()"
+                class="w-full p-4 rounded-[14px] bg-[#E7EBF2] border-0 text-sm text-[#111216] placeholder:text-[#6B6961] focus:bg-[#E7E3D9] focus:outline-none"
+              ></textarea>
+            </div>
+          </form>
+
+          <!-- Right 5 Cols: Itemized Obsidian Checkout Ticket (Ref 5) -->
+          <div id="bookingSummaryCard" class="lg:col-span-5 bg-[#111216] text-[#F8FAFC] rounded-[24px] overflow-hidden">
+            <div class="px-6 py-4 border-b border-[#232734] flex items-center justify-between gap-2">
+              <div>
+                <div class="font-display font-bold text-sm text-white">Ringkasan Tiket Booking</div>
+                <div id="summaryTenantName" class="text-xs text-[#94A3B8] mt-0.5 transition-opacity duration-200"></div>
+              </div>
+              <span class="font-mono-code text-xs font-bold px-3 py-1 rounded-full bg-[#232734] text-[#E2E8F0]">AUTO-NOTA</span>
+            </div>
+
+            <div class="p-6 space-y-5">
+              <div class="space-y-3 text-sm">
+                <div class="flex justify-between gap-4">
+                  <span class="text-[#94A3B8] shrink-0">Pelanggan</span>
+                  <span id="summaryCustomer" class="font-semibold text-right text-white">Belum diisi</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <span class="text-[#94A3B8] shrink-0">Unit Barang</span>
+                  <span id="summaryItem" class="font-semibold text-right text-white">1 Pasang</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <span class="text-[#94A3B8] shrink-0">Serah Terima</span>
+                  <span id="summaryDelivery" class="text-right text-[#F8FAFC]">Drop-Off Studio</span>
+                </div>
+                <div class="flex justify-between gap-4">
+                  <span class="text-[#94A3B8] shrink-0">Estimasi Durasi</span>
+                  <span id="summaryDuration" class="font-mono-code text-xs text-right text-white">2–3 Hari</span>
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-[#232734] space-y-2.5 text-sm">
+                <div class="flex justify-between gap-4">
+                  <span id="summaryBaseServiceLabel" class="text-[#94A3B8]">Paket Utama</span>
+                  <span id="summaryBasePrice" class="font-mono-code font-semibold text-white shrink-0">Rp 65.000</span>
+                </div>
+                <div id="summaryAddonsList" class="space-y-1.5 text-xs text-[#94A3B8]"></div>
+              </div>
+
+              <div class="pt-4 border-t border-[#232734] space-y-4">
+                <div class="flex items-baseline justify-between gap-4">
+                  <div>
+                    <div class="text-xs font-medium text-[#94A3B8]">Total Estimasi</div>
+                    <div class="text-xs text-[#94A3B8]">Terbitkan kode nota otomatis</div>
+                  </div>
+                  <div id="summaryTotalPrice" class="font-display text-2xl font-extrabold text-white tabular-nums">Rp 65.000</div>
+                </div>
+
+                <button
+                  type="button"
+                  onclick="submitBookingToWhatsApp()"
+                  class="tactile-btn-yellow w-full h-12 font-display text-sm inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
+                >
+                  <span>Terbitkan Nota & Kirim WA</span>
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: FAQ & STUDIO LOCATION (Sage + Chalk Editorial Split) -->
+    <section id="faqSection" class="py-12 sm:py-16">
+      <div class="max-w-[1200px] mx-auto px-4 sm:px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-5 space-y-4">
+            <h2 class="type-display text-[#111216]">
+              Informasi Studio &amp; Tanya Jawab
+            </h2>
+            <p id="footerPickupPolicy" class="text-sm text-[#43423D] leading-relaxed">
+              Gratis jemput &amp; antar radius 5 km area Depok (min. 2 pasang).
+            </p>
+            <div class="sage-surface rounded-[22px] border-[1.5px] border-[#18181B] p-5 space-y-3.5 text-sm shadow-sm">
+              <div>
+                <div class="text-xs font-bold text-[#374151]">Alamat Workshop</div>
+                <div id="footerAddress" class="font-bold text-[#111216] mt-0.5">Lokasi Studio</div>
+              </div>
+              <div class="pt-3 border-t border-[#C4CCB0]">
+                <div class="text-xs font-bold text-[#374151]">Jam Operasional</div>
+                <div id="footerHours" class="font-bold text-[#111216] mt-0.5">Setiap Hari · 10.00 – 21.00 WIB</div>
+              </div>
+              <div class="pt-3 border-t border-[#C4CCB0]">
+                <div class="text-xs font-bold text-[#374151]">Kontak & Sosial Media</div>
+                <div class="font-bold text-[#111216] mt-0.5">
+                  <span id="footerInstagram"></span> · <span id="footerWhatsapp" class="font-mono-code">6281299887766</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div id="faqListMount" class="bg-white rounded-[22px] border-[1.5px] border-[#18181B] divide-y divide-[#E6E2D8] overflow-hidden"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#111216] text-[#94A3B8] border-t border-[#232734] py-8">
+    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <div>
+        <span id="footerCopyrightName" class="font-display font-bold text-white transition-opacity duration-200">Studio Layanan</span>
+        <span> · Sistem Operasional & Cek Resi Studio</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-5">
+        <div id="footerDemoLinks" class="hidden items-center gap-5">
+          <a id="footerAdminLink" href="admin.html" class="hover:text-white transition-colors">Dashboard Kasir</a>
+          <a id="footerAnalyticsLink" href="analytics.html" class="hover:text-white transition-colors">Laporan Omzet</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    let currentSlug = window.getActiveMitraSlug();
+    let currentTenant = null;
+    let activeCategoryFilter = "ALL";
+    let activeSopStage = null;
+    let trackedOrderObj = null;
+    let __wsTrackReqSeq = 0;
+
+    function escapeHtml(val) {
+      const shared = window.ServiceStore && window.ServiceStore.escapeHtml;
+      if (typeof shared === "function" && shared !== escapeHtml) {
+        return shared(val);
+      }
+      return String(val == null ? "" : val)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function sanitizeUrl(rawUrl, fallbackUrl) {
+      const shared = window.ServiceStore && window.ServiceStore.sanitizeUrl;
+      if (typeof shared === "function" && shared !== sanitizeUrl) {
+        return shared(rawUrl, fallbackUrl);
+      }
+      const fb = typeof fallbackUrl === "string" ? fallbackUrl : "";
+      if (typeof rawUrl !== "string") return fb;
+      const trimmed = rawUrl.trim();
+      if (!trimmed || /[\u0000-\u001F\u007F]/.test(trimmed)) return fb;
+      if (/^data:/i.test(trimmed)) {
+        return /^data:image\/(png|jpeg|jpg|webp|gif|avif)(?:;[a-z0-9=._+-]+)*(?:;base64)?,[a-z0-9+/=]+$/i.test(trimmed) ? trimmed : fb;
+      }
+      if (/^(https?|blob):/i.test(trimmed)) return trimmed;
+      if (/^(?:\/\/|\/\\|\\\/|\\)/.test(trimmed) || trimmed.split(/[/?#]/)[0].includes(":")) return fb;
+      return /^(?:\/(?!\/)|\.\/|\.\.\/|\?|#|[a-zA-Z0-9_-])/.test(trimmed) ? trimmed : fb;
+    }
+
+    function checkDemoVisibility() {
+      const params = new URLSearchParams(window.location.search);
+      const isEmbedded = params.get("embed") === "1";
+      const isUrlDemo = params.get("mode") === "demo" || params.get("demo") === "1" || params.get("admin") === "1";
+      if (isUrlDemo) {
+        localStorage.setItem("ws_super_admin_mode", "true");
+      }
+      const isSuperAdmin = localStorage.getItem("ws_super_admin_mode") === "true";
+      const topBar = document.getElementById("topDemoBar");
+      const footerLinks = document.getElementById("footerDemoLinks");
+
+      if (isSuperAdmin && !isEmbedded) {
+        topBar.classList.remove("hidden");
+        footerLinks.classList.remove("hidden");
+        footerLinks.classList.add("flex");
+      } else {
+        topBar.classList.add("hidden");
+        if (footerLinks) {
+          footerLinks.classList.add("hidden");
+          footerLinks.classList.remove("flex");
+        }
+      }
+    }
+
+    function toggleMobileNav(forceState) {
+      const drawer = document.getElementById("mobileNavDrawer");
+      if (!drawer) return;
+      const shouldShow = typeof forceState === "boolean" ? forceState : drawer.classList.contains("hidden");
+      if (shouldShow) {
+        drawer.classList.remove("hidden");
+      } else {
+        drawer.classList.add("hidden");
+      }
+    }
+
+    function togglePublicDemoBar(forceState) {
+      const current = localStorage.getItem("ws_super_admin_mode") === "true";
+      const next = typeof forceState === "boolean" ? forceState : !current;
+      localStorage.setItem("ws_super_admin_mode", next ? "true" : "false");
+      checkDemoVisibility();
+    }
+
+    function getActiveUiTemplate() {
+      try {
+        const urlTemplate = new URLSearchParams(window.location.search).get("template");
+        if (urlTemplate && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[urlTemplate]) {
+          return urlTemplate;
+        }
+      } catch (e) {}
+      if (currentTenant && currentTenant.uiTemplate && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[currentTenant.uiTemplate]) {
+        return currentTenant.uiTemplate;
+      }
+      const attr = document.documentElement.getAttribute("data-ui-template");
+      if (attr && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[attr]) {
+        return attr;
+      }
+      return "tactile_bento";
+    }
+
+    function getTemplateQuerySuffix() {
+      try {
+        const urlTemplate = new URLSearchParams(window.location.search).get("template");
+        if (urlTemplate && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[urlTemplate]) {
+          return `&template=${encodeURIComponent(urlTemplate)}`;
+        }
+      } catch (e) {}
+      return "";
+    }
+
+    function renderBookingTicketPanel(tpl) {
+      const card = document.getElementById("bookingSummaryCard");
+      if (!card) return;
+
+      if (tpl === "atelier_magazine") {
+        card.innerHTML = `
+          <div class="am-voucher-head">
+            <div class="min-w-0">
+              <div class="am-voucher-title">Voucher Reservasi Studio</div>
+              <div id="summaryTenantName" class="am-voucher-sub leading-snug"></div>
+            </div>
+            <span class="am-voucher-badge">AUTO-NOTA</span>
+          </div>
+
+          <div class="am-voucher-body">
+            <div class="am-voucher-rows">
+              <div class="am-voucher-row">
+                <span class="am-voucher-label">Pelanggan</span>
+                <span id="summaryCustomer" class="am-voucher-val">Belum diisi</span>
+              </div>
+              <div class="am-voucher-row">
+                <span class="am-voucher-label">Unit Barang</span>
+                <span id="summaryItem" class="am-voucher-val">1 Pasang</span>
+              </div>
+              <div class="am-voucher-row">
+                <span class="am-voucher-label">Serah Terima</span>
+                <span id="summaryDelivery" class="am-voucher-val">Drop-Off Studio</span>
+              </div>
+              <div class="am-voucher-row">
+                <span class="am-voucher-label">Estimasi Durasi</span>
+                <span id="summaryDuration" class="am-voucher-val font-mono-code text-xs">2–3 Hari</span>
+              </div>
+            </div>
+
+            <div class="am-voucher-ledger">
+              <div class="flex justify-between gap-4">
+                <span id="summaryBaseServiceLabel" class="am-voucher-label">Paket Utama</span>
+                <span id="summaryBasePrice" class="font-mono-code font-bold shrink-0">Rp 65.000</span>
+              </div>
+              <div id="summaryAddonsList" class="space-y-1.5 text-xs"></div>
+            </div>
+
+            <div class="am-voucher-total">
+              <div>
+                <div class="am-voucher-label text-xs font-bold uppercase tracking-wider">Total Estimasi</div>
+                <div class="am-voucher-total-sub">Terbitkan kode nota otomatis</div>
+              </div>
+              <div id="summaryTotalPrice" class="am-voucher-total-num">Rp 65.000</div>
+            </div>
+
+            <button
+              type="button"
+              onclick="submitBookingToWhatsApp()"
+              class="am-voucher-cta"
+            >
+              <span>Terbitkan Nota &amp; Kirim WA</span>
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      // Default (tactile_bento) and Swiss Minimal (swiss_minimal) untouched
+      card.innerHTML = `
+        <div class="px-6 py-4 border-b border-[#232734] flex items-center justify-between gap-2">
+          <div>
+            <div class="font-display font-bold text-sm text-white">Ringkasan Tiket Booking</div>
+            <div id="summaryTenantName" class="text-xs text-[#94A3B8] mt-0.5 transition-opacity duration-200"></div>
+          </div>
+          <span class="font-mono-code text-xs font-bold px-3 py-1 rounded-full bg-[#232734] text-[#E2E8F0]">AUTO-NOTA</span>
+        </div>
+
+        <div class="p-6 space-y-5">
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between gap-4">
+              <span class="text-[#94A3B8] shrink-0">Pelanggan</span>
+              <span id="summaryCustomer" class="font-semibold text-right text-white">Belum diisi</span>
+            </div>
+            <div class="flex justify-between gap-4">
+              <span class="text-[#94A3B8] shrink-0">Unit Barang</span>
+              <span id="summaryItem" class="font-semibold text-right text-white">1 Pasang</span>
+            </div>
+            <div class="flex justify-between gap-4">
+              <span class="text-[#94A3B8] shrink-0">Serah Terima</span>
+              <span id="summaryDelivery" class="text-right text-[#F8FAFC]">Drop-Off Studio</span>
+            </div>
+            <div class="flex justify-between gap-4">
+              <span class="text-[#94A3B8] shrink-0">Estimasi Durasi</span>
+              <span id="summaryDuration" class="font-mono-code text-xs text-right text-white">2–3 Hari</span>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-[#232734] space-y-2.5 text-sm">
+            <div class="flex justify-between gap-4">
+              <span id="summaryBaseServiceLabel" class="text-[#94A3B8]">Paket Utama</span>
+              <span id="summaryBasePrice" class="font-mono-code font-semibold text-white shrink-0">Rp 65.000</span>
+            </div>
+            <div id="summaryAddonsList" class="space-y-1.5 text-xs text-[#94A3B8]"></div>
+          </div>
+
+          <div class="pt-4 border-t border-[#232734] space-y-4">
+            <div class="flex items-baseline justify-between gap-4">
+              <div>
+                <div class="text-xs font-medium text-[#94A3B8]">Total Estimasi</div>
+                <div class="text-xs text-[#94A3B8]">Terbitkan kode nota otomatis</div>
+              </div>
+              <div id="summaryTotalPrice" class="font-display text-2xl font-extrabold text-white tabular-nums">Rp 65.000</div>
+            </div>
+
+            <button
+              type="button"
+              onclick="submitBookingToWhatsApp()"
+              class="tactile-btn-yellow w-full h-12 font-display text-sm inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
+            >
+              <span>Terbitkan Nota &amp; Kirim WA</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function getPublicSafeOrders(tenantObj) {
+      if (!tenantObj) return [];
+      const slug = tenantObj.slug;
+      if (window.ServiceStore && window.ServiceStore.isAdminForTenant && window.ServiceStore.isAdminForTenant(slug)) {
+        return tenantObj.orders || [];
+      }
+      const recentOrders =
+        window.ServiceStore && window.ServiceStore.getRecentPublicOrders
+          ? window.ServiceStore.getRecentPublicOrders(slug)
+          : [];
+      const recentCodes = new Set(
+        recentOrders.map(ro => String((ro && ro.orderId) || "").trim().toUpperCase())
+      );
+      const seen = new Set();
+      const safeList = [];
+      [...recentOrders, ...(tenantObj.orders || [])].forEach(o => {
+        if (!o || !o.orderId) return;
+        const k = String(o.orderId).trim().toUpperCase();
+        if (!k || seen.has(k)) return;
+        if (!recentCodes.has(k) && !String(o.id || "").startsWith("ord-")) return;
+        seen.add(k);
+        safeList.push(o);
+      });
+      return safeList;
+    }
+
+    function initPublicPage() {
+      checkDemoVisibility();
+      currentSlug = window.getActiveMitraSlug();
+      currentTenant = window.ServiceStore.getTenant(currentSlug);
+      if (!currentTenant) return;
+
+      const params = new URLSearchParams(window.location.search);
+      const urlTemplate = params.get("template");
+      const validUrlTemplate =
+        urlTemplate && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[urlTemplate]
+          ? urlTemplate
+          : null;
+      const activeTemplate = window.resolveValidUiTemplate
+        ? window.resolveValidUiTemplate(validUrlTemplate || currentTenant.uiTemplate)
+        : (validUrlTemplate || "tactile_bento");
+      window.applyWorkshopTheme(currentTenant.themePreset, currentTenant.brandColor, activeTemplate);
+      populateTenantSelector();
+      renderBrandingAndHero();
+      renderSampleResiChips();
+
+      const safeOrders = getPublicSafeOrders(currentTenant);
+      const urlResi = params.get("resi") || params.get("nota");
+      const activeSearchVal = (document.getElementById("resiSearchInput")?.value || "").trim();
+      if (urlResi) {
+        document.getElementById("resiSearchInput").value = urlResi;
+        handleTrackOrder(urlResi);
+      } else if (activeSearchVal) {
+        handleTrackOrder(activeSearchVal);
+      } else if (trackedOrderObj && trackedOrderObj.orderId) {
+        const refreshed = safeOrders.find(o => o.orderId === trackedOrderObj.orderId);
+        trackedOrderObj = refreshed || trackedOrderObj;
+        renderTrackedOrder(trackedOrderObj);
+      } else if (safeOrders.length > 0) {
+        trackedOrderObj = safeOrders[0];
+        renderTrackedOrder(trackedOrderObj);
+      } else {
+        renderTrackedOrder(null);
+      }
+
+      renderSopAndAnatomy();
+      renderServiceCatalog();
+      renderBookingTicketPanel(activeTemplate);
+      populateBookingForm();
+      renderFaqSection();
+    }
+
+    function populateTenantSelector() {
+      const sel = document.getElementById("demoTenantSelector");
+      const all = window.ServiceStore.getAllTenants();
+      sel.innerHTML = all.map(t => {
+        const selected = t.slug === currentTenant.slug ? "selected" : "";
+        return `<option value="${escapeHtml(t.slug)}" ${selected}>${escapeHtml(t.name)} (${escapeHtml(t.branch)})</option>`;
+      }).join("");
+
+      const tplSel = document.getElementById("demoTemplateSelector");
+      if (tplSel) {
+        tplSel.value = getActiveUiTemplate();
+      }
+
+      const tplSuffix = getTemplateQuerySuffix();
+      const q = `?mitra=${encodeURIComponent(currentTenant.slug)}${tplSuffix}`;
+      document.getElementById("topAdminLink").href = sanitizeUrl(`admin.html${q}`, "admin.html");
+      document.getElementById("footerAdminLink").href = sanitizeUrl(`admin.html${q}`, "admin.html");
+      document.getElementById("footerAnalyticsLink").href = sanitizeUrl(`analytics.html${q}`, "analytics.html");
+    }
+
+    function switchTenantDemo(newSlug) {
+      localStorage.setItem("active_mitra_slug", newSlug);
+      const url = new URL(window.location.href);
+      url.searchParams.set("mitra", newSlug);
+      url.searchParams.delete("resi");
+      url.searchParams.delete("template");
+      window.history.replaceState({}, "", url.toString());
+      trackedOrderObj = null;
+      const searchEl = document.getElementById("resiSearchInput");
+      if (searchEl) searchEl.value = "";
+      activeCategoryFilter = "ALL";
+      activeSopStage = null;
+      initPublicPage();
+    }
+
+    function switchPublicUiTemplate(newTemplate) {
+      if (!currentTenant) return;
+      const validKey = window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[newTemplate]
+        ? newTemplate
+        : "tactile_bento";
+      currentTenant.uiTemplate = validKey;
+      window.ServiceStore.saveTenantProfile(currentTenant.slug, { uiTemplate: validKey });
+      window.applyWorkshopTheme(currentTenant.themePreset, currentTenant.brandColor, validKey);
+
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("template")) {
+        url.searchParams.set("template", validKey);
+        window.history.replaceState({}, "", url.toString());
+      }
+
+      const tplSel = document.getElementById("demoTemplateSelector");
+      if (tplSel) tplSel.value = validKey;
+
+      populateTenantSelector();
+      renderTrackedOrder(trackedOrderObj);
+      renderSopAndAnatomy();
+      renderServiceCatalog();
+      renderBookingTicketPanel(validKey);
+      populateBookingForm();
+      renderFaqSection();
+    }
+
+    function renderBrandingAndHero() {
+      const nicheDef = window.NICHE_DEFINITIONS[currentTenant.niche] || window.NICHE_DEFINITIONS.sneakers_care;
+      const initials = currentTenant.name.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase() || "LAB";
+      const safeBrandAlt = (currentTenant.name || "Studio Layanan").trim() || "Studio Layanan";
+
+      document.getElementById("pageTitle").textContent = currentTenant.branch
+        ? `${currentTenant.name} · ${currentTenant.branch}`
+        : currentTenant.name;
+      const logoBox = document.getElementById("navLogoBox");
+      const safeLogoUrl = sanitizeUrl(currentTenant.logoUrl);
+      if (safeLogoUrl) {
+        logoBox.innerHTML = `<img src="${escapeHtml(safeLogoUrl)}" alt="Logo ${escapeHtml(safeBrandAlt)}" fetchpriority="high" class="w-full h-full object-cover" data-initials="${escapeHtml(initials)}" onerror="this.parentElement.textContent=this.getAttribute('data-initials')" />`;
+      } else {
+        logoBox.textContent = initials;
+      }
+
+      document.getElementById("navBrandName").textContent = currentTenant.name;
+      document.getElementById("navNicheBadge").textContent = nicheDef.shortLabel;
+      document.getElementById("navBranchText").textContent = currentTenant.branch || "Studio Layanan";
+
+      const heroLocEl = document.getElementById("heroBadgeLocation");
+      if (heroLocEl) {
+        heroLocEl.textContent = currentTenant.branch
+          ? `${nicheDef.label} · ${currentTenant.branch}`
+          : nicheDef.label;
+      }
+      document.getElementById("heroHeadline1").textContent = currentTenant.heroHeadline1;
+      document.getElementById("heroHeadline2").textContent = currentTenant.heroHeadline2;
+      document.getElementById("heroDescText").textContent = currentTenant.heroDesc;
+
+      const heroImgWrap = document.getElementById("dynamicHeroImgWrap");
+      const heroBannerImg = document.getElementById("heroBannerImg");
+      if (heroImgWrap && heroBannerImg) {
+        const fallbackHeroUrl = "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=800&q=75";
+        const rawHeroUrl = currentTenant.heroImageUrl || (window.resolveWorkshopHeroImage ? window.resolveWorkshopHeroImage(currentTenant.niche) : fallbackHeroUrl);
+        const targetHeroUrl = sanitizeUrl(rawHeroUrl, fallbackHeroUrl) || fallbackHeroUrl;
+        heroBannerImg.alt = `Banner layanan ${safeBrandAlt}`;
+        if (targetHeroUrl && heroBannerImg.dataset.loadedUrl !== targetHeroUrl) {
+          heroBannerImg.dataset.loadedUrl = targetHeroUrl;
+          heroBannerImg.onerror = function () {
+            this.onerror = null;
+            this.src = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 640 270%22%3E%3Cdefs%3E%3ClinearGradient id=%22bg%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%25%22 stop-color=%22%23181920%22/%3E%3Cstop offset=%22100%25%22 stop-color=%22%23272A35%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22640%22 height=%22270%22 fill=%22url(%23bg)%22/%3E%3Cpath d=%22M0 200 L640 112 M140 0 L64 270 M460 0 L520 270%22 stroke=%22%23383C4A%22 stroke-width=%221.5%22/%3E%3Ccircle cx=%22510%22 cy=%22125%22 r=%2264%22 fill=%22none%22 stroke=%22%23D9381E%22 stroke-width=%223%22 stroke-opacity=%220.65%22/%3E%3Ccircle cx=%22510%22 cy=%22125%22 r=%2216%22 fill=%22%23D9381E%22/%3E%3C/svg%3E";
+          };
+          heroBannerImg.src = targetHeroUrl;
+        }
+        const overlayTitle = document.getElementById("heroImgOverlayTitle");
+        const overlayMeta = document.getElementById("heroImgOverlayMeta");
+        if (overlayTitle) {
+          overlayTitle.textContent = currentTenant.isPlaceholder ? "Meja Teknisi Aktif" : currentTenant.name;
+        }
+        if (overlayMeta) {
+          overlayMeta.textContent = currentTenant.serviceMode === "studio_slot" ? "Slot Studio" : "Antar-Jemput";
+        }
+      }
+
+      document.getElementById("statRatingScore").textContent = currentTenant.ratingScore || "4.9";
+      document.getElementById("statActiveCount").textContent = getPublicSafeOrders(currentTenant).length;
+      document.getElementById("statDeliveryMode").textContent =
+        currentTenant.serviceMode === "studio_slot" ? "Slot Studio" : "Jemput & Antar";
+      const shortHours = (currentTenant.hours || "10.00 – 21.00 WIB").split("·").pop().trim();
+      document.getElementById("statHoursShort").textContent = shortHours;
+
+      document.getElementById("footerPickupPolicy").textContent = currentTenant.pickupPolicy;
+      document.getElementById("footerAddress").textContent = currentTenant.address;
+      document.getElementById("footerHours").textContent = currentTenant.hours;
+      document.getElementById("footerInstagram").textContent = currentTenant.instagram;
+      document.getElementById("footerWhatsapp").textContent = currentTenant.whatsapp;
+      document.getElementById("footerCopyrightName").textContent = currentTenant.isPlaceholder ? "Studio Layanan" : currentTenant.name;
+    }
+
+    function renderSampleResiChips() {
+      const box = document.getElementById("sampleResiChips");
+      const orders = getPublicSafeOrders(currentTenant);
+      if (orders.length === 0) {
+        box.innerHTML = `<span class="text-xs text-[#78766F]">Masukkan kode nota Anda di atas</span>`;
+        return;
+      }
+      box.innerHTML = orders.slice(0, 4).map(o => {
+        const isCurrent = trackedOrderObj && trackedOrderObj.orderId === o.orderId;
+        const safeCode = escapeHtml(o.orderId);
+        return `<button type="button" data-resi="${safeCode}" onclick="selectSampleResi(this.getAttribute('data-resi'))" class="px-3 py-1 rounded-full font-mono-code text-xs font-bold transition-colors cursor-pointer ${
+          isCurrent
+            ? "bg-[var(--brand)] text-white"
+            : "bg-[#E7EBF2] text-[#111216] hover:bg-[#E1DDD3]"
+        }">${safeCode}</button>`;
+      }).join("");
+    }
+
+    function selectSampleResi(code) {
+      document.getElementById("resiSearchInput").value = code;
+      handleTrackOrder(code);
+    }
+
+    // Matches Order ID (via secure RPC for public visitors) or full order list for authenticated tenant admin
+    async function handleTrackOrder(forcedCode) {
+      const inputEl = document.getElementById("resiSearchInput");
+      const raw = (forcedCode !== undefined && forcedCode !== null ? String(forcedCode) : (inputEl ? inputEl.value : "")).trim();
+      if (!raw || !currentTenant) return;
+
+      const reqSeq = ++__wsTrackReqSeq;
+      const searchSlug = currentTenant.slug;
+      const upper = raw.toUpperCase();
+      const digits = raw.replace(/\D/g, "");
+
+      const recentOrders =
+        window.ServiceStore && window.ServiceStore.getRecentPublicOrders
+          ? window.ServiceStore.getRecentPublicOrders(searchSlug)
+          : [];
+      const localOrders = [...recentOrders, ...(currentTenant.orders || [])];
+      const safeLocalOrders = getPublicSafeOrders(currentTenant);
+
+      const isTenantAdmin =
+        window.ServiceStore && window.ServiceStore.ensureAdminSessionForTenant
+          ? await window.ServiceStore.ensureAdminSessionForTenant(searchSlug)
+          : (window.ServiceStore && window.ServiceStore.isAdminForTenant ? window.ServiceStore.isAdminForTenant(searchSlug) : false);
+
+      if (reqSeq !== __wsTrackReqSeq || !currentTenant || currentTenant.slug !== searchSlug) return;
+
+      if (isTenantAdmin) {
+        const found = localOrders.find(o => {
+          if (String(o.orderId || "").toUpperCase() === upper) return true;
+          if (String(o.trackingToken || "").toUpperCase() === upper) return true;
+          if (String(o.customerName || "").toUpperCase().includes(upper)) return true;
+          if (digits.length >= 6) {
+            const ordDigits = (o.phone || "").replace(/\D/g, "");
+            if (ordDigits.includes(digits) || (digits.length >= 8 && ordDigits.endsWith(digits.slice(-8)))) {
+              return true;
+            }
+          }
+          return false;
+        });
+        trackedOrderObj = found || { notFound: true, query: raw };
+      } else {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlToken = (urlParams.get("token") || "").trim();
+        const localExact =
+          upper.length >= 6
+            ? (window.ServiceStore && window.ServiceStore.findLocalOrderByCode
+                ? window.ServiceStore.findLocalOrderByCode(searchSlug, raw, urlToken)
+                : safeLocalOrders.find(o => String(o.orderId || "").trim().toUpperCase() === upper))
+            : null;
+
+        if (localExact && window.isSupabaseConfigured && window.isSupabaseConfigured()) {
+          trackedOrderObj = localExact;
+          renderSampleResiChips();
+          renderTrackedOrder(trackedOrderObj);
+        }
+
+        let found = null;
+        if (upper.length >= 6) {
+          if (window.ServiceStore && window.ServiceStore.fetchPublicOrderByCode) {
+            found = await window.ServiceStore.fetchPublicOrderByCode(searchSlug, raw, urlToken);
+          } else {
+            found = localExact || null;
+          }
+        }
+
+        if (reqSeq !== __wsTrackReqSeq || !currentTenant || currentTenant.slug !== searchSlug) return;
+
+        if (!found && upper.length >= 6) {
+          found = safeLocalOrders.find(o => String(o.orderId || "").trim().toUpperCase() === upper) || null;
+        }
+        trackedOrderObj = found || { notFound: true, query: raw };
+      }
+
+      renderSampleResiChips();
+      renderTrackedOrder(trackedOrderObj);
+      if (window.innerWidth < 1024) {
+        const trackerEl = document.getElementById("trackerResultMount");
+        if (trackerEl) trackerEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+
+    function renderTrackedOrder(ord) {
+      const mount = document.getElementById("trackerResultMount");
+      const nicheDef = window.NICHE_DEFINITIONS[currentTenant.niche] || window.NICHE_DEFINITIONS.sneakers_care;
+      const steps = nicheDef.steps;
+
+      if (!ord) {
+        mount.innerHTML = `
+          <div class="py-8 text-center">
+            <p class="text-sm text-[#A09F9A]">Masukkan nomor nota Anda pada kolom pencarian.</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (ord.notFound) {
+        const safeSampleOrders = getPublicSafeOrders(currentTenant);
+        const sampleCode = (safeSampleOrders[0] && safeSampleOrders[0].orderId) || "KLK-2601";
+        mount.innerHTML = `
+          <div class="py-4 space-y-2">
+            <div class="text-xs font-bold text-white">Data "${escapeHtml(ord.query)}" Tidak Ditemukan</div>
+            <p class="text-xs text-[#A09F9A] leading-relaxed">
+              Periksa kembali kode nota atau link pelacakan Anda secara lengkap (contoh: <span class="font-mono-code text-white">${escapeHtml(sampleCode)}</span>).
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      const curStepIdx = Math.min(Math.max(Number(ord.stepIndex) || 1, 1), 5);
+      const curStepMeta = steps[curStepIdx - 1] || steps[0];
+
+      // Single Brand Accent on Active Stage + Calm Monochrome on Passed/Pending (Zero Rainbow Clash)
+      const stagePillsHtml = steps.map(s => {
+        const stepNum = Math.min(Math.max(Number(s.step) || 1, 1), 5);
+        const passed = stepNum < curStepIdx;
+        const active = stepNum === curStepIdx;
+        let pillClass = "text-[#9E9D98]";
+        if (passed) pillClass = "text-[#D4D4D8] bg-[#16161A]";
+        if (active) pillClass = "bg-[var(--brand)] text-white font-bold";
+
+        return `
+          <li class="flex flex-col items-center justify-center py-2.5 px-1 ${pillClass} text-center min-w-0">
+            <span class="font-mono-code text-xs">${stepNum}</span>
+            <span class="text-xs mt-0.5 leading-tight tracking-tight">${escapeHtml(s.code)}</span>
+          </li>
+        `;
+      }).join("");
+
+      const tokenQuery = ord.trackingToken ? `&token=${encodeURIComponent(ord.trackingToken)}` : "";
+      const rawNotaUrl = `nota.html?mitra=${encodeURIComponent(currentTenant.slug)}&order=${encodeURIComponent(ord.orderId)}${tokenQuery}${getTemplateQuerySuffix()}`;
+      const notaUrl = sanitizeUrl(rawNotaUrl, "#");
+      const waAskText = encodeURIComponent(
+        `Halo Admin ${currentTenant.name}, saya ingin menanyakan progres Nota *${ord.orderId}* (${ord.itemName}).`
+      );
+      const safeWaDigits = String(currentTenant.whatsapp || "").replace(/[^0-9]/g, "").replace(/^0/, "62");
+      const waUrl = safeWaDigits ? sanitizeUrl(`https://wa.me/${safeWaDigits}?text=${waAskText}`, "#") : "#";
+      const displayStatus = ord.statusLabel || curStepMeta.label;
+      const deliveryDisplay = ord.deliveryType && ord.deliveryType !== "-" ? ord.deliveryType : "Nota Terverifikasi";
+      const pct = Math.round((curStepIdx / 5) * 100);
+      const publicSafeNote = ord.publicNote || ord.techNote || curStepMeta.defaultNote;
+
+      mount.innerHTML = `
+        <div class="flex-1 flex flex-col justify-between gap-4 h-full">
+          <div class="flex flex-wrap items-start justify-between gap-3 pb-4 border-b border-[#232734]">
+            <div>
+              <div class="font-display text-2xl font-extrabold text-white tracking-tight whitespace-nowrap">${escapeHtml(ord.orderId)}</div>
+              <div class="text-xs text-[#94A3B8] mt-0.5">${escapeHtml(ord.customerName)} · ${escapeHtml(deliveryDisplay)}</div>
+            </div>
+            <span class="px-3.5 py-1.5 rounded-full text-xs font-bold ${curStepIdx === 5 ? "bg-[#10B981] text-[#111216]" : "bg-[#1A1D26] text-white"}">
+              Tahap ${curStepIdx}/5 · ${escapeHtml(displayStatus)}
+            </span>
+          </div>
+
+          <div class="pb-4 border-b border-[#232734] space-y-3">
+            <div>
+              <div class="text-xs font-medium text-[#94A3B8]">Unit & Paket Layanan</div>
+              <div class="text-sm font-bold text-white mt-0.5 leading-snug">${escapeHtml(ord.itemName)}</div>
+              <div class="text-xs text-[#CBD5E1] mt-0.5 leading-snug">${escapeHtml(ord.serviceName)}</div>
+            </div>
+            <div class="pt-3 border-t border-[#232734] flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div>
+                <span class="text-[#94A3B8]">Estimasi: </span>
+                <span class="font-mono-code font-semibold text-white">${escapeHtml(ord.etaDate)}</span>
+              </div>
+              <div>
+                <span class="text-[#94A3B8]">Biaya: </span>
+                <span class="font-mono-code font-bold text-white">${window.formatRupiah(ord.price)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-[#94A3B8]">Progres Pengerjaan (1–5)</span>
+              <span class="font-mono-code text-xs font-bold text-white">${pct}%</span>
+            </div>
+            <span class="block w-full h-2 rounded-full bg-[#181B22] overflow-hidden">
+              <span style="width: ${pct}%; background-color: ${curStepIdx === 5 ? "#10B981" : "var(--brand)"};" class="block h-full rounded-full transition-all duration-300"></span>
+            </span>
+            <ol class="grid grid-cols-5 border-y border-[#232734] overflow-hidden divide-x divide-[#232734]">
+              ${stagePillsHtml}
+            </ol>
+          </div>
+
+          <div class="p-3.5 rounded-[14px] bg-[#181C26] border border-[#262C3A]">
+            <div class="text-xs font-semibold text-[#94A3B8] mb-1">Catatan Teknisi</div>
+            <p class="text-xs sm:text-sm text-[#F8FAFC] leading-relaxed">
+              "${escapeHtml(publicSafeNote)}"
+            </p>
+          </div>
+
+          <div class="space-y-3 pt-1">
+            <div class="grid grid-cols-2 gap-2.5">
+              <a href="${escapeHtml(notaUrl)}" aria-label="Buka E-Nota untuk pesanan ${escapeHtml(ord.orderId)}" class="h-11 px-4 rounded-full bg-white hover:bg-[#E2E8F0] text-[#111216] font-bold text-xs inline-flex items-center justify-center gap-1.5 transition-colors">
+                <svg class="w-3.5 h-3.5 shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span>Buka E-Nota</span>
+              </a>
+              <a href="${escapeHtml(waUrl)}" target="_blank" rel="noopener" aria-label="Tanya teknisi via WhatsApp untuk pesanan ${escapeHtml(ord.orderId)}" class="h-11 px-4 rounded-full bg-[#181B22] hover:bg-[#232734] text-[#F8FAFC] font-semibold text-xs inline-flex items-center justify-center gap-1.5 transition-colors">
+                <svg class="w-3.5 h-3.5 text-[#94A3B8] shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                <span>Tanya Teknisi</span>
+              </a>
+            </div>
+            <div class="pt-3.5 border-t border-[#232734] flex items-center justify-between gap-2 text-[11px] text-[#94A3B8]">
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+                <span>E-Nota &amp; QR Terverifikasi</span>
+              </span>
+              <span class="font-mono-code text-[#CBD5E1]">${escapeHtml(currentTenant.hours || "Buka Setiap Hari")}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleSopStage(stepNum) {
+      activeSopStage = activeSopStage === stepNum ? null : stepNum;
+      renderSopAndAnatomy();
+    }
+
+    function renderSopAndAnatomy() {
+      const nicheDef = window.NICHE_DEFINITIONS[currentTenant.niche] || window.NICHE_DEFINITIONS.sneakers_care;
+      const tpl = getActiveUiTemplate();
+      const sopMount = document.getElementById("sopStepsMount");
+      const zonesMount = document.getElementById("anatomyZonesMount");
+      const sopTitleEl = document.getElementById("sopHeaderTitle");
+      const sopHintEl = document.getElementById("sopHeaderHint");
+      const anaTitleEl = document.getElementById("anatomyHeaderTitle");
+      const anaTagEl = document.getElementById("anatomyUnitTag");
+
+      if (tpl === "atelier_magazine") {
+        if (sopTitleEl) sopTitleEl.textContent = "Tahapan Standar Operasional";
+        if (sopHintEl) sopHintEl.textContent = "5 Tahap Terukur · Terbuka";
+        if (anaTitleEl) anaTitleEl.textContent = "Penanganan Komponen & Alat";
+        if (anaTagEl) anaTagEl.textContent = nicheDef.shortLabel || "Spesifikasi Teknis";
+
+        sopMount.innerHTML = `
+          <div class="am-sop-list">
+            ${nicheDef.steps.map(s => {
+              const stepNum = Math.min(Math.max(Number(s.step) || 1, 1), 5);
+              return `
+              <div class="am-sop-item">
+                <div class="am-sop-top">
+                  <span class="am-sop-step">Tahap 0${stepNum}</span>
+                  <span class="am-sop-code">${escapeHtml(s.code)}</span>
+                </div>
+                <h3 class="am-sop-title">${escapeHtml(s.label)}</h3>
+                <p class="am-sop-desc">${escapeHtml(s.desc)}</p>
+                <blockquote class="am-sop-quote">Standar Teknisi: "${escapeHtml(s.defaultNote)}"</blockquote>
+              </div>
+            `;
+            }).join("")}
+          </div>
+        `;
+
+        zonesMount.innerHTML = `
+          <div class="am-zone-list">
+            ${nicheDef.inspectionZones.map(z => `
+              <article class="am-zone-item">
+                <div class="am-zone-head">
+                  <h3 class="am-zone-title">${escapeHtml(z.title)}</h3>
+                  <span class="am-zone-tool">${escapeHtml(z.tool)}</span>
+                </div>
+                <div class="am-zone-part">Bagian: ${escapeHtml(z.part)}</div>
+                <p class="am-zone-detail">${escapeHtml(z.detail)}</p>
+              </article>
+            `).join("")}
+          </div>
+        `;
+        return;
+      }
+
+      if (sopTitleEl) sopTitleEl.textContent = "Tahapan Standar Operasional";
+      if (sopHintEl) sopHintEl.textContent = "Klik baris untuk rincian";
+      if (anaTitleEl) anaTitleEl.textContent = "Penanganan Komponen & Alat";
+      if (anaTagEl) anaTagEl.textContent = "Spesifikasi Teknis";
+
+      sopMount.innerHTML = nicheDef.steps.map(s => {
+        const stepNum = Math.min(Math.max(Number(s.step) || 1, 1), 5);
+        const isOpen = stepNum === activeSopStage;
+        return `
+          <button
+            type="button"
+            onclick="toggleSopStage(${stepNum})"
+            aria-expanded="${isOpen}"
+            class="w-full text-left p-4 sm:p-5 transition-colors flex items-start justify-between gap-3.5 cursor-pointer ${
+              isOpen ? "bg-[#F5F3EE]" : "bg-white hover:bg-[#F5F3EE]/60"
+            }"
+          >
+            <span class="w-9 h-9 rounded-full font-display text-xs font-extrabold flex items-center justify-center shrink-0 mt-0.5 ${
+              isOpen ? "bg-[var(--brand)] text-white" : "bg-[#E7EBF2] text-[#111216]"
+            }">0${stepNum}</span>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="font-display font-bold text-sm sm:text-base text-[#111216]">${escapeHtml(s.label)}</h3>
+                <span class="font-mono-code text-xs px-2.5 py-0.5 rounded-full bg-[#E7EBF2] text-[#43423D] font-bold">${escapeHtml(s.code)}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-[#43423D] mt-1 leading-relaxed">${escapeHtml(s.desc)}</p>
+              ${
+                isOpen
+                  ? `<div class="mt-3 pt-2.5 border-t border-[#D4D0C5] text-xs text-[#111216] leading-relaxed">
+                      <span class="font-bold">Standar Laporan Teknisi:</span> "${escapeHtml(s.defaultNote)}"
+                    </div>`
+                  : ""
+              }
+            </div>
+            <svg class="w-4 h-4 text-[#6B6961] shrink-0 mt-2 transition-transform ${isOpen ? "rotate-180 text-[#111216]" : ""}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        `;
+      }).join("");
+
+      zonesMount.innerHTML = nicheDef.inspectionZones.map(z => `
+        <article class="p-4 sm:p-5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="font-display font-bold text-sm text-[#111216]">${escapeHtml(z.title)}</h3>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-white text-[#111216] font-bold">${escapeHtml(z.tool)}</span>
+          </div>
+          <div class="text-xs font-medium text-[#374151] mt-1">Bagian: ${escapeHtml(z.part)}</div>
+          <p class="text-xs sm:text-sm text-[#1F2937] mt-1.5 leading-relaxed">${escapeHtml(z.detail)}</p>
+        </article>
+      `).join("");
+    }
+
+    function setCategoryFilter(cat) {
+      activeCategoryFilter = cat;
+      renderServiceCatalog();
+    }
+
+    function renderServiceCatalog() {
+      const services = (currentTenant.services || []).filter(s => s.available !== false);
+      const categories = ["ALL", ...new Set(services.map(s => s.category || "Treatment"))];
+      const tpl = getActiveUiTemplate();
+
+      const pillsMount = document.getElementById("serviceCategoryPills");
+      pillsMount.innerHTML = categories.map(cat => {
+        const active = cat === activeCategoryFilter;
+        const label = cat === "ALL" ? "Semua Paket" : cat;
+        const safeCat = escapeHtml(cat);
+        return `
+          <button
+            type="button"
+            data-category="${safeCat}"
+            onclick="setCategoryFilter(this.getAttribute('data-category'))"
+            class="h-9 px-4 rounded-full text-xs font-bold transition-colors cursor-pointer whitespace-nowrap ${
+              active
+                ? "bg-[#111216] text-white"
+                : "bg-white text-[#43423D] border-[1.5px] border-[#18181B] hover:bg-[#E7EBF2]"
+            }"
+          >${escapeHtml(label)}</button>
+        `;
+      }).join("");
+
+      const filtered = activeCategoryFilter === "ALL"
+        ? services
+        : services.filter(s => (s.category || "Treatment") === activeCategoryFilter);
+
+      const catalogMount = document.getElementById("serviceCatalogMount");
+      if (filtered.length === 0) {
+        if (tpl === "atelier_magazine") {
+          catalogMount.innerHTML = [1, 2].map(() => `
+            <article class="am-gallery-card tpl-magazine-card">
+              <div>
+                <div class="am-gallery-media"></div>
+                <div class="am-gallery-body">
+                  <h3 class="am-gallery-title">Memuat Katalog Layanan...</h3>
+                  <p class="am-gallery-desc">Sinkronisasi daftar paket layanan studio.</p>
+                </div>
+              </div>
+              <div class="am-gallery-footer">
+                <span class="am-gallery-dur">Memuat...</span>
+              </div>
+            </article>
+          `).join("");
+        } else {
+          catalogMount.innerHTML = [1, 2].map(() => `
+            <div class="tactile-card p-5 sm:p-6 flex flex-col justify-between gap-4">
+              <div class="flex items-start gap-4">
+                <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-[14px] shrink-0 bg-[#E7EBF2]"></div>
+                <div class="flex-1 min-w-0 space-y-2">
+                  <div class="font-display text-sm sm:text-base font-bold text-[#111216]">Memuat Katalog Layanan...</div>
+                  <div class="text-xs text-[#6B6961]">Sinkronisasi daftar paket studio</div>
+                </div>
+              </div>
+              <div class="pt-4 border-t border-[#E6E2D8] flex items-center justify-between">
+                <span class="font-mono-code text-sm font-bold text-[#6B6961]">Rp -</span>
+                <span class="h-10 px-4 rounded-full bg-[#E7EBF2] text-[#6B6961] text-xs font-semibold inline-flex items-center">Memuat...</span>
+              </div>
+            </div>
+          `).join("");
+        }
+        return;
+      }
+
+      const resolveImg = (s, idx) => {
+        const fallbackImg = "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=800&q=80";
+        let imgUrl = s.imageUrl || (window.resolveWorkshopServiceImage ? window.resolveWorkshopServiceImage(s.name, s.category, currentTenant.niche, idx) : fallbackImg);
+        if (imgUrl && (imgUrl.includes("1584735935682") || imgUrl.includes("1595950653106") || imgUrl.includes("1542291026") || imgUrl.includes("1552346154") || imgUrl.includes("1600185365483"))) {
+          imgUrl = window.resolveWorkshopServiceImage ? window.resolveWorkshopServiceImage(s.name, s.category, currentTenant.niche, idx + 1) : fallbackImg;
+        }
+        const safeImg = sanitizeUrl(imgUrl, fallbackImg) || fallbackImg;
+        return { imgUrl: safeImg, fallbackImg };
+      };
+
+      if (tpl === "atelier_magazine") {
+        catalogMount.innerHTML = filtered.map((s, idx) => {
+          const hasPromo = Boolean(s.isPromo && s.promoPrice && s.promoPrice < s.price);
+          const finalPrice = hasPromo ? s.promoPrice : s.price;
+          const discountPct = hasPromo ? Math.round(((s.price - s.promoPrice) / s.price) * 100) : 0;
+          const safeSrvAlt = escapeHtml((s.name || "Paket Layanan Studio").trim() || "Paket Layanan Studio");
+          const { imgUrl, fallbackImg } = resolveImg(s, idx);
+          const safeImg = escapeHtml(imgUrl);
+          const safeFallback = escapeHtml(fallbackImg);
+          const safeSrvId = escapeHtml(s.id);
+          return `
+            <article class="am-gallery-card tpl-magazine-card">
+              <div>
+                <div class="am-gallery-media">
+                  <img src="${safeImg}" alt="Layanan ${safeSrvAlt}" width="640" height="185" decoding="async" class="am-gallery-img" data-fallback="${safeFallback}" onerror="this.onerror=null;this.src=this.getAttribute('data-fallback');" />
+                </div>
+                <div class="am-gallery-body">
+                  <div class="am-gallery-meta">
+                    <span class="am-gallery-cat">${escapeHtml(s.category || "Signature Treatment")}</span>
+                    ${s.badge ? `<span class="am-gallery-badge">${escapeHtml(s.badge)}</span>` : ""}
+                    ${hasPromo && discountPct > 0 ? `<span class="am-gallery-promo">Hemat ${discountPct}%</span>` : ""}
+                  </div>
+                  <h3 class="am-gallery-title">${escapeHtml(s.name)}</h3>
+                  <p class="am-gallery-desc">${escapeHtml(s.desc || "Perawatan standar studio dengan bahan teruji.")}</p>
+                </div>
+              </div>
+              <div class="am-gallery-footer">
+                <div>
+                  <div class="am-gallery-dur">Estimasi: ${escapeHtml(s.duration)}</div>
+                  <div class="am-gallery-price-row">
+                    <span class="am-gallery-price">${escapeHtml(window.formatRupiah(finalPrice))}</span>
+                    ${hasPromo && discountPct > 0 ? `<span class="am-gallery-strike">${escapeHtml(window.formatRupiah(s.price))}</span>` : ""}
+                  </div>
+                </div>
+                <button type="button" data-service-id="${safeSrvId}" onclick="selectServiceForBooking(this.getAttribute('data-service-id'))" class="am-gallery-cta">
+                  <span>Pilih Paket</span>
+                  <svg class="w-3.5 h-3.5 shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+              </div>
+            </article>
+          `;
+        }).join("");
+        return;
+      }
+
+      catalogMount.innerHTML = filtered.map((s, idx) => {
+        const hasPromo = Boolean(s.isPromo && s.promoPrice && s.promoPrice < s.price);
+        const finalPrice = hasPromo ? s.promoPrice : s.price;
+        const discountPct = hasPromo ? Math.round(((s.price - s.promoPrice) / s.price) * 100) : 0;
+        const safeSrvAlt = escapeHtml((s.name || "Paket Layanan Studio").trim() || "Paket Layanan Studio");
+        const { imgUrl, fallbackImg } = resolveImg(s, idx);
+        const safeImg = escapeHtml(imgUrl);
+        const safeFallback = escapeHtml(fallbackImg);
+        const safeSrvId = escapeHtml(s.id);
+        return `
+          <div class="tactile-card p-5 sm:p-6 flex flex-col justify-between gap-5">
+            <div class="flex items-start gap-4">
+              <img src="${safeImg}" alt="Layanan ${safeSrvAlt}" width="112" height="112" decoding="async" class="w-24 h-24 sm:w-28 sm:h-28 rounded-[14px] shrink-0 bg-[#E7EBF2] object-cover object-center" data-fallback="${safeFallback}" onerror="this.onerror=null;this.src=this.getAttribute('data-fallback');" />
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <span class="text-xs font-bold text-[#6B6961]">${escapeHtml(s.category || "Signature Treatment")}</span>
+                  <span class="font-mono-code text-xs font-bold px-2.5 py-1 rounded-full bg-[#E7EBF2] text-[#111216] shrink-0">${escapeHtml(s.duration)}</span>
+                </div>
+                <div class="mt-1.5 flex flex-wrap items-center gap-2">
+                  <h3 class="font-display text-base sm:text-lg font-extrabold tracking-tight text-[#111216] leading-snug">${escapeHtml(s.name)}</h3>
+                  ${
+                    s.badge
+                      ? `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-[#DFE4D0] text-[#111216]">${escapeHtml(s.badge)}</span>`
+                      : ""
+                  }
+                </div>
+                <p class="text-xs sm:text-sm text-[#43423D] mt-2 leading-relaxed">${escapeHtml(s.desc || "Perawatan standar studio dengan bahan teruji.")}</p>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-[#E6E2D8] flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs font-bold text-[#6B6961]">Estimasi Biaya</span>
+                  ${
+                    hasPromo && discountPct > 0
+                      ? `<span class="font-mono-code px-2 py-0.5 rounded-full text-xs font-bold bg-[var(--brand)] text-white">Hemat ${discountPct}%</span>`
+                      : ""
+                  }
+                </div>
+                <div class="flex items-baseline gap-2.5 mt-0.5">
+                  <span class="font-display text-xl font-extrabold text-[#111216] tabular-nums">${escapeHtml(window.formatRupiah(finalPrice))}</span>
+                  ${
+                    hasPromo
+                      ? `<span class="font-mono-code text-xs text-[#6B6961] line-through tabular-nums">${escapeHtml(window.formatRupiah(s.price))}</span>`
+                      : ""
+                  }
+                </div>
+              </div>
+              <button
+                type="button"
+                data-service-id="${safeSrvId}"
+                onclick="selectServiceForBooking(this.getAttribute('data-service-id'))"
+                class="tactile-btn-yellow h-11 px-5 text-xs inline-flex items-center gap-1.5 transition-all cursor-pointer shrink-0"
+              >
+                <span>Pilih Paket</span>
+                <svg class="w-3.5 h-3.5" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function selectServiceForBooking(srvId) {
+      const sel = document.getElementById("bookServiceSelect");
+      if (sel) {
+        sel.value = srvId;
+        recalculateBooking();
+      }
+      document.getElementById("bookingSection").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function populateBookingForm() {
+      const nicheDef = window.NICHE_DEFINITIONS[currentTenant.niche] || window.NICHE_DEFINITIONS.sneakers_care;
+      document.getElementById("unitLabelSpan").textContent = nicheDef.unitName;
+      document.getElementById("bookItemName").placeholder = nicheDef.itemPlaceholder;
+      document.getElementById("pickupPolicyHint").textContent = currentTenant.pickupPolicy;
+      document.getElementById("summaryTenantName").textContent = currentTenant.isPlaceholder
+        ? ""
+        : currentTenant.branch
+        ? `${currentTenant.name} · ${currentTenant.branch}`
+        : currentTenant.name;
+
+      const services = (currentTenant.services || []).filter(s => s.available !== false);
+      const sel = document.getElementById("bookServiceSelect");
+      sel.innerHTML = services.map(s => {
+        const finalPrice = s.isPromo && s.promoPrice ? s.promoPrice : s.price;
+        return `<option value="${escapeHtml(s.id)}">${escapeHtml(s.name)} · ${escapeHtml(window.formatRupiah(finalPrice))} (${escapeHtml(s.duration)})</option>`;
+      }).join("");
+
+      const addonsMount = document.getElementById("bookAddonsMount");
+      addonsMount.innerHTML = (nicheDef.addons || []).map(a => `
+        <label class="flex items-start gap-3 p-3.5 rounded-[14px] bg-white border-[1.5px] border-[#111216] cursor-pointer hover:bg-[#F7F5F0] transition-colors">
+          <input type="checkbox" name="bookingAddon" value="${escapeHtml(a.id)}" data-price="${Number(a.price) || 0}" data-label="${escapeHtml(a.label)}" onchange="recalculateBooking()" class="mt-0.5 accent-[#111216]" />
+          <div class="flex-1">
+            <div class="flex flex-wrap items-center justify-between gap-1">
+              <span class="text-xs font-bold text-[#111216]">${escapeHtml(a.label)}</span>
+              <span class="font-mono-code text-xs font-bold text-[#111216]">+${escapeHtml(window.formatRupiah(a.price))}</span>
+            </div>
+            <div class="text-xs text-[#43423D] mt-0.5 leading-snug">${escapeHtml(a.desc)}</div>
+          </div>
+        </label>
+      `).join("");
+
+      recalculateBooking();
+    }
+
+    function adjustBookingQty(delta) {
+      const input = document.getElementById("bookQtyInput");
+      const next = Math.min(Math.max((parseInt(input.value, 10) || 1) + delta, 1), 20);
+      input.value = next;
+      recalculateBooking();
+    }
+
+    function recalculateBooking() {
+      const nicheDef = window.NICHE_DEFINITIONS[currentTenant.niche] || window.NICHE_DEFINITIONS.sneakers_care;
+      const services = (currentTenant.services || []).filter(s => s.available !== false);
+      const selectedId = document.getElementById("bookServiceSelect").value;
+      const srv = services.find(s => s.id === selectedId) || services[0];
+      const qty = Math.max(parseInt(document.getElementById("bookQtyInput").value, 10) || 1, 1);
+
+      const customerName = document.getElementById("bookCustomerName").value.trim() || "Pelanggan Studio";
+      const itemName = document.getElementById("bookItemName").value.trim() || `${qty} ${nicheDef.unitName}`;
+      const deliveryEl = document.querySelector('input[name="deliveryMode"]:checked');
+      const deliveryMode = deliveryEl ? deliveryEl.value : "Drop-Off Studio";
+
+      const unitPrice = srv ? (srv.isPromo && srv.promoPrice ? srv.promoPrice : srv.price) : 0;
+      const baseSubtotal = unitPrice * qty;
+
+      const checkedAddons = Array.from(document.querySelectorAll('input[name="bookingAddon"]:checked'));
+      let addonsTotal = 0;
+      const addonsHtml = checkedAddons.map(cb => {
+        const p = (Number(cb.dataset.price) || 0) * qty;
+        addonsTotal += p;
+        return `<div class="flex justify-between gap-2"><span>+ ${escapeHtml(cb.dataset.label)}</span><span class="font-mono-code text-white shrink-0">${escapeHtml(window.formatRupiah(p))}</span></div>`;
+      }).join("");
+
+      const grandTotal = baseSubtotal + addonsTotal;
+
+      document.getElementById("summaryCustomer").textContent = customerName;
+      document.getElementById("summaryItem").textContent = `${itemName} (${qty} ${nicheDef.unitName})`;
+      document.getElementById("summaryDelivery").textContent = deliveryMode;
+      document.getElementById("summaryDuration").textContent = srv ? srv.duration : "2–3 Hari";
+      document.getElementById("summaryBaseServiceLabel").textContent = srv ? srv.name : "Paket Utama";
+      document.getElementById("summaryBasePrice").textContent = window.formatRupiah(baseSubtotal);
+      document.getElementById("summaryAddonsList").innerHTML = addonsHtml;
+      document.getElementById("summaryTotalPrice").textContent = window.formatRupiah(grandTotal);
+
+      return {
+        customerName,
+        phone: document.getElementById("bookCustomerPhone").value.trim(),
+        itemName,
+        qty,
+        unitName: nicheDef.unitName,
+        serviceName: srv ? srv.name : "Treatment",
+        duration: srv ? srv.duration : "2–3 Hari",
+        deliveryMode,
+        addons: checkedAddons.map(c => c.dataset.label),
+        addonIds: checkedAddons.map(c => c.value),
+        notes: document.getElementById("bookNotesInput").value.trim(),
+        grandTotal
+      };
+    }
+
+    // Automatically creates Stage 1 Order via server-side RPC (or catalog fallback in demo/offline) AND opens WhatsApp
+    async function submitBookingToWhatsApp() {
+      const nameInput = document.getElementById("bookCustomerName");
+      const phoneInput = document.getElementById("bookCustomerPhone");
+      const itemInput = document.getElementById("bookItemName");
+
+      [nameInput, phoneInput, itemInput].forEach(el => {
+        if (el && typeof el.setCustomValidity === "function") {
+          el.setCustomValidity("");
+        }
+      });
+
+      const rawCustomerName = nameInput.value.trim();
+      if (rawCustomerName.length < 2 || rawCustomerName.length > 80) {
+        if (typeof nameInput.setCustomValidity === "function") {
+          nameInput.setCustomValidity("Nama pelanggan harus 2 sampai 80 karakter.");
+          nameInput.addEventListener("input", () => nameInput.setCustomValidity(""), { once: true });
+        }
+        if (typeof nameInput.reportValidity === "function") nameInput.reportValidity();
+        nameInput.focus();
+        return;
+      }
+
+      const cleanPhone = phoneInput.value.trim().replace(/\s+/g, "");
+      const phoneDigits = cleanPhone.replace(/\D/g, "");
+      if (!cleanPhone || !/^[0-9+-]+$/.test(cleanPhone) || phoneDigits.length < 9 || phoneDigits.length > 16) {
+        if (typeof phoneInput.setCustomValidity === "function") {
+          phoneInput.setCustomValidity("Nomor WhatsApp harus 9–16 digit (hanya angka, +, atau -).");
+          phoneInput.addEventListener("input", () => phoneInput.setCustomValidity(""), { once: true });
+        }
+        if (typeof phoneInput.reportValidity === "function") phoneInput.reportValidity();
+        phoneInput.focus();
+        return;
+      }
+
+      const rawItemName = itemInput.value.trim();
+      if (rawItemName.length < 2 || rawItemName.length > 100) {
+        if (typeof itemInput.setCustomValidity === "function") {
+          itemInput.setCustomValidity("Nama barang/unit harus 2 sampai 100 karakter.");
+          itemInput.addEventListener("input", () => itemInput.setCustomValidity(""), { once: true });
+        }
+        if (typeof itemInput.reportValidity === "function") itemInput.reportValidity();
+        itemInput.focus();
+        return;
+      }
+
+      const data = recalculateBooking();
+      const qtySuffix = data.qty > 1 ? ` (${data.qty} ${data.unitName})` : "";
+      const maxBaseLen = Math.max(2, 100 - qtySuffix.length);
+      const finalItemName = `${rawItemName.slice(0, maxBaseLen)}${qtySuffix}`.slice(0, 100);
+
+      const noteParts = [];
+      if (data.deliveryMode) noteParts.push(data.deliveryMode);
+      if (data.addons && data.addons.length > 0) noteParts.push(`Add-on: ${data.addons.join(", ")}`);
+      if (data.notes) noteParts.push(data.notes);
+      const combinedNotes = noteParts.join(" | ").slice(0, 160);
+
+      const submitBtn = document.querySelector('#bookingSection button[onclick="submitBookingToWhatsApp()"]');
+      const submitBtnSpan = submitBtn ? submitBtn.querySelector("span") : null;
+      const prevBtnLabel = submitBtnSpan ? submitBtnSpan.textContent : "";
+      if (submitBtn) submitBtn.disabled = true;
+      if (submitBtnSpan) submitBtnSpan.textContent = "Mengirim Booking...";
+
+      let createdOrder = null;
+      try {
+        if (window.ServiceStore && window.ServiceStore.createPublicBooking) {
+          createdOrder = await window.ServiceStore.createPublicBooking(currentTenant.slug, {
+            customerName: rawCustomerName,
+            phone: cleanPhone,
+            itemName: finalItemName,
+            serviceName: data.serviceName,
+            deliveryType: data.deliveryMode,
+            qty: data.qty,
+            addonIds: data.addonIds || [],
+            notes: combinedNotes
+          });
+        } else {
+          throw new Error("Layanan booking belum siap. Muat ulang halaman.");
+        }
+
+        const generatedOrderId = createdOrder.orderId;
+        const generatedTrackingToken = createdOrder.trackingToken || "";
+        const authoritativePrice = Number(createdOrder.price != null ? createdOrder.price : data.grandTotal) || 0;
+
+        currentTenant = window.ServiceStore.getTenant(currentTenant.slug);
+        document.getElementById("statActiveCount").textContent = (currentTenant.orders || []).length;
+        document.getElementById("resiSearchInput").value = generatedOrderId;
+        await handleTrackOrder(generatedOrderId);
+
+        const tokenParam = generatedTrackingToken ? `&token=${encodeURIComponent(generatedTrackingToken)}` : "";
+        const rawNotaUrl = `${window.location.origin}${window.location.pathname.replace("index.html", "")}nota.html?mitra=${encodeURIComponent(currentTenant.slug)}&order=${encodeURIComponent(generatedOrderId)}${tokenParam}${getTemplateQuerySuffix()}`;
+        const notaUrl = sanitizeUrl(rawNotaUrl, "");
+        const addonLine = data.addons.length > 0 ? `\n• Tambahan: ${data.addons.join(", ")}` : "";
+        const noteLine = data.notes ? `\n• Catatan/Alamat: ${data.notes}` : "";
+
+        const msg =
+          `Halo Admin *${currentTenant.name}* (${currentTenant.branch}), saya sudah membuat tiket booking via web:\n\n` +
+          `• No. Nota: *${generatedOrderId}*\n` +
+          `• Nama: *${rawCustomerName}*\n` +
+          `• WhatsApp: *${cleanPhone}*\n` +
+          `• Barang: *${finalItemName}*\n` +
+          `• Paket: *${createdOrder.serviceName || data.serviceName}* (${createdOrder.etaDate || data.duration})` +
+          addonLine +
+          `\n• Serah Terima: *${data.deliveryMode}*` +
+          noteLine +
+          `\n• Estimasi Biaya Resmi: *${window.formatRupiah(authoritativePrice)}*\n\n` +
+          `Link E-Nota & QR: ${notaUrl}`;
+
+        const safeTenantWa = String(currentTenant.whatsapp || "").replace(/[^0-9]/g, "").replace(/^0/, "62");
+        const waUrl = safeTenantWa ? sanitizeUrl(`https://wa.me/${safeTenantWa}?text=${encodeURIComponent(msg)}`, "") : "";
+        if (waUrl) {
+          window.open(waUrl, "_blank", "noopener");
+        }
+      } catch (err) {
+        alert((err && err.message) ? err.message : "Booking gagal dikirim. Periksa kembali data Anda.");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+        if (submitBtnSpan && submitBtnSpan.textContent === "Mengirim Booking..." && prevBtnLabel) {
+          submitBtnSpan.textContent = prevBtnLabel;
+        }
+      }
+    }
+
+    function renderFaqSection() {
+      const nicheDef = window.NICHE_DEFINITIONS[currentTenant.niche] || window.NICHE_DEFINITIONS.sneakers_care;
+      const mount = document.getElementById("faqListMount");
+      const faqs = nicheDef.faqs || [];
+      const tpl = getActiveUiTemplate();
+
+      if (tpl === "atelier_magazine") {
+        mount.innerHTML = `
+          <div class="am-faq-card">
+            <div class="am-faq-card-head">
+              <span class="am-faq-head-title">Pertanyaan yang Sering Diajukan</span>
+              <span class="am-faq-head-meta">${faqs.length} Poin Penting</span>
+            </div>
+            ${faqs.map((f, idx) => `
+              <article class="am-faq-item">
+                <div class="am-faq-kicker">Tanya Jawab · ${String(idx + 1).padStart(2, "0")}</div>
+                <h3 class="am-faq-q">${escapeHtml(f.q)}</h3>
+                <p class="am-faq-a">${escapeHtml(f.a)}</p>
+              </article>
+            `).join("")}
+          </div>
+        `;
+        return;
+      }
+
+      mount.innerHTML = faqs.map(f => `
+        <details class="group p-5 sm:p-6">
+          <summary class="flex items-center justify-between gap-4 cursor-pointer font-bold text-sm sm:text-base text-[#111216]">
+            <span>${escapeHtml(f.q)}</span>
+            <svg class="w-4 h-4 text-[#78766F] shrink-0 transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <p class="mt-3 text-xs sm:text-sm text-[#4A4945] leading-relaxed">${escapeHtml(f.a)}</p>
+        </details>
+      `).join("");
+    }
+
+    window.addEventListener("storage", (e) => {
+      if (
+        !e.key ||
+        e.key === "atelier_service_engine_v4_tenants" ||
+        e.key === "atelier_service_engine_v4_recent_public_orders" ||
+        e.key === "active_mitra_slug"
+      ) {
+        currentSlug = window.getActiveMitraSlug();
+        currentTenant = window.ServiceStore.getTenant(currentSlug);
+        window.initPublicPage();
+      }
+    });
+    window.addEventListener("message", (e) => {
+      if (window.isSameOriginMessage && !window.isSameOriginMessage(e)) return;
+      if (e.data && e.data.type === "ATELIER_STORE_SYNC") {
+        currentSlug = window.getActiveMitraSlug();
+        currentTenant = window.ServiceStore.getTenant(currentSlug);
+        window.initPublicPage();
+      }
+    });
+    window.addEventListener("ws-cloud-synced", () => window.initPublicPage());
+    document.addEventListener("DOMContentLoaded", () => window.initPublicPage());
+  </script>
+  
+  <!-- FIX ANTI GESER SAMPING (HORIZONTAL OVERFLOW) DI HP -->
+  <style>
+    html, body {
+      max-width: 100vw !important;
+      overflow-x: clip !important;
+      position: relative;
+    }
+    main, section, header, footer, #trackerResultMount {
+      max-width: 100vw !important;
+      overflow-x: clip !important;
+    }
+    .grid > * {
+      min-width: 0 !important;
+    }
+    #heroBadgeLocation, #footerAddress, #footerPickupPolicy {
+      word-break: break-word;
+      white-space: normal !important;
+    }
+  </style>
+  
+    <!-- AUTO-LINK INSTAGRAM, WHATSAPP, & GOOGLE MAPS DI INDEX.HTML -->
+  <script>
+    function makeContactInfoClickable() {
+      // 1. Ubah Instagram (@username) jadi link langsung ke aplikasi/web Instagram
+      const igEl = document.getElementById("footerInstagram");
+      if (igEl) {
+        const rawIg = (igEl.textContent || "").trim();
+        const cleanUser = rawIg.replace(/^@+/, "").replace(/[^a-zA-Z0-9._]/g, "");
+        if (cleanUser) {
+          const igHref = sanitizeUrl(`https://instagram.com/${encodeURIComponent(cleanUser)}`, "");
+          if (igHref) {
+            const link = document.createElement("a");
+            link.href = igHref;
+            link.target = "_blank";
+            link.rel = "noopener";
+            link.setAttribute("aria-label", `Buka Instagram @${cleanUser}`);
+            link.className = "underline hover:text-[var(--brand)] transition-colors";
+            link.textContent = `@${cleanUser}`;
+            igEl.textContent = "";
+            igEl.appendChild(link);
+          }
+        }
+      }
+
+      // 2. Ubah Nomor WhatsApp jadi link langsung buka chat WA
+      const waEl = document.getElementById("footerWhatsapp");
+      if (waEl) {
+        const rawWa = (waEl.textContent || "").trim();
+        const cleanWa = rawWa.replace(/[^0-9]/g, "").replace(/^0/, "62");
+        if (cleanWa) {
+          const waHref = sanitizeUrl(`https://wa.me/${cleanWa}`, "");
+          if (waHref) {
+            const link = document.createElement("a");
+            link.href = waHref;
+            link.target = "_blank";
+            link.rel = "noopener";
+            link.setAttribute("aria-label", `Hubungi WhatsApp ${rawWa}`);
+            link.className = "underline hover:text-[var(--brand)] transition-colors";
+            link.textContent = rawWa;
+            waEl.textContent = "";
+            waEl.appendChild(link);
+          }
+        }
+      }
+
+      // 3. Ubah Alamat Workshop jadi link langsung ke Google Maps
+      const addrEl = document.getElementById("footerAddress");
+      if (addrEl && !addrEl.querySelector("a")) {
+        const rawAddr = (addrEl.textContent || "").trim();
+        if (rawAddr && rawAddr !== "-" && !rawAddr.startsWith("Memuat")) {
+          const mapsHref = sanitizeUrl(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rawAddr)}`, "");
+          if (mapsHref) {
+            const link = document.createElement("a");
+            link.href = mapsHref;
+            link.target = "_blank";
+            link.rel = "noopener";
+            link.setAttribute("aria-label", `Buka lokasi ${rawAddr} di Google Maps`);
+            link.className = "hover:text-[var(--brand)] underline decoration-[#C4C1B6] transition-colors";
+            link.textContent = rawAddr;
+            addrEl.textContent = "";
+            addrEl.appendChild(link);
+          }
+        }
+      }
+    }
+
+    const origRenderBrand = window.renderBrandingAndHero;
+    if (typeof origRenderBrand === "function") {
+      window.renderBrandingAndHero = function () {
+        origRenderBrand();
+        makeContactInfoClickable();
+      };
+    }
+  </script>
+  <!-- FIX TOTAL ADAPTER NICHE: BARBER (TANPA TRACKER PROSES & TANPA KURIR) & MOTOR (TANPA ANTAR JEMPUT) -->
+  <script>
+    (function () {
+      const NICHE_UI_RULES = {
+        sneakers_care: {
+          hideTrackerProgress: false,
+          navTrackText: "Cek Resi",
+          trackerBoxTitle: "Cek Status Nota atau Nomor WhatsApp",
+          trackerCardHeader: "Detail Status Pengerjaan Sepatu",
+          stat3Label: "Layanan Kurir",
+          stat3Value: "Jemput & Antar",
+          sectionTitle: "Kalkulator Estimasi & Form Booking",
+          sectionSub: "Isi rincian sepatu/tas di bawah ini untuk menghitung biaya dan menjadwalkan penyerahan atau penjemputan kurir.",
+          itemLabel: "Merk Sepatu / Tas & Warna",
+          itemPlaceholder: "cth: Salomon XT-6 White / Vans Old Skool Suede",
+          unitName: "Pasang",
+          modeHeading: "Metode Serah Terima Sepatu",
+          opt1Value: "Antar Sendiri ke Workshop",
+          opt1Title: "Antar Sendiri ke Workshop",
+          opt1Desc: "Serahkan sepatu langsung di kasir studio",
+          opt2Value: "Jemput & Antar Kurir",
+          opt2Title: "Jemput & Antar Kurir Lokal",
+          opt2Desc: "Kurir kami menjemput sepatu ke alamat Anda",
+          noteLabel: "Catatan Noda / Alamat Lengkap Jemput",
+          notePlaceholder: "Contoh: Midsole kuning / Jemput sore di Jl. Kemang Timur No. 12...",
+          summaryItemLabel: "Sepatu / Barang",
+          summaryModeLabel: "Metode Layanan",
+          submitBtnText: "Terbitkan Nota & Kirim WA",
+          footerPolicyTitle: "Info Jemput-Antar & Workshop"
+        },
+        laundry_care: {
+          hideTrackerProgress: false,
+          navTrackText: "Cek Nota",
+          trackerBoxTitle: "Cek Status Cucian atau Nomor WhatsApp",
+          trackerCardHeader: "Status Pengerjaan Laundry & Care",
+          stat3Label: "Layanan Luar",
+          stat3Value: "Kurir & Home Care",
+          sectionTitle: "Kalkulator Biaya & Order Laundry / Sofa",
+          sectionSub: "Hitung estimasi biaya cuci kiloan, karpet, atau panggilan cuci sofa/spring bed ke rumah Anda.",
+          itemLabel: "Jenis Cucian / Ukuran Karpet & Sofa",
+          itemPlaceholder: "cth: Pakaian 7 Kg / Karpet 2x3m / Sofa L 3 Dudukan",
+          unitName: "Kg / Unit",
+          modeHeading: "Metode Layanan Laundry & Home Care",
+          opt1Value: "Antar Sendiri ke Outlet",
+          opt1Title: "Antar Sendiri ke Outlet",
+          opt1Desc: "Drop-off pakaian/karpet langsung di kasir",
+          opt2Value: "Jemput Kurir / Home Service Sofa",
+          opt2Title: "Jemput Kurir / Panggil ke Rumah",
+          opt2Desc: "Kurir jemput cucian atau teknisi cuci sofa ke rumah",
+          noteLabel: "Alamat Lengkap Jemput / Lokasi Cuci Sofa",
+          notePlaceholder: "Contoh: Panggilan cuci sofa hari ini jam 14.00 di Jl. Kebagusan Raya No. 8...",
+          summaryItemLabel: "Rincian Cucian",
+          summaryModeLabel: "Metode Layanan",
+          submitBtnText: "Pesan Layanan via WhatsApp",
+          footerPolicyTitle: "Info Antar-Jemput & Home Service"
+        },
+        moto_detailing: {
+          hideTrackerProgress: false,
+          navTrackText: "Cek Status",
+          trackerBoxTitle: "Cek Progres Motor di Bengkel (Kode Nota / WA)",
+          trackerCardHeader: "Status Pengerjaan Bay Detailing",
+          stat3Label: "Sistem Antrean",
+          stat3Value: "Booking Slot Bay",
+          sectionTitle: "Kalkulator Paket & Reservasi Slot Bengkel",
+          sectionSub: "Pilih paket sesuai CC motor Anda dan amankan slot jam masuk bengkel agar motor langsung dikerjakan tanpa antre.",
+          itemLabel: "Tipe Motor, CC & Warna Cat",
+          itemPlaceholder: "cth: Yamaha XMAX 250 Matte Black / Vespa Sprint",
+          unitName: "Unit Motor",
+          modeHeading: "Pilih Sesi Kedatangan di Bengkel",
+          opt1Value: "Slot Pagi (09.00 - 12.00 WIB)",
+          opt1Title: "Slot Pagi (09.00 – 12.00 WIB)",
+          opt1Desc: "Bawa motor ke bengkel pada sesi pagi",
+          opt2Value: "Slot Siang/Sore (13.00 - 16.00 WIB)",
+          opt2Title: "Slot Siang (13.00 – 16.00 WIB)",
+          opt2Desc: "Bawa motor ke bengkel pada sesi siang/sore",
+          noteLabel: "Hari & Jam Rencana Datang + Keluhan Cat",
+          notePlaceholder: "Contoh: Rencana datang Sabtu jam 10.00 pagi, baret halus di bodi samping...",
+          summaryItemLabel: "Unit Kendaraan",
+          summaryModeLabel: "Slot Kedatangan",
+          submitBtnText: "Kunci Slot Bengkel via WA",
+          footerPolicyTitle: "Ketentuan Reservasi Slot Bengkel"
+        },
+        barber_studio: {
+          hideTrackerProgress: true,
+          navTrackText: "Cek Jadwal",
+          trackerBoxTitle: "Cek Tiket Reservasi Kursi (Kode Booking / WA)",
+          trackerCardHeader: "Tiket Reservasi Jadwal Potong",
+          stat3Label: "Sistem Kursi",
+          stat3Value: "Reservasi Jam",
+          sectionTitle: "Reservasi Kursi Capster & Pilihan Paket",
+          sectionSub: "Amankan jadwal jam potong Anda sebelum datang ke barbershop agar langsung duduk di kursi capster tanpa antre panjang.",
+          itemLabel: "Gaya Rambut & Request Capster",
+          itemPlaceholder: "cth: Two Block + Down Perm (Capster: Rian)",
+          unitName: "Orang",
+          modeHeading: "Pilih Sesi Waktu Kedatangan",
+          opt1Value: "Sesi Siang / Sore (10.00 - 17.00)",
+          opt1Title: "Sesi Siang – Sore (10.00 – 17.00)",
+          opt1Desc: "Reservasi kursi potong untuk jam siang/sore",
+          opt2Value: "Sesi Malam (17.00 - 21.00)",
+          opt2Title: "Sesi Malam (17.00 – 21.00)",
+          opt2Desc: "Reservasi kursi potong untuk jam pulang kerja/malam",
+          noteLabel: "Jam Kedatangan Pasti (Wajib) & Detail Potongan",
+          notePlaceholder: "Contoh: Booking hari ini jam 19.00 WIB, samping taper fade tipis...",
+          summaryItemLabel: "Model & Capster",
+          summaryModeLabel: "Sesi Kedatangan",
+          submitBtnText: "Booking Kursi via WhatsApp",
+          footerPolicyTitle: "Ketentuan Reservasi Kursi & Jam Buka"
+        }
+      };
+
+      function getActiveTenantData() {
+        try {
+          if (typeof currentTenant !== "undefined" && currentTenant) return currentTenant;
+        } catch (e) {}
+        if (window.ServiceStore && window.getActiveMitraSlug) {
+          return window.ServiceStore.getTenant(window.getActiveMitraSlug());
+        }
+        return null;
+      }
+
+      function applyCompleteNicheUI() {
+        const tenant = getActiveTenantData();
+        if (!tenant) return;
+        const nicheKey = tenant.niche || "sneakers_care";
+        const cfg = NICHE_UI_RULES[nicheKey] || NICHE_UI_RULES.sneakers_care;
+
+        // 1. Update Menu Navigasi Atas ("Cek Resi" -> "Cek Jadwal" untuk Barber)
+        document.querySelectorAll('a[href="#trackerSection"]').forEach(a => {
+          const sp = a.querySelector("span");
+          if (sp) sp.textContent = cfg.navTrackText;
+          else a.textContent = cfg.navTrackText;
+        });
+
+        // 2. Update Judul Kotak Pencarian Resi / Jadwal
+        const searchLbl = document.querySelector('label[for="resiSearchInput"]');
+        if (searchLbl) searchLbl.textContent = cfg.trackerBoxTitle;
+
+        const trackerHeaderSpan = document.querySelector("#trackerResultMount")?.previousElementSibling?.querySelector("span");
+        if (trackerHeaderSpan) trackerHeaderSpan.textContent = cfg.trackerCardHeader;
+
+        // 3. Update Quick Stat ke-3 ("Serah Terima" -> "Sistem Kursi" / "Sistem Antrean")
+        const statDelivVal = document.getElementById("statDeliveryMode");
+        if (statDelivVal) {
+          statDelivVal.textContent = cfg.stat3Value;
+          if (statDelivVal.previousElementSibling) {
+            statDelivVal.previousElementSibling.textContent = cfg.stat3Label;
+          }
+        }
+
+        // 4. Khusus Barbershop: Sembunyikan Bar Progres 1-5 & ubah label "Tahap" jadi "Status Kursi"
+        const trackerMount = document.getElementById("trackerResultMount");
+        if (trackerMount && cfg.hideTrackerProgress) {
+          const grid5 = trackerMount.querySelector(".grid-cols-5");
+          if (grid5 && grid5.parentElement) {
+            grid5.parentElement.style.display = "none";
+          }
+          const badge = trackerMount.querySelector("span.rounded-full");
+          if (badge) {
+            badge.textContent = "Jadwal Terkonfirmasi";
+          }
+          trackerMount.querySelectorAll("div").forEach(d => {
+            if (d.textContent === "Catatan Teknisi") d.textContent = "Info Kursi & Capster";
+            if (d.textContent === "Unit & Paket Layanan") d.textContent = "Gaya Rambut & Paket Grooming";
+          });
+        }
+
+        // 5. Update Form Booking (Judul, Input, Sesi Waktu / Metode, Catatan)
+        const secH2 = document.querySelector("#bookingSection h2");
+        const secP = document.querySelector("#bookingSection h2 + p");
+        if (secH2) secH2.textContent = cfg.sectionTitle;
+        if (secP) secP.textContent = cfg.sectionSub;
+
+        const itemLbl = document.querySelector('label[for="bookItemName"]');
+        const itemInp = document.getElementById("bookItemName");
+        if (itemLbl) itemLbl.textContent = cfg.itemLabel;
+        if (itemInp) itemInp.placeholder = cfg.itemPlaceholder;
+
+        const unitSpan = document.getElementById("unitLabelSpan");
+        if (unitSpan) unitSpan.textContent = cfg.unitName;
+
+        const radios = document.querySelectorAll('input[name="deliveryMode"]');
+        if (radios.length >= 2) {
+          const r1 = radios[0];
+          const r2 = radios[1];
+          const modeHeadingEl = r1.closest(".grid")?.previousElementSibling;
+          if (modeHeadingEl) modeHeadingEl.textContent = cfg.modeHeading;
+
+          r1.value = cfg.opt1Value;
+          const r1Box = r1.nextElementSibling;
+          if (r1Box && r1Box.children.length >= 2) {
+            r1Box.children[0].textContent = cfg.opt1Title;
+            r1Box.children[1].textContent = cfg.opt1Desc;
+          }
+
+          r2.value = cfg.opt2Value;
+          const r2Box = r2.nextElementSibling;
+          if (r2Box && r2Box.children.length >= 2) {
+            r2Box.children[0].textContent = cfg.opt2Title;
+            r2Box.children[1].textContent = cfg.opt2Desc;
+          }
+        }
+
+        const noteLbl = document.querySelector('label[for="bookNotesInput"]');
+        const noteInp = document.getElementById("bookNotesInput");
+        if (noteLbl) noteLbl.textContent = cfg.noteLabel;
+        if (noteInp) noteInp.placeholder = cfg.notePlaceholder;
+
+        // 6. Update Ringkasan Tiket Booking Hitam
+        const sumItemRow = document.getElementById("summaryItem")?.previousElementSibling;
+        const sumDelivRow = document.getElementById("summaryDelivery")?.previousElementSibling;
+        if (sumItemRow) sumItemRow.textContent = cfg.summaryItemLabel;
+        if (sumDelivRow) sumDelivRow.textContent = cfg.summaryModeLabel;
+
+        const submitBtnSpan = document.querySelector('#bookingSection button[onclick="submitBookingToWhatsApp()"] span');
+        if (submitBtnSpan) submitBtnSpan.textContent = cfg.submitBtnText;
+
+        const faqH2 = document.querySelector("#faqSection h2");
+        if (faqH2) faqH2.textContent = cfg.footerPolicyTitle;
+
+        if (typeof window.recalculateBooking === "function") {
+          window.recalculateBooking();
+        }
+      }
+
+      // Hook pada fungsi render publik & panel booking agar applyCompleteNicheUI selalu sinkron setiap render
+      ["initPublicPage", "switchTenantDemo", "renderTrackedOrder", "switchPublicUiTemplate", "renderBookingTicketPanel"].forEach(fnName => {
+        const orig = window[fnName];
+        if (typeof orig === "function") {
+          window[fnName] = function () {
+            const res = orig.apply(this, arguments);
+            applyCompleteNicheUI();
+            return res;
+          };
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

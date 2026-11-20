@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="notaPageTitle">E-Nota & Cetak QR</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="service-config.js"></script>
+  <!-- KUNCI LAYAR DARI ATAS AGAR TIDAK BERKEDIP KULTUR KICKS -->
+  <style id="ws-instant-cloak">
+    html.ws-cloak body { opacity: 0 !important; pointer-events: none !important; }
+    body { transition: opacity 0.15s ease-out; }
+  </style>
+  <script>
+    (function () {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const urlTpl = params.get("template");
+        const slug = window.getActiveMitraSlug ? window.getActiveMitraSlug() : "kultur-kicks";
+        const t = window.ServiceStore && window.ServiceStore.getTenant ? window.ServiceStore.getTenant(slug) : null;
+        const validUrlTpl = urlTpl && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[urlTpl] ? urlTpl : null;
+        const activeTpl = window.resolveValidUiTemplate
+          ? window.resolveValidUiTemplate(validUrlTpl || (t && t.uiTemplate))
+          : (validUrlTpl || "tactile_bento");
+        if (window.applyWorkshopTheme && t) {
+          window.applyWorkshopTheme(t.themePreset, t.brandColor, activeTpl);
+        } else if (window.applyWorkshopTemplate) {
+          window.applyWorkshopTemplate(activeTpl);
+        }
+      } catch (e) {}
+      const slug = window.getActiveMitraSlug ? window.getActiveMitraSlug() : "kultur-kicks";
+      if (slug === "kultur-kicks") return;
+      document.documentElement.classList.add("ws-cloak");
+      function uncloak() { document.documentElement.classList.remove("ws-cloak"); }
+      window.addEventListener("ws-cloud-synced", () => setTimeout(uncloak, 30), { once: true });
+      window.addEventListener("DOMContentLoaded", () => {
+        const raw = localStorage.getItem("atelier_service_engine_v4_tenants");
+        const map = raw ? JSON.parse(raw) : {};
+        if (map[slug]) uncloak();
+        else setTimeout(uncloak, 600);
+      });
+    })();
+  </script>
+  <style>
+    :root {
+      --bg-canvas: #F2F4F7;
+      --font-display: 'Sora', 'Onest', -apple-system, sans-serif;
+      --font-sans: 'Onest', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    ::selection {
+      background-color: #111216;
+      color: #FFFFFF;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: #111216;
+      font-family: var(--font-sans);
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .font-display {
+      font-family: var(--font-display);
+    }
+
+    .font-mono-code {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .perforated-divider {
+      border-top: 1px dashed #B8B2A4;
+    }
+
+    .nota-step-row.is-done {
+      color: #111113;
+    }
+    .nota-step-row.is-done .nota-step-icon {
+      color: #111113;
+    }
+    .nota-step-row.is-pending {
+      color: #5C5A54;
+    }
+    .nota-step-row.is-pending .nota-step-icon {
+      color: #7A7870;
+    }
+
+    body:not(.thermal-58mm) .print-ticket {
+      border: 1.5px solid #18181B !important;
+      border-radius: 24px !important;
+      box-shadow: 0 22px 46px -20px rgba(17, 18, 22, 0.24) !important;
+      overflow: hidden;
+    }
+
+    .nota-tpl-select {
+      max-width: 215px;
+    }
+
+    /* TEMPLATE 02: SWISS MINIMAL */
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) {
+      background-color: #FFFFFF !important;
+      color: #0F172A !important;
+    }
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) #backToPublicBtn,
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) #notaOrderSelector,
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) #notaTemplateSelector,
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) #thermalToggleBtn {
+      background-color: #FFFFFF !important;
+      border: 1px solid #CBD5E1 !important;
+      color: #0F172A !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) #backToPublicBtn:hover,
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) #thermalToggleBtn:hover {
+      background-color: #F8FAFC !important;
+      border-color: #0F172A !important;
+    }
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) button[onclick="window.print()"] {
+      background-color: #0F172A !important;
+      color: #FFFFFF !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) .print-ticket {
+      background-color: #FFFFFF !important;
+      border: 1px solid #0F172A !important;
+      border-radius: 6px !important;
+      box-shadow: 0 10px 26px -16px rgba(15, 23, 42, 0.16) !important;
+    }
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) .ticket-header {
+      background-color: #F8FAFC !important;
+      color: #0F172A !important;
+      border-bottom: 1.5px solid #0F172A !important;
+    }
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) .ticket-header > div:first-child {
+      color: var(--brand) !important;
+    }
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) #ticketBrandName {
+      color: #0F172A !important;
+    }
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) #ticketAddress {
+      color: #475569 !important;
+    }
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) #ticketStageBadge {
+      background-color: var(--brand) !important;
+      color: #FFFFFF !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) .ticket-body .bg-\[\#F7F5F0\],
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) .tech-note-box {
+      background-color: #F8FAFC !important;
+      border: 1px solid #CBD5E1 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="swiss_minimal"] body:not(.thermal-58mm) .ticket-body .p-2.bg-\[\#F7F5F0\] {
+      background-color: #FFFFFF !important;
+      border: 1px solid #CBD5E1 !important;
+      border-radius: 6px !important;
+    }
+
+    /* TEMPLATE 03: WARM ATELIER LOOKBOOK */
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) {
+      --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+      background-color: #EFECE6 !important;
+      color: #261C16 !important;
+      font-family: var(--font-sans);
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) #backToPublicBtn,
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) #notaOrderSelector,
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) #notaTemplateSelector,
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) #thermalToggleBtn {
+      background-color: #FAF7F0 !important;
+      border: 1.5px solid #3E2F26 !important;
+      color: #261C16 !important;
+      border-radius: 6px !important;
+      box-shadow: 2px 2px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) button[onclick="window.print()"] {
+      background-color: #9A5B13 !important;
+      color: #FAF7F0 !important;
+      border: 1.5px solid #3E2F26 !important;
+      border-radius: 6px !important;
+      box-shadow: 2px 2px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .print-ticket {
+      background-color: #FAF7F0 !important;
+      border: 1.5px solid #3E2F26 !important;
+      border-radius: 8px !important;
+      box-shadow: 5px 5px 0 #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .ticket-header {
+      background-color: #231B16 !important;
+      color: #FAF7F0 !important;
+      border-bottom: 1.5px solid #3E2F26 !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) #ticketBrandName,
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) #ticketOrderId,
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) #ticketTotalPrice {
+      font-family: var(--font-display) !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) #ticketAddress {
+      color: #D6C8B8 !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .ticket-body {
+      background-color: #FAF7F0 !important;
+      color: #261C16 !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .ticket-body .text-\[\#111216\] {
+      color: #261C16 !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .ticket-body .text-\[\#525049\],
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .ticket-body .text-\[\#4A4945\] {
+      color: #5C493E !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) #ticketStageBadge {
+      background-color: #9A5B13 !important;
+      color: #FAF7F0 !important;
+      border: 1px solid #3E2F26 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .ticket-body .bg-\[\#F7F5F0\],
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .tech-note-box {
+      background-color: #E6E2D3 !important;
+      border: 1px solid #C8B9A6 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .ticket-body .p-2.bg-\[\#F7F5F0\] {
+      background-color: #FFFFFF !important;
+      border: 1.5px solid #3E2F26 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .perforated-divider {
+      border-top-color: #C8B9A6 !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .nota-step-row.is-done {
+      color: #261C16 !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .nota-step-row.is-done .nota-step-icon {
+      color: #9A5B13 !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .nota-step-row.is-pending {
+      color: #5C493E !important;
+    }
+    html[data-ui-template="atelier_magazine"] body:not(.thermal-58mm) .nota-step-row.is-pending .nota-step-icon {
+      color: #9E8E7E !important;
+    }
+
+    /* THERMAL RECEIPT 58MM MODE */
+    body.thermal-58mm {
+      background-color: #F2F4F7 !important;
+      background-image: none !important;
+      color: #111216 !important;
+    }
+    body.thermal-58mm .print-ticket {
+      max-width: 310px !important;
+      margin: 0 auto !important;
+      background-color: #FFFFFF !important;
+      color: #000000 !important;
+      font-family: var(--font-mono) !important;
+      border-radius: 0 !important;
+      border: 1px dashed #000000 !important;
+      box-shadow: none !important;
+    }
+
+    body.thermal-58mm .ticket-header {
+      background-color: #FFFFFF !important;
+      color: #000000 !important;
+      border-bottom: 1px dashed #000000 !important;
+      text-align: center !important;
+      padding: 16px 14px 12px !important;
+    }
+
+    body.thermal-58mm #ticketBrandName {
+      color: #000000 !important;
+      font-size: 15px !important;
+      letter-spacing: 0.02em !important;
+    }
+
+    body.thermal-58mm #ticketAddress {
+      color: #000000 !important;
+      font-size: 12px !important;
+    }
+
+    body.thermal-58mm .ticket-body {
+      padding: 14px !important;
+    }
+
+    body.thermal-58mm .perforated-divider {
+      border-top: 1px dashed #000000 !important;
+    }
+
+    body.thermal-58mm #ticketStageBadge {
+      background-color: #FFFFFF !important;
+      color: #000000 !important;
+      border: 1px solid #000000 !important;
+      border-radius: 4px !important;
+    }
+
+    body.thermal-58mm .tech-note-box {
+      background-color: #FFFFFF !important;
+      border-top: 1px dashed #000000 !important;
+      border-radius: 0 !important;
+      color: #000000 !important;
+    }
+
+    body.thermal-58mm .ticket-body .bg-\[\#F7F5F0\] {
+      background-color: #FFFFFF !important;
+      border-radius: 0 !important;
+    }
+
+    body.thermal-58mm .print-ticket * {
+      color: #000000 !important;
+      font-family: var(--font-mono) !important;
+    }
+
+    body.thermal-58mm #thermalFooterNote {
+      display: block !important;
+    }
+
+    @media print {
+      body {
+        background: #FFFFFF !important;
+        padding: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-ticket {
+        box-shadow: none !important;
+        border: 1px solid #000000 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+      body.thermal-58mm .print-ticket {
+        max-width: 58mm !important;
+        width: 58mm !important;
+        border: none !important;
+        margin: 0 auto !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen py-8 px-4 flex flex-col items-center">
+
+  <!-- ACTION TOOLBAR -->
+  <div class="no-print w-full max-w-[440px] mb-5 space-y-2.5">
+    <div class="flex items-center justify-between gap-2">
+      <a id="backToPublicBtn" href="index.html" class="h-9 px-3 rounded-[10px] bg-white border border-[#C4C1B6] text-xs font-semibold text-[#111113] inline-flex items-center gap-1.5 hover:border-[#111113] transition-colors shrink-0">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m15 18-6-6 6-6"/></svg>
+        <span>Kembali</span>
+      </a>
+
+      <div class="flex items-center gap-1.5 min-w-0 flex-1 justify-end">
+        <label for="notaTemplateSelector" class="sr-only">Pilih Template E-Nota</label>
+        <select
+          id="notaTemplateSelector"
+          onchange="switchNotaTemplate(this.value)"
+          class="nota-tpl-select h-9 px-2.5 rounded-[10px] bg-white border border-[#C4C1B6] text-xs font-semibold text-[#111113] min-w-0 w-full cursor-pointer"
+        >
+          <option value="tactile_bento">01 · Tactile Bento</option>
+          <option value="swiss_minimal">02 · Swiss Editorial</option>
+          <option value="atelier_magazine">03 · Warm Atelier</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label for="notaOrderSelector" class="sr-only">Pilih Nota</label>
+      <select
+        id="notaOrderSelector"
+        onchange="switchNotaOrder(this.value)"
+        class="h-9 px-2.5 rounded-[10px] bg-white border border-[#C4C1B6] font-mono-code text-xs font-semibold text-[#111113] min-w-0 w-full cursor-pointer"
+      ></select>
+    </div>
+
+    <div class="flex items-center justify-between gap-2">
+      <button
+        id="thermalToggleBtn"
+        type="button"
+        onclick="toggleThermalMode()"
+        aria-pressed="false"
+        class="h-9 px-3 rounded-[10px] bg-white hover:bg-[#F5F4F0] border border-[#C4C1B6] text-[#111113] text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition-colors flex-1 cursor-pointer"
+      >
+        <svg class="w-3.5 h-3.5 shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
+        <span>Mode Struk Thermal 58mm</span>
+      </button>
+
+      <button
+        type="button"
+        onclick="window.print()"
+        class="h-9 px-3.5 rounded-[10px] bg-[#111113] hover:bg-[#27272A] text-white text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition-colors shrink-0 cursor-pointer"
+      >
+        <svg class="w-3.5 h-3.5 shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+        <span>Cetak Struk</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- RECEIPT CARD -->
+  <article id="receiptArticle" class="print-ticket w-full max-w-[440px] bg-white rounded-2xl border border-[#C4C1B6] overflow-hidden transition-all duration-150">
+    <div class="ticket-header p-6 sm:p-7 bg-[#111216] text-white border-b border-[#232734]">
+      <div class="text-xs font-mono-code font-bold uppercase tracking-wider text-[#94A3B8] mb-1.5">E-Nota Workshop Digital</div>
+      <h1 id="ticketBrandName" class="font-display text-xl sm:text-2xl font-extrabold tracking-tight text-white">KULTUR KICKS LAB</h1>
+      <p id="ticketAddress" class="text-xs text-[#94A3B8] mt-1 leading-relaxed">Jl. Margonda Raya No. 412, Depok</p>
+    </div>
+
+    <div class="ticket-body p-6 sm:p-7 space-y-5 bg-white">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div class="text-xs font-medium text-[#525049]">Nomor Nota</div>
+          <div id="ticketOrderId" class="font-display font-mono-code text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111216] mt-0.5">KLK-2601</div>
+        </div>
+        <span id="ticketStageBadge" class="px-3.5 py-2 rounded-full font-mono-code text-xs font-bold bg-[#111216] text-white">
+          Tahap 3/5
+        </span>
+      </div>
+
+      <div class="rounded-[18px] bg-[#F7F5F0] p-4 sm:p-5 space-y-2.5 text-xs">
+        <div class="flex justify-between gap-4">
+          <span class="text-[#525049] shrink-0">Pelanggan</span>
+          <span id="ticketCustomer" class="font-bold text-[#111216] text-right">-</span>
+        </div>
+        <div class="flex justify-between gap-4">
+          <span class="text-[#525049] shrink-0">WhatsApp</span>
+          <span id="ticketPhone" class="font-mono-code text-[#111216] text-right">-</span>
+        </div>
+        <div class="flex justify-between gap-4">
+          <span class="text-[#525049] shrink-0">Unit Barang</span>
+          <span id="ticketItem" class="font-bold text-[#111216] text-right">-</span>
+        </div>
+        <div class="flex justify-between gap-4">
+          <span class="text-[#525049] shrink-0">Paket Layanan</span>
+          <span id="ticketService" class="font-semibold text-[#111216] text-right">-</span>
+        </div>
+        <div class="flex justify-between gap-4">
+          <span class="text-[#525049] shrink-0">Serah Terima</span>
+          <span id="ticketDelivery" class="text-[#111216] text-right">-</span>
+        </div>
+        <div class="flex justify-between gap-4">
+          <span class="text-[#525049] shrink-0">Estimasi Selesai</span>
+          <span id="ticketEta" class="font-mono-code font-bold text-[#111216] text-right">-</span>
+        </div>
+      </div>
+
+      <div class="perforated-divider pt-4">
+        <div class="text-xs font-bold text-[#111216] mb-2.5">Status Tahapan Pengerjaan (1&ndash;5)</div>
+        <div id="ticketStepsList" class="space-y-1.5 text-xs"></div>
+      </div>
+
+      <div class="tech-note-box rounded-[16px] bg-[#F7F5F0] p-4 text-xs">
+        <div class="font-bold text-[#111216] mb-1">Catatan Teknisi</div>
+        <p id="ticketTechNote" class="text-xs text-[#4A4945] leading-relaxed">-</p>
+      </div>
+
+      <div class="perforated-divider pt-5 flex items-center justify-between gap-4">
+        <div>
+          <div class="text-xs font-semibold uppercase tracking-wider text-[#525049]">Total Biaya</div>
+          <div id="ticketTotalPrice" class="font-display font-mono-code text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111216] mt-0.5">Rp 0</div>
+          <div class="text-xs text-[#525049] mt-1">Scan QR untuk lacak progres</div>
+        </div>
+        <div class="shrink-0 p-2 bg-[#F7F5F0] rounded-[14px]">
+          <img id="ticketQrImg" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23F5F4F0'/%3E%3Cpath d='M12 12h20v20H12zM48 12h20v20H48zM12 48h20v20H12z' fill='none' stroke='%23111113' stroke-width='4'/%3E%3Crect x='18' y='18' width='8' height='8' fill='%23111113'/%3E%3Crect x='54' y='18' width='8' height='8' fill='%23111113'/%3E%3Crect x='18' y='54' width='8' height='8' fill='%23111113'/%3E%3Crect x='46' y='46' width='10' height='10' fill='%23111113'/%3E%3Crect x='58' y='58' width='10' height='10' fill='%23111113'/%3E%3C/svg%3E" alt="QR Code Live Tracker" width="80" height="80" class="block rounded" />
+        </div>
+      </div>
+
+      <div id="thermalFooterNote" class="hidden perforated-divider pt-3 text-center text-xs leading-relaxed">
+        *** TERIMA KASIH ***<br />
+        Simpan struk ini sebagai bukti serah terima unit.
+      </div>
+    </div>
+  </article>
+
+  <script>
+    let activeSlug = window.getActiveMitraSlug();
+    let activeTenant = null;
+    let isThermal58mm = false;
+    let __wsNotaReqSeq = 0;
+
+    const RECEIPT_SVG_ICON = `<svg class="w-3.5 h-3.5 shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>`;
+
+    function escapeHtml(val) {
+      const shared = window.ServiceStore && window.ServiceStore.escapeHtml;
+      if (typeof shared === "function" && shared !== escapeHtml) {
+        return shared(val);
+      }
+      return String(val == null ? "" : val)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function sanitizeUrl(rawUrl, fallbackUrl) {
+      const shared = window.ServiceStore && window.ServiceStore.sanitizeUrl;
+      if (typeof shared === "function" && shared !== sanitizeUrl) {
+        return shared(rawUrl, fallbackUrl);
+      }
+      const fb = typeof fallbackUrl === "string" ? fallbackUrl : "";
+      if (typeof rawUrl !== "string") return fb;
+      const trimmed = rawUrl.trim();
+      if (!trimmed || /[\u0000-\u001F\u007F]/.test(trimmed)) return fb;
+      if (/^data:/i.test(trimmed)) {
+        return /^data:image\/(png|jpeg|jpg|webp|gif|avif)(?:;[a-z0-9=._+-]+)*(?:;base64)?,[a-z0-9+/=]+$/i.test(trimmed) ? trimmed : fb;
+      }
+      if (/^(https?|blob):/i.test(trimmed)) return trimmed;
+      if (/^(?:\/\/|\/\\|\\\/|\\)/.test(trimmed) || trimmed.split(/[/?#]/)[0].includes(":")) return fb;
+      return /^(?:\/(?!\/)|\.\/|\.\.\/|\?|#|[a-zA-Z0-9_-])/.test(trimmed) ? trimmed : fb;
+    }
+
+    function getMergedNotaOrders(slug, tenantObj) {
+      const recent =
+        window.ServiceStore && window.ServiceStore.getRecentPublicOrders
+          ? window.ServiceStore.getRecentPublicOrders(slug)
+          : [];
+      const recentCodes = new Set(
+        recent.map(ro => String((ro && ro.orderId) || "").trim().toUpperCase())
+      );
+      const isTenantAdmin = Boolean(
+        window.ServiceStore &&
+        window.ServiceStore.isAdminForTenant &&
+        window.ServiceStore.isAdminForTenant(slug)
+      );
+      const base = tenantObj && Array.isArray(tenantObj.orders) ? tenantObj.orders : [];
+      const out = [];
+      const seen = new Set();
+      [...recent, ...base].forEach(o => {
+        if (!o || !o.orderId) return;
+        const key = String(o.orderId).trim().toUpperCase();
+        if (!key || seen.has(key)) return;
+        if (!isTenantAdmin && !recentCodes.has(key) && !String(o.id || "").startsWith("ord-")) return;
+        seen.add(key);
+        out.push(o);
+      });
+      return out;
+    }
+
+    function toggleThermalMode(forceState) {
+      isThermal58mm = typeof forceState === "boolean" ? forceState : !isThermal58mm;
+      document.body.classList.toggle("thermal-58mm", isThermal58mm);
+      const btn = document.getElementById("thermalToggleBtn");
+      if (btn) {
+        btn.setAttribute("aria-pressed", String(isThermal58mm));
+        if (isThermal58mm) {
+          btn.className = "h-10 px-4 rounded-full bg-[#111216] text-white border-[1.5px] border-[#18181B] text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition-colors flex-1 cursor-pointer";
+          btn.innerHTML = `${RECEIPT_SVG_ICON}<span>Mode Thermal 58mm: AKTIF (Klik ke E-Nota)</span>`;
+        } else {
+          btn.className = "h-10 px-4 rounded-full bg-white hover:bg-[#F7F5F0] border-[1.5px] border-[#18181B] text-[#111216] text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition-colors flex-1 cursor-pointer";
+          btn.innerHTML = `${RECEIPT_SVG_ICON}<span>Mode Struk Thermal 58mm</span>`;
+        }
+      }
+    }
+
+    function renderNotaSelectorOptions(orders, selectedOrderId) {
+      const sel = document.getElementById("notaOrderSelector");
+      if (!sel) return;
+      const selUpper = String(selectedOrderId || "").trim().toUpperCase();
+      if (!orders || orders.length === 0) {
+        sel.innerHTML = `<option value="">Belum ada nota tersedia</option>`;
+        return;
+      }
+      sel.innerHTML = orders
+        .map(o => {
+          const isSel = selUpper && String(o.orderId || "").trim().toUpperCase() === selUpper;
+          return `<option value="${escapeHtml(o.orderId)}" ${isSel ? "selected" : ""}>${escapeHtml(o.orderId)} · ${escapeHtml(o.customerName)}</option>`;
+        })
+        .join("");
+    }
+
+    function renderNotFoundTicket(requestedCode) {
+      const cleanCode = String(requestedCode || "-").trim() || "-";
+      document.getElementById("notaPageTitle").textContent = `Nota ${cleanCode} Tidak Ditemukan · ${activeTenant ? activeTenant.name : "Workshop"}`;
+      document.getElementById("ticketOrderId").textContent = cleanCode;
+      document.getElementById("ticketStageBadge").textContent = "Tidak Ditemukan";
+      document.getElementById("ticketCustomer").textContent = "Data nota tidak ditemukan";
+      document.getElementById("ticketPhone").textContent = "-";
+      document.getElementById("ticketItem").textContent = "-";
+      document.getElementById("ticketService").textContent = "-";
+      document.getElementById("ticketDelivery").textContent = "-";
+      document.getElementById("ticketEta").textContent = "-";
+      document.getElementById("ticketTechNote").textContent = "Pastikan nomor nota dan link studio sudah sesuai dengan resi Anda.";
+      document.getElementById("ticketTotalPrice").textContent = "Rp 0";
+      document.getElementById("ticketStepsList").innerHTML = "";
+    }
+
+    async function initNotaPage() {
+      const reqSeq = ++__wsNotaReqSeq;
+      activeSlug = window.getActiveMitraSlug();
+      activeTenant = window.ServiceStore.getTenant(activeSlug);
+      if (!activeTenant) return;
+
+      const params = new URLSearchParams(window.location.search);
+      const urlTpl = params.get("template");
+      const validUrlTpl = urlTpl && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[urlTpl] ? urlTpl : null;
+      const activeTpl = window.resolveValidUiTemplate
+        ? window.resolveValidUiTemplate(validUrlTpl || activeTenant.uiTemplate)
+        : (validUrlTpl || "tactile_bento");
+      window.applyWorkshopTheme(activeTenant.themePreset, activeTenant.brandColor, activeTpl);
+      const tplSel = document.getElementById("notaTemplateSelector");
+      if (tplSel) tplSel.value = activeTpl;
+      const tplSuffix = validUrlTpl ? `&template=${encodeURIComponent(validUrlTpl)}` : "";
+      document.getElementById("backToPublicBtn").href = sanitizeUrl(`index.html?mitra=${encodeURIComponent(activeTenant.slug)}${tplSuffix}`, "index.html");
+      document.getElementById("ticketBrandName").textContent = activeTenant.name;
+      document.getElementById("ticketAddress").textContent = `${activeTenant.address} · WA ${activeTenant.whatsapp}`;
+
+      if (params.get("thermal") === "1" && !isThermal58mm) {
+        toggleThermalMode(true);
+      }
+
+      const sel = document.getElementById("notaOrderSelector");
+      const currentSelectedVal = sel ? sel.value : "";
+      const urlRequestedCode = (params.get("order") || params.get("resi") || "").trim();
+      const urlToken = (params.get("token") || "").trim();
+      const requestedCode = (urlRequestedCode || currentSelectedVal || "").trim();
+
+      let mergedOrders = getMergedNotaOrders(activeSlug, activeTenant);
+      const reqUpper = requestedCode.toUpperCase();
+      let initialOrd = reqUpper
+        ? mergedOrders.find(o => String(o.orderId || "").trim().toUpperCase() === reqUpper)
+        : mergedOrders[0];
+
+      renderNotaSelectorOptions(mergedOrders, initialOrd ? initialOrd.orderId : requestedCode);
+      if (initialOrd) {
+        renderTicketDetails(initialOrd);
+      }
+
+      const isTenantAdmin =
+        window.ServiceStore && window.ServiceStore.ensureAdminSessionForTenant
+          ? await window.ServiceStore.ensureAdminSessionForTenant(activeSlug)
+          : (window.ServiceStore && window.ServiceStore.isAdminForTenant ? window.ServiceStore.isAdminForTenant(activeSlug) : false);
+
+      if (reqSeq !== __wsNotaReqSeq) return;
+
+      const lookupCode = requestedCode || (mergedOrders[0] && mergedOrders[0].orderId) || "";
+      if (!isTenantAdmin && lookupCode && window.ServiceStore && window.ServiceStore.fetchPublicOrderByCode) {
+        const fetchedOrd = await window.ServiceStore.fetchPublicOrderByCode(activeSlug, lookupCode, urlToken);
+        if (reqSeq !== __wsNotaReqSeq) return;
+
+        if (fetchedOrd) {
+          const exists = mergedOrders.some(
+            o => String(o.orderId || "").trim().toUpperCase() === String(fetchedOrd.orderId || "").trim().toUpperCase()
+          );
+          if (!exists) {
+            mergedOrders = [fetchedOrd, ...mergedOrders];
+          } else {
+            mergedOrders = mergedOrders.map(o =>
+              String(o.orderId || "").trim().toUpperCase() === String(fetchedOrd.orderId || "").trim().toUpperCase()
+                ? fetchedOrd
+                : o
+            );
+          }
+          renderNotaSelectorOptions(mergedOrders, fetchedOrd.orderId);
+          renderTicketDetails(fetchedOrd);
+          return;
+        }
+      }
+
+      if (initialOrd) {
+        renderNotaSelectorOptions(mergedOrders, initialOrd.orderId);
+        renderTicketDetails(initialOrd);
+      } else if (urlRequestedCode) {
+        renderNotaSelectorOptions(mergedOrders, "");
+        renderNotFoundTicket(urlRequestedCode);
+      } else if (mergedOrders[0]) {
+        renderNotaSelectorOptions(mergedOrders, mergedOrders[0].orderId);
+        renderTicketDetails(mergedOrders[0]);
+      } else {
+        renderNotaSelectorOptions([], "");
+        renderNotFoundTicket("-");
+      }
+    }
+
+    function switchNotaTemplate(tplKey) {
+      if (!activeTenant) return;
+      const validTpl = window.resolveValidUiTemplate
+        ? window.resolveValidUiTemplate(tplKey, activeTenant.uiTemplate)
+        : (tplKey || "tactile_bento");
+      window.ServiceStore.saveTenantProfile(activeSlug, { uiTemplate: validTpl });
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("template")) {
+        url.searchParams.delete("template");
+        window.history.replaceState({}, "", url.toString());
+      }
+      initNotaPage();
+    }
+
+    async function switchNotaOrder(orderId) {
+      if (!orderId || !activeTenant) return;
+      const reqSeq = ++__wsNotaReqSeq;
+      const cleanCode = String(orderId).trim().toUpperCase();
+      const mergedOrders = getMergedNotaOrders(activeSlug, activeTenant);
+      const localMatch = mergedOrders.find(o => String(o.orderId || "").trim().toUpperCase() === cleanCode);
+      if (localMatch) {
+        renderTicketDetails(localMatch);
+      }
+
+      const isTenantAdmin =
+        window.ServiceStore && window.ServiceStore.ensureAdminSessionForTenant
+          ? await window.ServiceStore.ensureAdminSessionForTenant(activeSlug)
+          : (window.ServiceStore && window.ServiceStore.isAdminForTenant ? window.ServiceStore.isAdminForTenant(activeSlug) : false);
+
+      if (reqSeq !== __wsNotaReqSeq) return;
+
+      if (!isTenantAdmin && window.ServiceStore && window.ServiceStore.fetchPublicOrderByCode) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenHint = (localMatch && localMatch.trackingToken) || (urlParams.get("token") || "").trim();
+        const fetchedOrd = await window.ServiceStore.fetchPublicOrderByCode(activeSlug, orderId, tokenHint);
+        if (reqSeq !== __wsNotaReqSeq) return;
+        if (fetchedOrd) {
+          renderTicketDetails(fetchedOrd);
+          return;
+        }
+      }
+
+      if (!localMatch) {
+        renderNotFoundTicket(orderId);
+      }
+    }
+
+    function renderTicketDetails(ord) {
+      const nicheDef = window.NICHE_DEFINITIONS[activeTenant.niche] || window.NICHE_DEFINITIONS.sneakers_care;
+      const curStep = Math.min(Math.max(Number(ord.stepIndex) || 1, 1), 5);
+      const isAdminView =
+        window.ServiceStore && window.ServiceStore.isAdminForTenant
+          ? window.ServiceStore.isAdminForTenant(activeTenant.slug)
+          : false;
+      const displayNote = (isAdminView ? (ord.techNote || ord.publicNote) : (ord.publicNote || ord.techNote)) || "-";
+
+      document.getElementById("notaPageTitle").textContent = `Nota ${ord.orderId} · ${activeTenant.name}`;
+      document.getElementById("ticketOrderId").textContent = ord.orderId;
+      document.getElementById("ticketStageBadge").textContent = `Tahap ${curStep}/5`;
+      document.getElementById("ticketCustomer").textContent = ord.customerName;
+      document.getElementById("ticketPhone").textContent = ord.phone || "-";
+      document.getElementById("ticketItem").textContent = ord.itemName;
+      document.getElementById("ticketService").textContent = ord.serviceName;
+      document.getElementById("ticketDelivery").textContent = ord.deliveryType || "-";
+      document.getElementById("ticketEta").textContent = ord.etaDate;
+      document.getElementById("ticketTechNote").textContent = displayNote;
+      document.getElementById("ticketTotalPrice").textContent = window.formatRupiah(ord.price);
+
+      const stepsHtml = nicheDef.steps.map(s => {
+        const stepNum = Math.min(Math.max(Number(s.step) || 1, 1), 5);
+        const done = stepNum <= curStep;
+        const iconSvg = done
+          ? `<svg class="nota-step-icon w-4 h-4 shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.2 14.2L6.5 11.9l1.4-1.4 2.9 2.9 5.9-5.9 1.4 1.4-7.3 7.3z"/></svg>`
+          : `<svg class="nota-step-icon w-4 h-4 shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="9"/></svg>`;
+        return `
+          <div class="nota-step-row flex items-center justify-between py-1.5 ${done ? "is-done font-semibold" : "is-pending"}">
+            <span class="flex items-center gap-2 min-w-0">
+              ${iconSvg}
+              <span class="truncate">Tahap ${stepNum} · ${escapeHtml(s.label)}</span>
+            </span>
+            <span class="font-mono-code text-xs shrink-0 ml-2">${escapeHtml(s.code)}</span>
+          </div>
+        `;
+      }).join("");
+      document.getElementById("ticketStepsList").innerHTML = stepsHtml;
+
+      const tokenQuery = ord.trackingToken ? `&token=${encodeURIComponent(ord.trackingToken)}` : "";
+      const trackUrl = `${window.location.origin}${window.location.pathname.replace("nota.html", "index.html")}?mitra=${encodeURIComponent(activeTenant.slug)}&resi=${encodeURIComponent(ord.orderId)}${tokenQuery}`;
+      const safeQrUrl = sanitizeUrl(`https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=4&data=${encodeURIComponent(trackUrl)}`);
+      if (safeQrUrl) {
+        document.getElementById("ticketQrImg").src = safeQrUrl;
+      }
+    }
+
+    window.addEventListener("storage", (e) => {
+      if (!e.key || e.key === "atelier_service_engine_v4_tenants" || e.key === "atelier_service_engine_v4_recent_public_orders" || e.key === "active_mitra_slug") {
+        initNotaPage();
+      }
+    });
+    window.addEventListener("message", (e) => {
+      if (window.isSameOriginMessage && !window.isSameOriginMessage(e)) return;
+      if (e.data && e.data.type === "ATELIER_STORE_SYNC") {
+        initNotaPage();
+      }
+    });
+    window.addEventListener("ws-cloud-synced", initNotaPage);
+    document.addEventListener("DOMContentLoaded", initNotaPage);
+  </script>
+</body>
+</html>

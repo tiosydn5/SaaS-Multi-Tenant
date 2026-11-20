@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="analyticsPageTitle">Laporan Omzet Studio</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="service-config.js"></script>
+  <!-- KUNCI LAYAR DARI ATAS AGAR TIDAK BERKEDIP KULTUR KICKS -->
+  <style id="ws-instant-cloak">
+    html.ws-cloak body { opacity: 0 !important; pointer-events: none !important; }
+    body { transition: opacity 0.15s ease-out; }
+  </style>
+  <script>
+    (function () {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const urlTpl = params.get("template");
+        const slug = window.getActiveMitraSlug ? window.getActiveMitraSlug() : "kultur-kicks";
+        const t = window.ServiceStore && window.ServiceStore.getTenant ? window.ServiceStore.getTenant(slug) : null;
+        const validUrlTpl = urlTpl && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[urlTpl] ? urlTpl : null;
+        const activeTpl = window.resolveValidUiTemplate
+          ? window.resolveValidUiTemplate(validUrlTpl || (t && t.uiTemplate))
+          : (validUrlTpl || "tactile_bento");
+        if (window.applyWorkshopTheme && t) {
+          window.applyWorkshopTheme(t.themePreset, t.brandColor, activeTpl);
+        } else if (window.applyWorkshopTemplate) {
+          window.applyWorkshopTemplate(activeTpl);
+        }
+      } catch (e) {}
+      const slug = window.getActiveMitraSlug ? window.getActiveMitraSlug() : "kultur-kicks";
+      if (slug === "kultur-kicks") return;
+      document.documentElement.classList.add("ws-cloak");
+      function uncloak() { document.documentElement.classList.remove("ws-cloak"); }
+      window.addEventListener("ws-cloud-synced", () => setTimeout(uncloak, 30), { once: true });
+      window.addEventListener("DOMContentLoaded", () => {
+        const raw = localStorage.getItem("atelier_service_engine_v4_tenants");
+        const map = raw ? JSON.parse(raw) : {};
+        if (map[slug]) uncloak();
+        else setTimeout(uncloak, 600);
+      });
+    })();
+  </script>
+  <style>
+    :root {
+      --op-canvas: #08090C;
+      --op-surface: #12141A;
+      --op-elevated: #1A1D26;
+      --op-border: #232734;
+      --op-text: #F8FAFC;
+      --op-muted: #94A3B8;
+      --op-dim: #64748B;
+      --brand: #D9381E;
+      --font-display: 'Sora', 'Onest', -apple-system, sans-serif;
+      --font-sans: 'Onest', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    ::selection {
+      background-color: var(--brand);
+      color: #FFFFFF;
+    }
+
+    body {
+      background-color: #131722 !important;
+      color: #F8FAFC !important;
+      font-family: var(--font-sans);
+      caret-color: var(--brand);
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body > header {
+      background-color: #1A2030 !important;
+      border-bottom: 1.5px solid #333D58 !important;
+    }
+
+    .an-card-surface,
+    .bg-\[\#12141A\] {
+      background-color: #1E2538 !important;
+      border: 1.5px solid #3B4666 !important;
+    }
+
+    .an-subcard {
+      background-color: #141926 !important;
+      border: 1.5px solid #2E3852 !important;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .an-bar-track {
+      width: 100%;
+      height: 0.75rem;
+      border-radius: 9999px;
+      background-color: #141926;
+      overflow: hidden;
+    }
+    .an-bar-fill {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 300ms ease;
+      background-color: var(--brand);
+    }
+    .an-bar-fill.is-zero {
+      background-color: #333D58;
+    }
+
+    .an-delivery-card {
+      border-radius: 14px;
+      background-color: #161922;
+      border: 1px solid #232734;
+      padding: 0.875rem;
+    }
+
+    .an-stage-count-badge {
+      background-color: #1A1D26;
+      color: #FFFFFF;
+    }
+    .an-stage-count-badge.is-done {
+      background-color: #08291D;
+      color: #34D399;
+    }
+
+    .an-stage-badge {
+      background-color: #1A1D26;
+      color: #E2E8F0;
+    }
+    .an-stage-badge.is-done {
+      background-color: var(--brand);
+      color: #FFFFFF;
+    }
+
+    .font-display {
+      font-family: var(--font-display);
+      letter-spacing: -0.03em;
+    }
+
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .font-mono-code {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0B0D;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2C2C34;
+      border-radius: 3px;
+    }
+
+    .an-select-tenant,
+    .an-select-tpl {
+      width: 100%;
+      min-width: 0;
+    }
+    @media (min-width: 640px) {
+      .an-select-tenant { width: 205px; }
+      .an-select-tpl { width: 190px; }
+    }
+
+    /* ===================================================================== */
+    /* TEMPLATE 02: SWISS EDITORIAL GRID (swiss_minimal)                     */
+    /* Cool Architectural Slate Dark Mode: #0F172A Canvas & Crisp White CTA   */
+    /* ===================================================================== */
+    html[data-ui-template="swiss_minimal"] body {
+      background-color: #0F172A !important;
+      color: #F8FAFC !important;
+      caret-color: #F8FAFC;
+    }
+    html[data-ui-template="swiss_minimal"] .kroma-horizon {
+      background-image: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] body > header {
+      background-color: #0F172A !important;
+      border-bottom: 1px solid #334155 !important;
+    }
+    html[data-ui-template="swiss_minimal"] .an-card-surface,
+    html[data-ui-template="swiss_minimal"] .bg-\[\#12141A\] {
+      background-color: #1E293B !important;
+      border: 1px solid #475569 !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] .an-subcard,
+    html[data-ui-template="swiss_minimal"] .an-delivery-card {
+      background-color: #0F172A !important;
+      border: 1px solid #475569 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="swiss_minimal"] .emerald-surface {
+      background: #0B2920 !important;
+      color: #A7F3D0 !important;
+      border: 1px solid #047857 !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] .emerald-surface * {
+      color: #A7F3D0 !important;
+    }
+    html[data-ui-template="swiss_minimal"] .emerald-surface span.bg-\[\#051F17\] {
+      background-color: #10B981 !important;
+    }
+    html[data-ui-template="swiss_minimal"] .bronze-surface {
+      background: #2D2011 !important;
+      color: #FDE68A !important;
+      border: 1px solid #92400E !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+    }
+    html[data-ui-template="swiss_minimal"] .bronze-surface * {
+      color: #FDE68A !important;
+    }
+    html[data-ui-template="swiss_minimal"] .bronze-surface span.bg-\[\#1C0F00\] {
+      background-color: #F59E0B !important;
+    }
+    html[data-ui-template="swiss_minimal"] .text-white,
+    html[data-ui-template="swiss_minimal"] .text-\[\#F8FAFC\],
+    html[data-ui-template="swiss_minimal"] .text-\[\#F3F2EE\],
+    html[data-ui-template="swiss_minimal"] .text-\[\#E2E8F0\] {
+      color: #F8FAFC !important;
+    }
+    html[data-ui-template="swiss_minimal"] .text-\[\#CBD5E1\],
+    html[data-ui-template="swiss_minimal"] .text-\[\#94A3B8\],
+    html[data-ui-template="swiss_minimal"] .text-\[\#9E9D98\] {
+      color: #CBD5E1 !important;
+    }
+    html[data-ui-template="swiss_minimal"] #anLogoBox {
+      background-color: #1E293B !important;
+      border: 1px solid #475569 !important;
+      color: #F8FAFC !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="swiss_minimal"] body > header span.rounded-full {
+      background-color: #1E293B !important;
+      color: #CBD5E1 !important;
+      border: 1px solid #475569 !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="swiss_minimal"] #anTenantSelector,
+    html[data-ui-template="swiss_minimal"] #anTemplateSelector,
+    html[data-ui-template="swiss_minimal"] #anAdminLink,
+    html[data-ui-template="swiss_minimal"] #anPublicLink {
+      background-color: #1E293B !important;
+      border: 1px solid #475569 !important;
+      color: #F8FAFC !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="swiss_minimal"] #anAdminLink:hover,
+    html[data-ui-template="swiss_minimal"] #anPublicLink:hover {
+      background-color: #334155 !important;
+      color: #FFFFFF !important;
+    }
+    html[data-ui-template="swiss_minimal"] button[onclick="exportAnalyticsCsv()"] {
+      background-color: #FFFFFF !important;
+      color: #0F172A !important;
+      border: 1px solid #FFFFFF !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="swiss_minimal"] button[onclick="exportAnalyticsCsv()"] * {
+      color: #0F172A !important;
+    }
+    html[data-ui-template="swiss_minimal"] button[onclick="exportAnalyticsCsv()"]:hover {
+      background-color: #E2E8F0 !important;
+    }
+    html[data-ui-template="swiss_minimal"] #cashRatioSummaryBadge,
+    html[data-ui-template="swiss_minimal"] #ledgerCountBadge {
+      background-color: #0F172A !important;
+      color: #F8FAFC !important;
+      border: 1px solid #475569 !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="swiss_minimal"] .bg-\[\#1A1D26\],
+    html[data-ui-template="swiss_minimal"] .an-bar-track {
+      background-color: #0F172A !important;
+    }
+    html[data-ui-template="swiss_minimal"] .an-bar-track {
+      border: 1px solid #334155 !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="swiss_minimal"] .an-bar-fill {
+      background-color: #FFFFFF !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="swiss_minimal"] .an-bar-fill.is-zero {
+      background-color: #334155 !important;
+    }
+    html[data-ui-template="swiss_minimal"] #ratioDonePctText {
+      background-color: #0B2920 !important;
+      color: #A7F3D0 !important;
+      border: 1px solid #047857 !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="swiss_minimal"] #ratioDoneAmountText,
+    html[data-ui-template="swiss_minimal"] #anCompletionRateText {
+      color: #34D399 !important;
+    }
+    html[data-ui-template="swiss_minimal"] #ratioStuckPctText {
+      background-color: #2D2011 !important;
+      color: #FDE68A !important;
+      border: 1px solid #92400E !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="swiss_minimal"] #ratioStuckAmountText {
+      color: #FBBF24 !important;
+    }
+    html[data-ui-template="swiss_minimal"] .an-stage-count-badge {
+      background-color: #0F172A !important;
+      color: #F8FAFC !important;
+      border: 1px solid #475569 !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="swiss_minimal"] .an-stage-count-badge.is-done {
+      background-color: #0B2920 !important;
+      color: #A7F3D0 !important;
+      border-color: #047857 !important;
+    }
+    html[data-ui-template="swiss_minimal"] .an-stage-badge {
+      background-color: #0F172A !important;
+      color: #CBD5E1 !important;
+      border: 1px solid #475569 !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="swiss_minimal"] .an-stage-badge.is-done {
+      background-color: #FFFFFF !important;
+      color: #0F172A !important;
+      border-color: #FFFFFF !important;
+    }
+    html[data-ui-template="swiss_minimal"] thead tr {
+      background-color: #0F172A !important;
+      border-color: #334155 !important;
+      color: #CBD5E1 !important;
+    }
+    html[data-ui-template="swiss_minimal"] .border-\[\#1E222D\],
+    html[data-ui-template="swiss_minimal"] .border-\[\#2E3852\],
+    html[data-ui-template="swiss_minimal"] .divide-\[\#1E222D\] > :not([hidden]) ~ :not([hidden]) {
+      border-color: #334155 !important;
+    }
+    html[data-ui-template="swiss_minimal"] #auditLedgerBody tr:hover {
+      background-color: #263348 !important;
+    }
+
+    /* ===================================================================== */
+    /* TEMPLATE 03: WARM ATELIER LOOKBOOK (atelier_magazine)                 */
+    /* Warm Espresso Dark Mode: #181210 Canvas, #241B17 Cards, #C87D28 Ochre */
+    /* ===================================================================== */
+    html[data-ui-template="atelier_magazine"] body {
+      --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+      background-color: #181210 !important;
+      color: #FAF7F0 !important;
+      caret-color: #FAF7F0;
+      font-family: var(--font-sans);
+    }
+    html[data-ui-template="atelier_magazine"] .kroma-horizon {
+      background-image: none !important;
+    }
+    html[data-ui-template="atelier_magazine"] h1,
+    html[data-ui-template="atelier_magazine"] h2,
+    html[data-ui-template="atelier_magazine"] h3,
+    html[data-ui-template="atelier_magazine"] .font-display,
+    html[data-ui-template="atelier_magazine"] .type-kpi-hero {
+      font-family: var(--font-display) !important;
+    }
+    html[data-ui-template="atelier_magazine"] body > header {
+      background-color: #241B17 !important;
+      border-bottom: 1.5px solid #4A3830 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .an-card-surface,
+    html[data-ui-template="atelier_magazine"] .bg-\[\#12141A\] {
+      background-color: #241B17 !important;
+      border: 1.5px solid #4A3830 !important;
+      border-radius: 8px !important;
+      box-shadow: 4px 4px 0 #0D0908 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .an-subcard,
+    html[data-ui-template="atelier_magazine"] .an-delivery-card {
+      background-color: #1D1512 !important;
+      border: 1px solid #4A3830 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .emerald-surface {
+      background: #142B1E !important;
+      color: #B7E4C7 !important;
+      border: 1.5px solid #2D6A4F !important;
+      border-radius: 8px !important;
+      box-shadow: 4px 4px 0 #0D0908 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .emerald-surface * {
+      color: #B7E4C7 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .emerald-surface span.bg-\[\#051F17\] {
+      background-color: #34D399 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .bronze-surface {
+      background: #332113 !important;
+      color: #FDE68A !important;
+      border: 1.5px solid #8A5316 !important;
+      border-radius: 8px !important;
+      box-shadow: 4px 4px 0 #0D0908 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .bronze-surface * {
+      color: #FDE68A !important;
+    }
+    html[data-ui-template="atelier_magazine"] .bronze-surface span.bg-\[\#1C0F00\] {
+      background-color: #FBBF24 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .text-white,
+    html[data-ui-template="atelier_magazine"] .text-\[\#F8FAFC\],
+    html[data-ui-template="atelier_magazine"] .text-\[\#F3F2EE\],
+    html[data-ui-template="atelier_magazine"] .text-\[\#E2E8F0\] {
+      color: #FAF7F0 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .text-\[\#CBD5E1\],
+    html[data-ui-template="atelier_magazine"] .text-\[\#94A3B8\],
+    html[data-ui-template="atelier_magazine"] .text-\[\#9E9D98\] {
+      color: #D6C8B8 !important;
+    }
+    html[data-ui-template="atelier_magazine"] #anLogoBox {
+      background-color: #C87D28 !important;
+      border: 1.5px solid #E6B16A !important;
+      color: #181210 !important;
+      border-radius: 6px !important;
+      font-family: var(--font-display) !important;
+    }
+    html[data-ui-template="atelier_magazine"] body > header span.rounded-full {
+      background-color: #1D1512 !important;
+      color: #D6C8B8 !important;
+      border: 1px solid #4A3830 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] #anTenantSelector,
+    html[data-ui-template="atelier_magazine"] #anTemplateSelector {
+      background-color: #140F0D !important;
+      border: 1.5px solid #4A3830 !important;
+      color: #FAF7F0 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] #anAdminLink,
+    html[data-ui-template="atelier_magazine"] #anPublicLink {
+      background-color: #2E231D !important;
+      border: 1.5px solid #4A3830 !important;
+      color: #FAF7F0 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] #anAdminLink:hover,
+    html[data-ui-template="atelier_magazine"] #anPublicLink:hover {
+      background-color: #3B2D26 !important;
+      color: #FFFFFF !important;
+    }
+    html[data-ui-template="atelier_magazine"] button[onclick="exportAnalyticsCsv()"] {
+      background-color: #C87D28 !important;
+      border: 1.5px solid #E6B16A !important;
+      border-radius: 6px !important;
+      box-shadow: 2px 2px 0 #0D0908 !important;
+      color: #181210 !important;
+    }
+    html[data-ui-template="atelier_magazine"] button[onclick="exportAnalyticsCsv()"] * {
+      color: #181210 !important;
+    }
+    html[data-ui-template="atelier_magazine"] button[onclick="exportAnalyticsCsv()"]:hover {
+      background-color: #D9933B !important;
+    }
+    html[data-ui-template="atelier_magazine"] #cashRatioSummaryBadge,
+    html[data-ui-template="atelier_magazine"] #ledgerCountBadge {
+      background-color: #1D1512 !important;
+      color: #FAF7F0 !important;
+      border: 1px solid #4A3830 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .bg-\[\#1A1D26\] {
+      background-color: #1D1512 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .an-bar-track {
+      background-color: #1D1512 !important;
+      border: 1px solid #4A3830 !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .an-bar-fill {
+      background-color: #C87D28 !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .an-bar-fill.is-zero {
+      background-color: #4A3830 !important;
+    }
+    html[data-ui-template="atelier_magazine"] #ratioDonePctText {
+      background-color: #142B1E !important;
+      color: #B7E4C7 !important;
+      border: 1px solid #2D6A4F !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="atelier_magazine"] #ratioDoneAmountText,
+    html[data-ui-template="atelier_magazine"] #anCompletionRateText {
+      color: #6EE7B7 !important;
+    }
+    html[data-ui-template="atelier_magazine"] #ratioStuckPctText {
+      background-color: #332113 !important;
+      color: #FDE68A !important;
+      border: 1px solid #8A5316 !important;
+      border-radius: 4px !important;
+    }
+    html[data-ui-template="atelier_magazine"] #ratioStuckAmountText {
+      color: #FBBF24 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .an-stage-count-badge {
+      background-color: #1D1512 !important;
+      color: #FAF7F0 !important;
+      border: 1px solid #4A3830 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .an-stage-count-badge.is-done {
+      background-color: #142B1E !important;
+      color: #B7E4C7 !important;
+      border-color: #2D6A4F !important;
+    }
+    html[data-ui-template="atelier_magazine"] .an-stage-badge {
+      background-color: #1D1512 !important;
+      color: #D6C8B8 !important;
+      border: 1px solid #4A3830 !important;
+      border-radius: 6px !important;
+    }
+    html[data-ui-template="atelier_magazine"] .an-stage-badge.is-done {
+      background-color: #C87D28 !important;
+      color: #181210 !important;
+      border-color: #E6B16A !important;
+    }
+    html[data-ui-template="atelier_magazine"] thead tr {
+      background-color: #1D1512 !important;
+      border-color: #4A3830 !important;
+      color: #D6C8B8 !important;
+    }
+    html[data-ui-template="atelier_magazine"] .border-\[\#1E222D\],
+    html[data-ui-template="atelier_magazine"] .border-\[\#2E3852\],
+    html[data-ui-template="atelier_magazine"] .divide-\[\#1E222D\] > :not([hidden]) ~ :not([hidden]) {
+      border-color: #4A3830 !important;
+    }
+    html[data-ui-template="atelier_magazine"] #auditLedgerBody tr:hover {
+      background-color: #2E231D !important;
+    }
+  </style>
+</head>
+<body class="kroma-horizon min-h-screen flex flex-col bg-[#08090C] text-[#F8FAFC]">
+
+  <!-- OBSIDIAN ARCHITECTURAL HEADER -->
+  <header class="sticky top-0 z-30 border-b border-[#1E222D] bg-[#08090C]/90 backdrop-blur-md">
+    <div class="max-w-[1340px] mx-auto px-4 sm:px-6 py-3.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div id="anLogoBox" class="w-10 h-10 rounded-[12px] bg-[#161922] border border-[#232734] font-mono-code font-bold text-xs text-white flex items-center justify-center shrink-0 overflow-hidden">
+          KLK
+        </div>
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 id="anBrandTitle" class="font-display font-bold text-sm sm:text-base tracking-tight text-white truncate">KULTUR KICKS LAB</h1>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-mono-code font-semibold bg-[#161922] text-[#94A3B8]">Omzet &amp; Kas</span>
+          </div>
+          <p id="anBranchText" class="text-xs text-[#94A3B8] mt-0.5 truncate">Margonda, Depok</p>
+        </div>
+      </div>
+
+      <div class="w-full lg:w-auto flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 min-w-0">
+        <div class="an-select-tenant min-w-0">
+          <label for="anTenantSelector" class="sr-only">Pilih Mitra</label>
+          <select
+            id="anTenantSelector"
+            onchange="switchAnalyticsTenant(this.value)"
+            class="w-full min-w-0 max-w-full h-10 px-3 rounded-[10px] bg-[#14171F] border border-[#232734] text-xs font-semibold text-white focus:outline-none cursor-pointer"
+          ></select>
+        </div>
+
+        <div class="an-select-tpl min-w-0">
+          <label for="anTemplateSelector" class="sr-only">Pilih Template UI</label>
+          <select
+            id="anTemplateSelector"
+            onchange="switchAnalyticsTemplate(this.value)"
+            class="w-full min-w-0 max-w-full h-10 px-3 rounded-[10px] bg-[#14171F] border border-[#232734] text-xs font-semibold text-white focus:outline-none cursor-pointer"
+          >
+            <option value="tactile_bento">01 · Tactile Bento</option>
+            <option value="swiss_minimal">02 · Swiss Editorial</option>
+            <option value="atelier_magazine">03 · Warm Atelier</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-3 sm:flex items-center gap-2">
+          <a id="anAdminLink" href="admin.html" class="h-10 px-3 rounded-[10px] bg-[#14171F] hover:bg-[#1E222D] border border-[#232734] text-xs font-semibold text-[#F3F2EE] inline-flex items-center justify-center transition-colors">
+            Kasir
+          </a>
+
+          <a id="anPublicLink" href="index.html" class="h-10 px-3 rounded-[10px] bg-[#14171F] hover:bg-[#1E222D] border border-[#232734] text-xs font-semibold text-[#94A3B8] hover:text-white inline-flex items-center justify-center transition-colors">
+            Publik
+          </a>
+
+          <button
+            type="button"
+            onclick="exportAnalyticsCsv()"
+            style="background-color: var(--brand);"
+            class="h-10 px-3.5 rounded-[10px] hover:opacity-95 text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 transition-opacity cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            <span>CSV</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-[1340px] w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+
+    <!-- REF 2 KROMA ASYMMETRIC FINANCIAL TELEMETRY BAND (HERO OMZET + SATURATED SIGNAL PANELS) -->
+    <section aria-label="Ringkasan Keuangan Studio" class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
+      <!-- Left 7 Cols: Hero Total Omzet + Avg Ticket + Cash Ratio Split Bar -->
+      <div class="an-card-surface lg:col-span-7 bg-[#12141A] rounded-[24px] border border-[#232734] p-6 sm:p-7 flex flex-col justify-between gap-6 min-w-0">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div class="min-w-0">
+            <div class="font-mono-code text-xs uppercase tracking-wider text-[#94A3B8]">Total Omzet Terdaftar</div>
+            <div id="metricGrossRev" class="type-kpi-hero text-white mt-2">Rp 0</div>
+          </div>
+          <div class="sm:text-right shrink-0">
+            <div class="text-xs text-[#94A3B8]">Rata-Rata Nilai Nota</div>
+            <div id="metricAvgTicket" class="font-mono-code text-lg sm:text-xl font-bold text-[#E2E8F0] mt-0.5 tabular-nums">Rp -</div>
+          </div>
+        </div>
+
+        <!-- Integrated Kas Cair vs Mengendap Split Track -->
+        <div class="pt-5 border-t border-[#1E222D] space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="font-display text-sm font-bold text-white">Rasio Kas Cair vs Piutang di Rak</span>
+            <span id="cashRatioSummaryBadge" class="font-mono-code text-xs px-3 py-1 rounded-full bg-[#1A1D26] text-white tabular-nums">
+              0% Cair · 0% di Rak
+            </span>
+          </div>
+
+          <div class="w-full h-3.5 rounded-full bg-[#1A1D26] overflow-hidden flex">
+            <div id="cashLiquidBar" style="width: 50%; background-color: #10B981;" class="h-full transition-all duration-300"></div>
+            <div id="cashStuckBar" style="width: 50%; background-color: #F59E0B;" class="h-full transition-all duration-300"></div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+            <div class="an-subcard flex flex-col justify-between gap-2">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-xs text-white inline-flex items-center gap-2 whitespace-nowrap">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#10B981] shrink-0"></span>
+                  <span>Siap Serah (Tahap 5)</span>
+                </span>
+                <span id="ratioDonePctText" class="font-mono-code text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#08291D] text-[#34D399] tabular-nums shrink-0">0% Omzet</span>
+              </div>
+              <div id="ratioDoneAmountText" class="font-display text-lg sm:text-xl font-extrabold text-[#34D399] tabular-nums">Rp 0</div>
+              <div id="ratioDoneCountText" class="text-xs font-medium text-[#94A3B8]">0 unit siap serah terima</div>
+            </div>
+
+            <div class="an-subcard flex flex-col justify-between gap-2">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-xs text-white inline-flex items-center gap-2 whitespace-nowrap">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#F59E0B] shrink-0"></span>
+                  <span>Di Rak (Tahap 1–4)</span>
+                </span>
+                <span id="ratioStuckPctText" class="font-mono-code text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#2A1F0A] text-[#FBBF24] tabular-nums shrink-0">0% Omzet</span>
+              </div>
+              <div id="ratioStuckAmountText" class="font-display text-lg sm:text-xl font-extrabold text-[#FBBF24] tabular-nums">Rp 0</div>
+              <div id="ratioStuckCountText" class="text-xs font-medium text-[#94A3B8]">0 unit masih di rak pengerjaan</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right 5 Cols: Saturated Emerald & Warm Bronze Signal Surfaces -->
+      <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+        <div class="emerald-surface rounded-[22px] p-6 flex flex-col justify-between gap-3">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-mono-code text-xs font-bold uppercase tracking-wider">Pendapatan Cair · Tahap 5</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#051F17] shrink-0"></span>
+          </div>
+          <div>
+            <div id="metricCompletedRev" class="font-display text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums">Rp 0</div>
+            <div id="metricCompletedSub" class="text-xs font-semibold mt-1">0 nota selesai</div>
+          </div>
+        </div>
+
+        <div class="bronze-surface rounded-[22px] p-6 flex flex-col justify-between gap-3">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-mono-code text-xs font-bold uppercase tracking-wider">Piutang di Rak · Tahap 1-4</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#1C0F00] shrink-0"></span>
+          </div>
+          <div>
+            <div id="metricPipelineRev" class="font-display text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums">Rp 0</div>
+            <div id="metricPipelineSub" class="text-xs font-semibold mt-1">0 unit aktif</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ASYMMETRIC 5:7 BREAKDOWN PANELS -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+      <section class="an-card-surface lg:col-span-5 bg-[#12141A] rounded-[24px] border border-[#232734] p-5 sm:p-6 space-y-5 min-w-0 h-full">
+        <div class="pb-3 border-b border-[#1E222D]">
+          <h2 class="font-display text-base font-bold tracking-tight text-white">Antrean per Tahap</h2>
+        </div>
+
+        <div id="stageDistributionList" class="divide-y divide-[#1E222D]"></div>
+
+        <div class="pt-4 border-t border-[#1E222D]">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-3">Metode Serah Terima</h3>
+          <div id="deliverySplitMount" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+      </section>
+
+      <section class="an-card-surface lg:col-span-7 bg-[#12141A] rounded-[24px] border border-[#232734] p-5 sm:p-6 flex flex-col justify-between gap-5 min-w-0 h-full">
+        <div class="space-y-5">
+          <div class="pb-3 border-b border-[#1E222D] flex items-center justify-between gap-2">
+            <h2 class="font-display text-base font-bold tracking-tight text-white">Kontribusi Omzet per Paket</h2>
+            <span class="font-mono-code text-xs text-[#94A3B8]">Urut Omzet Tertinggi</span>
+          </div>
+
+          <div id="serviceRevenueBars" class="space-y-4"></div>
+        </div>
+
+        <div class="pt-4 border-t border-[#2E3852] grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="an-subcard min-w-0">
+            <div class="text-xs text-[#94A3B8]">Paket Kontribusi Tertinggi</div>
+            <div id="anTopServiceLabel" class="font-display text-xs sm:text-sm font-bold text-white mt-1 truncate">-</div>
+          </div>
+          <div class="an-subcard min-w-0">
+            <div class="text-xs text-[#94A3B8]">Katalog Paket Aktif</div>
+            <div id="anActiveCatalogCount" class="font-mono-code text-base font-bold text-white mt-0.5 tabular-nums">0 Paket</div>
+          </div>
+          <div class="an-subcard min-w-0">
+            <div class="text-xs text-[#94A3B8]">Rasio Penyelesaian Nota</div>
+            <div id="anCompletionRateText" class="font-mono-code text-base font-bold text-[#34D399] mt-0.5 tabular-nums">0% Selesai</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- FULL AUDIT LEDGER TABLE -->
+    <section class="an-card-surface bg-[#12141A] rounded-[24px] border border-[#232734] overflow-hidden">
+      <div class="px-5 sm:px-6 py-4 border-b border-[#1E222D] flex flex-wrap items-center justify-between gap-2">
+        <h2 class="font-display text-base font-bold tracking-tight text-white">Jurnal Transaksi</h2>
+        <span id="ledgerCountBadge" class="font-mono-code text-xs px-2.5 py-1 rounded-full bg-[#1A1D26] text-[#94A3B8]">0 nota</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="hidden md:table-header-group">
+            <tr class="border-b border-[#1E222D] bg-[#161922] text-xs font-semibold text-[#94A3B8]">
+              <th class="py-3.5 px-5">Nota</th>
+              <th class="py-3.5 px-4">Pelanggan</th>
+              <th class="py-3.5 px-4">Unit Barang</th>
+              <th class="py-3.5 px-4">Paket Layanan</th>
+              <th class="py-3.5 px-4">Serah Terima</th>
+              <th class="py-3.5 px-4">Status</th>
+              <th class="py-3.5 px-5 text-right">Biaya</th>
+            </tr>
+          </thead>
+          <tbody id="auditLedgerBody" class="divide-y divide-[#1E222D] text-xs"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    let currentSlug = window.getActiveMitraSlug();
+    let currentTenant = null;
+
+    function escapeHtml(val) {
+      const shared = window.ServiceStore && window.ServiceStore.escapeHtml;
+      if (typeof shared === "function" && shared !== escapeHtml) {
+        return shared(val);
+      }
+      return String(val == null ? "" : val)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function sanitizeUrl(rawUrl, fallbackUrl) {
+      const shared = window.ServiceStore && window.ServiceStore.sanitizeUrl;
+      if (typeof shared === "function" && shared !== sanitizeUrl) {
+        return shared(rawUrl, fallbackUrl);
+      }
+      const fb = typeof fallbackUrl === "string" ? fallbackUrl : "";
+      if (typeof rawUrl !== "string") return fb;
+      const trimmed = rawUrl.trim();
+      if (!trimmed || /[\u0000-\u001F\u007F]/.test(trimmed)) return fb;
+      if (/^data:/i.test(trimmed)) {
+        return /^data:image\/(png|jpeg|jpg|webp|gif|avif)(?:;[a-z0-9=._+-]+)*(?:;base64)?,[a-z0-9+/=]+$/i.test(trimmed) ? trimmed : fb;
+      }
+      if (/^(https?|blob):/i.test(trimmed)) return trimmed;
+      if (/^(?:\/\/|\/\\|\\\/|\\)/.test(trimmed) || trimmed.split(/[/?#]/)[0].includes(":")) return fb;
+      return /^(?:\/(?!\/)|\.\/|\.\.\/|\?|#|[a-zA-Z0-9_-])/.test(trimmed) ? trimmed : fb;
+    }
+
+    function getAnalyticsTemplateSuffix() {
+      try {
+        const urlTpl = new URLSearchParams(window.location.search).get("template");
+        if (urlTpl && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[urlTpl]) {
+          return `&template=${encodeURIComponent(urlTpl)}`;
+        }
+      } catch (e) {}
+      return "";
+    }
+
+    function getScopedAnalyticsOrders() {
+      const rawOrders = (currentTenant && Array.isArray(currentTenant.orders)) ? currentTenant.orders : [];
+      const isTenantAdmin = Boolean(
+        window.ServiceStore &&
+        window.ServiceStore.isAdminForTenant &&
+        window.ServiceStore.isAdminForTenant(currentTenant ? currentTenant.slug : currentSlug)
+      );
+      if (isTenantAdmin) return rawOrders;
+      return rawOrders.filter(o => o && String(o.id || "").startsWith("ord-"));
+    }
+
+    function sanitizeCsvCell(val) {
+      const s = String(val == null ? "" : val).replace(/"/g, '""');
+      const safe = /^[=+\-@\t\r]/.test(s) ? `'${s}` : s;
+      return `"${safe}"`;
+    }
+
+    let analyticsCloudGuardState = { checked: false, allowed: true };
+
+    function isAnalyticsDemoMode() {
+      try {
+        const p = new URLSearchParams(window.location.search);
+        return p.get("demo") === "1" || p.get("mode") === "demo";
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function showAnalyticsAuthLockBanner() {
+      const mainEl = document.querySelector("main");
+      if (!mainEl) return;
+      Array.from(mainEl.children).forEach(ch => {
+        if (ch.id !== "anCloudAuthBanner") ch.classList.add("hidden");
+      });
+      if (document.getElementById("anCloudAuthBanner")) return;
+      const box = document.createElement("div");
+      box.id = "anCloudAuthBanner";
+      box.className = "an-card-surface bg-[#12141A] rounded-[24px] border border-[#232734] p-6 sm:p-8 max-w-lg mx-auto my-8 space-y-4 text-center";
+      box.innerHTML = `
+        <h2 class="font-display text-lg font-bold text-white">Autentikasi Diperlukan</h2>
+        <p class="text-xs text-[#94A3B8] leading-relaxed">
+          Laporan omzet dan data kontak pelanggan hanya dapat dibuka setelah login sebagai Kasir atau Super Admin di panel operasional.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+          <a href="admin.html" class="h-10 px-5 rounded-[10px] bg-[var(--brand)] text-white text-xs font-bold inline-flex items-center justify-center">
+            Login via Panel Kasir
+          </a>
+          <a href="analytics.html?mitra=${encodeURIComponent(currentSlug)}&demo=1" class="h-10 px-4 rounded-[10px] bg-[#14171F] border border-[#232734] text-xs font-semibold text-[#F3F2EE] inline-flex items-center justify-center">
+            Buka Mode Demo Sandbox
+          </a>
+        </div>
+      `;
+      mainEl.appendChild(box);
+    }
+
+    async function initAnalyticsPage() {
+      if (
+        window.ServiceStore &&
+        typeof window.ServiceStore.ensureAdminSessionForTenant === "function" &&
+        window.__wsIsAuthenticated !== true
+      ) {
+        try {
+          await window.ServiceStore.ensureAdminSessionForTenant(window.getActiveMitraSlug());
+        } catch (e) {}
+      }
+
+      const isConfigured = window.isSupabaseConfigured && window.isSupabaseConfigured();
+      if (isConfigured && !isAnalyticsDemoMode() && window.__wsIsAuthenticated !== true) {
+        analyticsCloudGuardState = { checked: true, allowed: false };
+        const prelimTenant = window.ServiceStore.getTenant(window.getActiveMitraSlug());
+        if (prelimTenant) {
+          const activeTpl = window.resolveValidUiTemplate
+            ? window.resolveValidUiTemplate(prelimTenant.uiTemplate)
+            : "tactile_bento";
+          window.applyWorkshopTheme(prelimTenant.themePreset, prelimTenant.brandColor, activeTpl);
+        }
+        const tbody = document.getElementById("auditLedgerBody");
+        if (tbody) tbody.innerHTML = "";
+        showAnalyticsAuthLockBanner();
+        return;
+      }
+
+      analyticsCloudGuardState = { checked: true, allowed: true };
+      document.getElementById("anCloudAuthBanner")?.remove();
+      const mainEl = document.querySelector("main");
+      if (mainEl) {
+        Array.from(mainEl.children).forEach(ch => ch.classList.remove("hidden"));
+      }
+
+      if (
+        window.__wsIsAuthenticated === true &&
+        window.__wsCurrentRole === "owner" &&
+        window.__wsCurrentTenantSlug
+      ) {
+        currentSlug = window.__wsCurrentTenantSlug;
+        localStorage.setItem("active_mitra_slug", currentSlug);
+      } else {
+        currentSlug = window.getActiveMitraSlug();
+      }
+      currentTenant = window.ServiceStore.getTenant(currentSlug);
+      if (!currentTenant) return;
+
+      const params = new URLSearchParams(window.location.search);
+      const urlTpl = params.get("template");
+      const validUrlTpl = urlTpl && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[urlTpl] ? urlTpl : null;
+      const activeTpl = window.resolveValidUiTemplate
+        ? window.resolveValidUiTemplate(validUrlTpl || currentTenant.uiTemplate)
+        : (validUrlTpl || "tactile_bento");
+      window.applyWorkshopTheme(currentTenant.themePreset, currentTenant.brandColor, activeTpl);
+      renderHeaderAndLinks();
+      renderMetricsAndCharts();
+      renderAuditLedger();
+    }
+
+    function renderHeaderAndLinks() {
+      const initials = currentTenant.name.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase() || "LAB";
+      document.getElementById("analyticsPageTitle").textContent = `Laporan · ${currentTenant.name}`;
+      const logoBox = document.getElementById("anLogoBox");
+      const safeLogoUrl = sanitizeUrl(currentTenant.logoUrl);
+      if (safeLogoUrl) {
+        logoBox.innerHTML = `<img src="${escapeHtml(safeLogoUrl)}" alt="${escapeHtml(currentTenant.name)}" class="w-full h-full object-cover" data-initials="${escapeHtml(initials)}" onerror="this.parentElement.textContent=this.getAttribute('data-initials')" />`;
+      } else {
+        logoBox.textContent = initials;
+      }
+      document.getElementById("anBrandTitle").textContent = currentTenant.name;
+      document.getElementById("anBranchText").textContent = currentTenant.branch;
+
+      const all = window.ServiceStore.getAllTenants();
+      const sel = document.getElementById("anTenantSelector");
+      sel.innerHTML = all.map(t => `<option value="${escapeHtml(t.slug)}" ${t.slug === currentTenant.slug ? "selected" : ""}>${escapeHtml(t.name)} (${escapeHtml(t.branch)})</option>`).join("");
+      if (
+        sel &&
+        window.__wsIsAuthenticated === true &&
+        window.__wsCurrentRole === "owner" &&
+        window.__wsCurrentTenantSlug
+      ) {
+        sel.classList.add("hidden");
+      } else if (sel) {
+        sel.classList.remove("hidden");
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const urlTpl = params.get("template");
+      const validUrlTpl = urlTpl && window.WORKSHOP_UI_TEMPLATES && window.WORKSHOP_UI_TEMPLATES[urlTpl] ? urlTpl : null;
+      const activeTpl = window.resolveValidUiTemplate
+        ? window.resolveValidUiTemplate(validUrlTpl || currentTenant.uiTemplate)
+        : (validUrlTpl || "tactile_bento");
+      const tplSel = document.getElementById("anTemplateSelector");
+      if (tplSel) tplSel.value = activeTpl;
+
+      const q = `?mitra=${encodeURIComponent(currentTenant.slug)}${getAnalyticsTemplateSuffix()}`;
+      document.getElementById("anAdminLink").href = sanitizeUrl(`admin.html${q}`, "admin.html");
+      document.getElementById("anPublicLink").href = sanitizeUrl(`index.html${q}`, "index.html");
+    }
+
+    function switchAnalyticsTenant(newSlug) {
+      if (
+        window.__wsIsAuthenticated === true &&
+        window.__wsCurrentRole === "owner" &&
+        window.__wsCurrentTenantSlug &&
+        newSlug !== window.__wsCurrentTenantSlug
+      ) {
+        newSlug = window.__wsCurrentTenantSlug;
+      }
+      localStorage.setItem("active_mitra_slug", newSlug);
+      const url = new URL(window.location.href);
+      url.searchParams.set("mitra", newSlug);
+      url.searchParams.delete("template");
+      window.history.replaceState({}, "", url.toString());
+      initAnalyticsPage();
+    }
+
+    function switchAnalyticsTemplate(tplKey) {
+      if (!currentTenant) return;
+      const validTpl = window.resolveValidUiTemplate
+        ? window.resolveValidUiTemplate(tplKey, currentTenant.uiTemplate)
+        : (tplKey || "tactile_bento");
+      window.ServiceStore.saveTenantProfile(currentSlug, { uiTemplate: validTpl });
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("template")) {
+        url.searchParams.delete("template");
+        window.history.replaceState({}, "", url.toString());
+      }
+      initAnalyticsPage();
+    }
+
+    function renderMetricsAndCharts() {
+      const orders = getScopedAnalyticsOrders();
+      const nicheDef = window.NICHE_DEFINITIONS[currentTenant.niche] || window.NICHE_DEFINITIONS.sneakers_care;
+      const steps = nicheDef.steps;
+
+      const gross = orders.reduce((s, o) => s + (Number(o.price) || 0), 0);
+      const doneOrders = orders.filter(o => Number(o.stepIndex) === 5);
+      const pipeOrders = orders.filter(o => Number(o.stepIndex) < 5);
+
+      const doneRev = doneOrders.reduce((s, o) => s + (Number(o.price) || 0), 0);
+      const pipeRev = pipeOrders.reduce((s, o) => s + (Number(o.price) || 0), 0);
+      const avgTicket = orders.length > 0 ? Math.round(gross / orders.length) : 0;
+
+      document.getElementById("metricGrossRev").textContent = window.formatRupiah(gross);
+      document.getElementById("metricCompletedRev").textContent = window.formatRupiah(doneRev);
+      document.getElementById("metricCompletedSub").textContent = `${doneOrders.length} nota selesai`;
+      document.getElementById("metricPipelineRev").textContent = window.formatRupiah(pipeRev);
+      document.getElementById("metricPipelineSub").textContent = `${pipeOrders.length} unit tertahan di rak`;
+      document.getElementById("metricAvgTicket").textContent = window.formatRupiah(avgTicket);
+
+      // Fix #6: Visualisasi Rasio Kas Cair vs Piutang Mengendap di Rak
+      const donePct = gross > 0 ? Math.round((doneRev / gross) * 100) : 0;
+      const stuckPct = gross > 0 ? (100 - donePct) : 0;
+
+      document.getElementById("cashRatioSummaryBadge").textContent = `${donePct}% Cair · ${stuckPct}% Mengendap di Rak`;
+      document.getElementById("cashLiquidBar").style.width = `${donePct}%`;
+      document.getElementById("cashStuckBar").style.width = `${stuckPct}%`;
+
+      document.getElementById("ratioDoneCountText").textContent = `${doneOrders.length} unit siap serah terima`;
+      document.getElementById("ratioDoneAmountText").textContent = window.formatRupiah(doneRev);
+      document.getElementById("ratioDonePctText").textContent = `${donePct}% Omzet`;
+
+      document.getElementById("ratioStuckCountText").textContent = `${pipeOrders.length} unit masih di rak pengerjaan`;
+      document.getElementById("ratioStuckAmountText").textContent = window.formatRupiah(pipeRev);
+      document.getElementById("ratioStuckPctText").textContent = `${stuckPct}% Omzet`;
+
+      const srvMap = {};
+      (currentTenant.services || []).forEach(s => {
+        if (s && s.name) srvMap[s.name] = { count: 0, rev: 0 };
+      });
+      orders.forEach(o => {
+        const key = o.serviceName || "Layanan Lain";
+        if (!srvMap[key]) srvMap[key] = { count: 0, rev: 0 };
+        srvMap[key].count += 1;
+        srvMap[key].rev += Number(o.price) || 0;
+      });
+
+      const srvEntries = Object.entries(srvMap).sort((a, b) => (b[1].rev - a[1].rev) || (b[1].count - a[1].count));
+      const barsMount = document.getElementById("serviceRevenueBars");
+      if (srvEntries.length === 0) {
+        barsMount.innerHTML = `<div class="text-xs text-[#9E9D98]">Belum ada transaksi.</div>`;
+      } else {
+        barsMount.innerHTML = srvEntries.map(([name, stat]) => {
+          const pct = gross > 0 ? Math.round((stat.rev / gross) * 100) : 0;
+          const isZero = pct === 0;
+          const barWidth = isZero ? "2%" : `${Math.max(pct, 8)}%`;
+          return `
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <span class="font-semibold text-white">${escapeHtml(name)} <span class="text-[#9E9D98]">(${stat.count} nota)</span></span>
+                <span class="font-mono-code font-bold text-white">${window.formatRupiah(stat.rev)} · ${pct}%</span>
+              </div>
+              <div class="an-bar-track">
+                <div class="an-bar-fill ${isZero ? "is-zero" : ""}" style="width: ${barWidth};"></div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      const topLabelEl = document.getElementById("anTopServiceLabel");
+      const activeCatEl = document.getElementById("anActiveCatalogCount");
+      const compRateEl = document.getElementById("anCompletionRateText");
+      if (topLabelEl) {
+        topLabelEl.textContent = srvEntries[0] && srvEntries[0][1].rev > 0 ? srvEntries[0][0] : "Belum ada transaksi";
+      }
+      if (activeCatEl) {
+        activeCatEl.textContent = `${Object.keys(srvMap).length} Paket Layanan`;
+      }
+      if (compRateEl) {
+        compRateEl.textContent = `${orders.length > 0 ? Math.round((doneOrders.length / orders.length) * 100) : 0}% Selesai (${doneOrders.length}/${orders.length})`;
+      }
+
+      const stageMount = document.getElementById("stageDistributionList");
+      stageMount.innerHTML = steps.map(s => {
+        const stepNum = Math.min(Math.max(Number(s.step) || 1, 1), 5);
+        const count = orders.filter(o => Number(o.stepIndex) === stepNum).length;
+        const isStage5 = stepNum === 5;
+        return `
+          <div class="py-3 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-2.5 h-2.5 rounded-full shrink-0" style="${isStage5 ? 'background-color: #10B981;' : 'background-color: var(--brand); opacity: 0.75;'}"></span>
+              <span class="text-xs font-semibold text-white truncate">Tahap ${stepNum} · ${escapeHtml(s.label)}</span>
+            </div>
+            <span class="an-stage-count-badge font-mono-code text-xs font-bold px-2.5 py-0.5 rounded-full ${isStage5 ? 'is-done' : ''} shrink-0 tabular-nums">${count} unit</span>
+          </div>
+        `;
+      }).join("");
+
+      const dropCount = orders.filter(o => /drop|antar sendiri|outlet|workshop|walk-in|bengkel/i.test(o.deliveryType || "")).length;
+      const pickCount = orders.length - dropCount;
+      document.getElementById("deliverySplitMount").innerHTML = `
+        <div class="an-delivery-card">
+          <div class="text-xs text-[#94A3B8]">Drop-Off Studio</div>
+          <div class="font-mono-code text-lg font-bold text-white mt-0.5 tabular-nums">${dropCount} Nota</div>
+        </div>
+        <div class="an-delivery-card">
+          <div class="text-xs text-[#94A3B8]">Jemput / Slot</div>
+          <div class="font-mono-code text-lg font-bold text-white mt-0.5 tabular-nums">${pickCount} Nota</div>
+        </div>
+      `;
+    }
+
+    function renderAuditLedger() {
+      const orders = getScopedAnalyticsOrders();
+      const nicheDef = window.NICHE_DEFINITIONS[currentTenant.niche] || window.NICHE_DEFINITIONS.sneakers_care;
+      document.getElementById("ledgerCountBadge").textContent = `${orders.length} nota`;
+
+      const tbody = document.getElementById("auditLedgerBody");
+      tbody.innerHTML = orders.map(o => {
+        const curStep = Math.min(Math.max(Number(o.stepIndex) || 1, 1), 5);
+        const stepMeta = nicheDef.steps[curStep - 1] || nicheDef.steps[0];
+        const isDone = curStep === 5;
+        return `
+          <tr class="block md:table-row p-4 md:p-0 space-y-2 md:space-y-0 hover:bg-[#1A1D26]/60 transition-colors">
+            <td class="block md:table-cell p-0 md:py-3.5 md:px-5 font-mono-code font-bold text-white md:whitespace-nowrap">
+              <div class="flex items-center justify-between md:block gap-2">
+                <span>${escapeHtml(o.orderId)}</span>
+                <span class="md:hidden font-mono-code font-bold text-white">${window.formatRupiah(o.price)}</span>
+              </div>
+            </td>
+            <td class="block md:table-cell p-0 md:py-3.5 md:px-4">
+              <div class="flex items-center justify-between md:block gap-2">
+                <div class="font-semibold text-white">${escapeHtml(o.customerName)}</div>
+                <div class="font-mono-code text-xs text-[#94A3B8]">${escapeHtml(o.phone)}</div>
+              </div>
+            </td>
+            <td class="block md:table-cell p-0 md:py-3.5 md:px-4 text-[#F8FAFC] font-medium md:font-normal">${escapeHtml(o.itemName)}</td>
+            <td class="block md:table-cell p-0 md:py-3.5 md:px-4 text-[#94A3B8]">${escapeHtml(o.serviceName)}</td>
+            <td class="hidden md:table-cell py-3.5 px-4 text-[#94A3B8]">${escapeHtml(o.deliveryType || "-")}</td>
+            <td class="block md:table-cell p-0 pt-1 md:pt-3.5 md:py-3.5 md:px-4 md:whitespace-nowrap">
+              <div class="flex items-center justify-between md:block gap-2">
+                <span class="an-stage-badge px-2.5 py-1 rounded-full text-xs font-semibold ${
+                  isDone ? "is-done" : ""
+                }">Tahap ${curStep}/5 · ${escapeHtml(stepMeta.label)}</span>
+                <span class="md:hidden text-xs text-[#94A3B8]">${escapeHtml(o.deliveryType || "-")}</span>
+              </div>
+            </td>
+            <td class="hidden md:table-cell py-3.5 px-5 text-right font-mono-code font-bold text-white whitespace-nowrap">${window.formatRupiah(o.price)}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function exportAnalyticsCsv() {
+      if (!analyticsCloudGuardState.allowed || !currentTenant) return;
+      const orders = getScopedAnalyticsOrders();
+      const headers = ["Order_ID", "Customer_Name", "Phone", "Item_Name", "Service_Package", "Stage_1_to_5", "Delivery_Type", "ETA", "Price_IDR", "Technician_Note"];
+      const rows = orders.map(o => [
+        sanitizeCsvCell(o.orderId),
+        sanitizeCsvCell(o.customerName || ""),
+        sanitizeCsvCell(o.phone || ""),
+        sanitizeCsvCell(o.itemName || ""),
+        sanitizeCsvCell(o.serviceName || ""),
+        Number(o.stepIndex) || 1,
+        sanitizeCsvCell(o.deliveryType || ""),
+        sanitizeCsvCell(o.etaDate || ""),
+        Number(o.price) || 0,
+        sanitizeCsvCell(o.techNote || "")
+      ]);
+
+      const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = sanitizeUrl(url, "#");
+      const safeFileSlug = String(currentTenant.slug || "studio").replace(/[^a-z0-9-]/gi, "");
+      a.download = `laporan-${safeFileSlug}-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    window.addEventListener("storage", (e) => {
+      if (!e.key || e.key === "atelier_service_engine_v4_tenants" || e.key === "active_mitra_slug") {
+        initAnalyticsPage();
+      }
+    });
+    window.addEventListener("message", (e) => {
+      if (window.isSameOriginMessage && !window.isSameOriginMessage(e)) return;
+      if (e.data && e.data.type === "ATELIER_STORE_SYNC") {
+        initAnalyticsPage();
+      }
+    });
+    window.addEventListener("ws-cloud-synced", initAnalyticsPage);
+    document.addEventListener("DOMContentLoaded", initAnalyticsPage);
+  </script>
+</body>
+</html>
